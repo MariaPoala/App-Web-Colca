@@ -13,7 +13,7 @@ export default async function handler(req: any, res: any) {
             const { idEmpleado } = req.body;
             const docRef = doc(db, 'Empleado', idEmpleado);
             setDoc(docRef, req.body, { merge: true });
-console.log(docRef)
+
             res.status(200).json("documento actualizado")
             
         }

@@ -104,7 +104,7 @@ export default function Example() {
     const [open, setOpen] = useState(false)
     const [idEmpleado, setIdEmpleado] = useState(null)
     const { data } = useSWRImmutable(['/api/empleado', {}], fetcherEmpleado)
-    console.log("data", data)
+ 
     return (
         <>
             <div className="h-full flex flex-col">
