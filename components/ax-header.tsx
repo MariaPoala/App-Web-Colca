@@ -35,9 +35,9 @@ export default function AxHeader() {
                 <Popover className="flex justify-between h-16">
                     <div className="flex px-2 lg:px-0">
                         <div className="flex-shrink-0 flex items-center">
-                            <a href="/">
+                            {/* <a href="/">
                                 <img className="h-10 w-auto" src="/logo-text-blanco.svg" alt="Workflow" />
-                            </a>
+                            </a> */}
                         </div>
                         <nav aria-label="Global" className="hidden md:ml-6 md:flex md:items-center md:space-x-4">
                             {navigation.map((item) => (
