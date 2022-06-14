@@ -34,7 +34,7 @@ export default function AxDetalle({ idEmpleado }: any) {
     return <>
         <section
             aria-labelledby="message-heading"
-            className="min-w-0 flex-1 h-full  flex-col overflow-hidden lg:order-last hidden md:inline-block"
+            className="min-w-0 flex-1 h-full flex-col overflow-hidden lg:order-last hidden md:inline-block"
         >
             {/* Top section */}
             <div className="flex-shrink-0 bg-white border-b border-gray-200">
@@ -80,22 +80,6 @@ export default function AxDetalle({ idEmpleado }: any) {
                                         </button>
                                     </span>
 
-                                    {/* <span className="hidden lg:flex space-x-3">
-                                        <button
-                                            type="button"
-                                            className="hidden sm:inline-flex -ml-px relative items-center px-4 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-900 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
-                                        >
-                                            <ArchiveIconSolid className="mr-2.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                            <span>Archive</span>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="hidden sm:inline-flex -ml-px relative items-center px-4 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-900 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
-                                        >
-                                            <FolderDownloadIcon className="mr-2.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                            <span>Move</span>
-                                        </button>
-                                    </span> */}
 
                                     <Menu as="div" className="-ml-px relative block sm:shadow-sm lg:hidden">
                                         <div>
