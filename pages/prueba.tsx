@@ -712,10 +712,8 @@ export default function Example() {
                 <nav aria-label="Message list" className="min-h-0 flex-1 overflow-y-auto">
                   
                   <ul role="list" className="border-b border-gray-200 divide-y divide-gray-200">
-                    {messages.map((message) => (
-                      
-
-                      
+                    {messages.map((message) => (                    
+                     
                       <li
                         key={message.id}
                        
@@ -744,7 +742,7 @@ export default function Example() {
                         <button
                         onClick={() => setOpen(true)}
                           type="button"
-                          className="hidden sm:inline-flex -ml-px relative items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-900 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
+                          className="md:hidden sm:inline-flex -ml-px relative items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-900 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
                         >
                           
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
