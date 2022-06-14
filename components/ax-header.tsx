@@ -1,129 +1,113 @@
 import { Fragment } from 'react'
-import { Menu, Popover, Transition } from '@headlessui/react'
-import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
-import { ChevronDownIcon } from '@heroicons/react/solid'
+import { Menu, Transition } from '@headlessui/react'
+import { BellIcon, MenuAlt1Icon } from '@heroicons/react/outline'
+import { ChevronDownIcon, SearchIcon } from '@heroicons/react/solid'
+import { useUser } from '@auth0/nextjs-auth0';
+import { UserCircleIcon } from '@heroicons/react/outline'
+import Link from 'next/link'
 
-import AxNotification from 'components/icons/ax-notification'
-
-const user = {
-    name: 'Chelsea Hagon',
-    email: 'chelsea.hagon@example.com',
-    role: 'Human Resources Manager',
-    imageUrl:
-        'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
-const navigation = [
-    { name: 'Inicio', href: '#', current: false },
-    { name: 'Paquetes', href: '#', current: true },
-    { name: 'Trabajadores', href: '#', current: false },
-    { name: 'Resultados', href: '#', current: false }
-]
-const userNavigation = [
-    { name: 'Tu Perfil', href: '#' },
-    { name: 'Ajustes', href: '#' },
-    { name: 'Cerrar Sesión', href: '#' },
-]
-
-function classNames(...classes: any) {
-    return classes.filter(Boolean).join(' ')
+interface IMenuUsuario {
+    name: string,
+    text: string,
+    status: 'authenticated' | 'loading' | 'unauthenticated',
+    EvClick?: any
+    href: string
 }
 
-export default function AxHeader() {
-    return (<>
-        <header className="bg-blue-600 shadow bg-gradient-to-r from-blue-700 to-blue-500">
-            <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
-                <Popover className="flex justify-between h-16">
-                    <div className="flex px-2 lg:px-0">
-                        <div className="flex-shrink-0 flex items-center">
-                            {/* <a href="/">
-                                <img className="h-10 w-auto" src="/logo-text-blanco.svg" alt="Workflow" />
-                            </a> */}
-                        </div>
-                        <nav aria-label="Global" className="hidden md:ml-6 md:flex md:items-center md:space-x-4">
-                            {navigation.map((item) => (
-                                <a key={item.name} href={item.href} className={classNames(item.current ? "bg-blue-500" : "", "px-3 py-2 text-white text-sm font-medium rounded-md hover:bg-blue-700")}>
-                                    {item.name}
-                                </a>
-                            ))}
-                        </nav>
-                    </div>
+const menuUsuario: Array<IMenuUsuario> = [
+    // { name: "app", text: "Ir al aplicativo", status: "authenticated" },
+    { name: "profile", text: "Tu Perfil", status: "authenticated", href: "/miperfil" },
+    // { name: "configuration", text: "Configuración", status: "authenticated", href: "" },
+    { name: "logout", text: "Cerrar Sesión", status: "authenticated", href: "/api/auth/logout" },
+    // { name: "logout", text: "Cerrar Sesión", status: "authenticated", EvClick: signOut, href: "" },
+    // { name: "login", text: "Iniciar Sesión", status: "unauthenticated", href: "/api/auth/login" }
+]
 
-                    <Transition.Root as={Fragment}>
-                        <div className="lg:hidden">
-                            <Transition.Child as={Fragment} enter="duration-150 ease-out" enterFrom="opacity-0" enterTo="opacity-100" leave="duration-150 ease-in" leaveFrom="opacity-100" leaveTo="opacity-0">
-                                <Popover.Overlay className="z-20 fixed inset-0 bg-black bg-opacity-25" aria-hidden="true" />
-                            </Transition.Child>
+interface IProps {
+    setIsSidebarOpen: (active: boolean) => void;
+}
 
-                            <Transition.Child as={Fragment} enter="duration-150 ease-out" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100" leave="duration-150 ease-in" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95">
-                                <Popover.Panel focus className="z-30 absolute top-0 right-0 max-w-none w-full p-2 transition transform origin-top">
-                                    <div className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 bg-white divide-y divide-gray-200">
-                                        <div className="pt-3 pb-2">
-                                            <div className="flex items-center justify-between px-4">
-                                                <div>
-                                                    <img className="h-10 w-auto" src="/logo-text.svg" alt="Workflow" />
-                                                </div>
-                                                <div className="-mr-2">
-                                                    <Popover.Button className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
-                                                        <span className="sr-only">Close menu</span>
-                                                        <XIcon className="h-6 w-6" aria-hidden="true" />
-                                                    </Popover.Button>
-                                                </div>
-                                            </div>
-                                            <div className="mt-3 px-2 space-y-1">
-                                                {navigation.map((item) => (
-                                                    <a key={item.name} href={item.href}
-                                                        className={classNames(item.current ? "bg-blue-100" : "", "block rounded-md px-3 py-2 text-base text-gray-900 font-medium hover:bg-gray-100 hover:text-gray-800")}>
-                                                        {item.name}
-                                                    </a>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Popover.Panel>
-                            </Transition.Child>
-                        </div>
-                    </Transition.Root>
-                    <div className="ml-4 flex items-center">
-                        < Popover.Button className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-blue-100 hover:text-blue-50 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" >
-                            <span className="sr-only">Open main menu</span>
-                            <MenuIcon className="block h-6 w-6" aria-hidden="true" />
-                        </Popover.Button>
+export default function AxHeader({ setIsSidebarOpen }: IProps) {
+    const { user, error, isLoading } = useUser();
 
-                        {/* Profile dropdown */}
-                        <Menu as="div" className="ml-4 relative flex-shrink-0">
-                            <div>
-                                <Menu.Button className="max-w-xs rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 hover:bg-blue-600 lg:p-2">
-                                    <img
-                                        className="h-8 w-8 rounded-full"
-                                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                        alt=""
-                                    />
-                                    <span className="ml-3 text-blue-50 text-sm font-medium block">
-                                        <span className="sr-only">Open user menu for </span>Emilia Birch
-                                    </span>
-                                    <ChevronDownIcon
-                                        className="flex-shrink-0 ml-1 h-5 w-5 text-white"
-                                        aria-hidden="true"
-                                    />
-                                </Menu.Button>
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>{error.message}</div>;
+
+    return <>
+        <div className="relative z-10 flex-shrink-0 flex h-16 bg-blue-100 border-b border-blue-00 lg:border-none">
+            <button
+                type="button"
+                className="px-4 border-r border-blue-200 text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 lg:hidden"
+                onClick={() => {
+                    setIsSidebarOpen(true)
+                }}
+            >
+                <span className="sr-only">Abrir sidebar</span>
+                <MenuAlt1Icon className="h-6 w-6" aria-hidden="true" />
+            </button>
+            <div className="flex-1 px-4 flex justify-between sm:px-6 lg:max-w-6xl lg:mx-auto lg:px-8">
+                {/* Search */}
+                <div className="flex-1 flex">
+                    <form className="w-full flex md:ml-0" action="#" method="GET">
+                        <label htmlFor="search-field" className="sr-only">
+                            Buscar
+                        </label>
+                        <div className="relative w-full text-gray-400 focus-within:text-gray-600">
+                            <div className="text-blue-500 absolute inset-y-0 left-0 flex items-center pointer-events-none" aria-hidden="true">
+                                <SearchIcon className="h-5 w-5" aria-hidden="true" />
                             </div>
-                            <Transition as={Fragment} enter="transition ease-out duration-100" enterFrom="transform opacity-0 scale-95" enterTo="transform opacity-100 scale-100" leave="transition ease-in duration-75" leaveFrom="transform opacity-100 scale-100" leaveTo="transform opacity-0 scale-95" >
-                                <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                    {userNavigation.map((item) => (
-                                        <Menu.Item key={item.name}>
-                                            <a href={item.href} className='block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100'>
-                                                {item.name}
-                                            </a>
-                                        </Menu.Item>
-                                    ))}
-                                </Menu.Items>
-                            </Transition>
-                        </Menu>
+                            <input id="search-field" name="search-field" type="search" placeholder="Buscar" className="bg-blue-100 block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm" />
+                        </div>
+                    </form>
+                </div>
+                <div className="ml-4 flex items-center md:ml-6">
+                    <button type="button" className="bg-blue-200 p-1 rounded-full text-blue-400 hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <span className="sr-only">Ver notificaciones</span>
+                        <BellIcon className="h-6 w-6" aria-hidden="true" />
+                    </button>
 
-                    </div>
-                </Popover>
+                    {/* Profile dropdown */}
+                    <Menu as="div" className="ml-3 relative">
+                        <div>
+                            <Menu.Button className="max-w-xs bg-blue-100 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 lg:p-2 lg:rounded-md lg:hover:bg-blue-50">
+                                {user
+                                    ? <>
+                                        <img className="h-8 w-8 rounded-full" src={user.picture || ""} alt="" />
+                                        <span className="hidden ml-3 text-gray-700 text-sm font-medium lg:block">
+                                            <span className="sr-only">Open user menu for </span>{user.email || ""}
+                                        </span>
+                                    </>
+                                    : <UserCircleIcon className="h-8 w-8 rounded-full"></UserCircleIcon>
+                                }
+                                <ChevronDownIcon className="hidden flex-shrink-0 ml-1 h-5 w-5 text-gray-400 lg:block" aria-hidden="true" />
+                            </Menu.Button>
+                        </div>
+                        <Transition
+                            as={Fragment}
+                            enter="transition ease-out duration-100"
+                            enterFrom="transform opacity-0 scale-95"
+                            enterTo="transform opacity-100 scale-100"
+                            leave="transition ease-in duration-75"
+                            leaveFrom="transform opacity-100 scale-100"
+                            leaveTo="transform opacity-0 scale-95"
+                        >
+                            <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-blue-100 ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                {
+                                    menuUsuario.map(item => (
+                                        <Link key={item.name} href={item.href}>
+                                            <Menu.Item key={item.name}>
+                                                <a onClick={item.EvClick} href="#" className="block px-4 py-2 text-sm text-gray-700">
+                                                    {item.text + ""}
+                                                </a>
+                                            </Menu.Item>
+                                        </Link>
+                                    ))
+                                }
+                            </Menu.Items>
+                        </Transition>
+                    </Menu>
+                </div>
             </div>
-        </header>
+        </div>
     </>
-    )
 }

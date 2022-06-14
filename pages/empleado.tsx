@@ -26,7 +26,7 @@ import {
     XIcon,
 } from '@heroicons/react/outline'
 
-import AxDetalle from './AxDetalle'
+import AxDetalle from './Empleado/AxDetalle'
 
 const messages = [
     {

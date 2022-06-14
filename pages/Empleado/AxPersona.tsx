@@ -25,7 +25,6 @@ import {
     UserCircleIcon,
     XIcon,
 } from '@heroicons/react/outline'
-import AxPerson2 from './AxPersona2'
 
 function classNames(...classes: any) {
     return classes.filter(Boolean).join(' ')

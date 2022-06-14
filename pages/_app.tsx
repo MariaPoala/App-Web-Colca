@@ -6,9 +6,9 @@ import AxLayout from 'components/ax-layout';
 export default function MyApp({ Component, pageProps: { session, ...pageProps } }: any) {
   return (
     <UserProvider>
-      {/* <AxLayout> */}
+      <AxLayout>
         <Component {...pageProps} />
-      {/* </AxLayout> */}
+      </AxLayout>
     </UserProvider>
   )
 }
