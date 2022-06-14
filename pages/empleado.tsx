@@ -120,7 +120,7 @@ export default function Example() {
                                     <div className="h-16 bg-white px-6 flex flex-col justify-center">
                                         <div className="flex items-baseline space-x-3">
                                             <h2 className="text-lg font-medium text-gray-900">Inbox</h2>
-                                            <p className="text-sm font-medium text-gray-500">{messages.length} messages</p>
+                                            <p className="text-sm font-medium text-gray-500">{fetcherEmpleado.length} messages</p>
                                         </div>
                                     </div>
                                     <div className="border-t border-b border-gray-200 bg-gray-50 px-6 py-2 text-sm font-medium text-gray-500">

@@ -18,6 +18,7 @@ import { useRouter } from 'next/router'
 const navigation = [
     { name: 'Inicio', href: '/', icon: HomeIcon, current: true },
     { name: 'Empleado', href: '/empleado', icon: DocumentReportIcon, current: false },
+    { name: 'Prueba', href: '/prueba ', icon: DocumentReportIcon, current: false },
     // { name: 'History', href: '#', icon: ClockIcon, current: false },
     // { name: 'Balances', href: '#', icon: ScaleIcon, current: false },
     // { name: 'Cards', href: '#', icon: CreditCardIcon, current: false },
