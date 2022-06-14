@@ -34,7 +34,7 @@ export default function AxDetalle({ idEmpleado }: any) {
     return <>
         <section
             aria-labelledby="message-heading"
-            className="min-w-0 flex-1 h-full flex flex-col overflow-hidden lg:order-last"
+            className="min-w-0 flex-1 h-full  flex-col overflow-hidden lg:order-last hidden md:inline-block"
         >
             {/* Top section */}
             <div className="flex-shrink-0 bg-white border-b border-gray-200">
@@ -179,35 +179,17 @@ export default function AxDetalle({ idEmpleado }: any) {
                                 </div>
                             </div>
 
-                            {/* Right buttons */}
-                            <nav aria-label="Pagination">
-                                <span className="relative z-0 inline-flex shadow-sm rounded-md">
-                                    <a
-                                        href="#"
-                                        className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
-                                    >
-                                        <span className="sr-only">Next</span>
-                                        <ChevronUpIcon className="h-5 w-5" aria-hidden="true" />
-                                    </a>
-                                    <a
-                                        href="#"
-                                        className="-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
-                                    >
-                                        <span className="sr-only">Previous</span>
-                                        <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
-                                    </a>
-                                </span>
-                            </nav>
                         </div>
                     </div>
                 </div>
                 {/* Message header */}
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto">
-                {/* Thread section*/}
-                <div className="py-4 space-y-2 sm:px-6 sm:space-y-4 lg:px-8">
+            <div className="min-h-0 flex-1 overflow-y-auto ">
+                <div className="bg-white pt-5 pb-6 shadow ">
+                  <div className="px-4 sm:flex sm:justify-between sm:items-baseline sm:px-6 lg:px-8 ">
                     <AxPersona idEmpleado={idEmpleado}></AxPersona>
+                </div>
                 </div>
             </div>
         </section>

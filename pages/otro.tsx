@@ -50,7 +50,7 @@ import {
   UserCircleIcon,
   XIcon,
 } from '@heroicons/react/outline'
-import useSWRImmutable from 'swr/immutable'
+
 const user = {
   name: 'Whitney Francis',
   email: 'whitney.francis@example.com',
@@ -224,16 +224,50 @@ const message = {
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
 }
+import useSWR from 'swr'
+import useSWRImmutable from 'swr/immutable'
+import { CheckCircleIcon, ChevronRightIcon, MailIcon } from '@heroicons/react/solid'
+
+
+
+
 const fetcherEmpleado = (url: string, params: any): Promise<Array<any>> =>
-  fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(params),
-    headers: { 'Content-Type': 'application/json' }
-  }).then(r => r.json());
+    fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(params),
+        headers: { 'Content-Type': 'application/json' }
+    }).then(r => r.json());
+
+const fetcherDistrito = (url: string): Promise<any> =>
+  fetch(url, { method: 'GET' }).then(r => r.json());
 
 export default function Example() {
   const [open, setOpen] = useState(false)
   const { data } = useSWRImmutable(['/api/empleado', {}], fetcherEmpleado)
+  const [idEmpleado, setIdEmpleado] = useState(null)
+  // const { data } = useSWRImmutable(idEmpleado ? ['/api/empleadoDetalle', { idEmpleado: idEmpleado }] : null, fetcherEmpleado)
+  // const { data: listaDistrito } = useSWRImmutable(idEmpleado ? '/api/distrito' : null, fetcherDistrito)
+
+  const handleSubmit = async (event: any) => {
+    event.preventDefault()
+    let form = event.target;
+  }
+
+  // const dataForm = {
+  //     idEmpleado: idEmpleado,
+  //     DNI: form.DNI.value,
+  //     Nombres: form.Nombres.value,
+  // }
+
+  // const JSONdata = JSON.stringify(dataForm)
+  // const response = await fetch('/api/guardarempleado', {
+  //     body: JSONdata,
+  //     headers: { 'Content-Type': 'application/json', },
+  //     method: 'PUT'
+  // })
+
+  // const result = await response.json()
+  // alert(`Is this your full name: ${result}`)
   return (
     <>
       <Transition.Root show={open} as={Fragment}>
@@ -452,41 +486,52 @@ export default function Example() {
                               type="button"
                               className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-900 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
                             >
-                              <ReplyIcon className="mr-2.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                              <span>Reply</span>
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                              </svg>
+                              <span>Agregar</span>
+
+
+
                             </button>
                             <button
                               type="button"
                               className="hidden sm:inline-flex -ml-px relative items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-900 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
                             >
-                              <PencilIcon className="mr-2.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                              <span>Note</span>
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                                <path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd" />
+                              </svg>
+                              <span>Editar</span>
                             </button>
                             <button
                               type="button"
                               className="hidden sm:inline-flex -ml-px relative items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-900 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
                             >
-                              <UserAddIcon className="mr-2.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                              <span>Assign</span>
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                              </svg>
+                              <span>Visualizar</span>
                             </button>
                           </span>
 
-                          <span className="hidden lg:flex space-x-3">
-                            <button
-                              type="button"
-                              className="hidden sm:inline-flex -ml-px relative items-center px-4 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-900 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
-                            >
-                              <ArchiveIconSolid className="mr-2.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                              <span>Archive</span>
-                            </button>
-                            <button
-                              type="button"
-                              className="hidden sm:inline-flex -ml-px relative items-center px-4 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-900 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
-                            >
-                              <FolderDownloadIcon className="mr-2.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                              <span>Move</span>
-                            </button>
-                          </span>
+                          {/* <span className="hidden lg:flex space-x-3">
+                                        <button
+                                            type="button"
+                                            className="hidden sm:inline-flex -ml-px relative items-center px-4 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-900 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
+                                        >
+                                            <ArchiveIconSolid className="mr-2.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                                            <span>Archive</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="hidden sm:inline-flex -ml-px relative items-center px-4 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-900 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
+                                        >
+                                            <FolderDownloadIcon className="mr-2.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                                            <span>Move</span>
+                                        </button>
+                                    </span> */}
 
                           <Menu as="div" className="-ml-px relative block sm:shadow-sm lg:hidden">
                             <div>
@@ -595,8 +640,8 @@ export default function Example() {
                 {/* Message header */}
               </div>
               {/* cambio */}
-              <div className="min-h-0 flex-1 overflow-y-auto">
-                <div className="pb-6 ">
+              <div className="divide-y divide-gray-200">
+                <div className="pb-6">
                   <div className="h-24 bg-indigo-700 sm:h-20 lg:h-28" />
                   <div className="lg:-mt-15 -mt-12 flow-root px-4 sm:-mt-8 sm:flex sm:items-end sm:px-6">
                     <div>
@@ -645,7 +690,7 @@ export default function Example() {
                 </div>
                 <div className="px-4 py-5 sm:px-0 sm:py-0">
                   <div className="p-4 md:p-6">
-                    <form className="space-y-8 divide-y divide-gray-200" >
+                    <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit}>
                       <div className="space-y-8 divide-y divide-gray-200">
                         <div className="">
                           <div>
@@ -902,8 +947,6 @@ export default function Example() {
                     </form >
                   </div >
                 </div>
-                {/* Thread section*/}
-
               </div>
             </section>
 
@@ -922,8 +965,9 @@ export default function Example() {
                   </div>
                 </div>
                 <nav aria-label="Message list" className="min-h-0 flex-1 overflow-y-auto">
-                  <ul role="list" className="border-b border-gray-200 divide-y divide-gray-200">
-                    {data && data.map((item) => (
+                <ul role="list" className="border-b border-gray-200 divide-y divide-gray-200">
+                {data && data.map((item) => (
+
                       <li
                         key={item.idEmpleado}
 
@@ -965,6 +1009,48 @@ export default function Example() {
                     ))}
                   </ul>
 
+                  {/* <ul role="list" className="border-b border-gray-200 divide-y divide-gray-200">
+                    {data && data.map((item) => (
+                      <li key={item.id}>
+                        <a onClick={() => {
+                          setIdEmpleado(item.id)
+                        }} className="block hover:bg-gray-50">
+                          <div className="flex items-center px-4 py-4 sm:px-6">
+                            <div className="min-w-0 flex-1 flex items-center">
+                              <div className="flex-shrink-0">
+                                <img className="h-12 w-12 rounded-full" src={item.ImgURL} alt="" />
+                              </div>
+                              <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
+                                <div>
+                                  <p className="text-sm font-medium text-indigo-600 truncate">{item.Nombres + ' ' + item.Apellidos}</p>
+                                  <p className="mt-2 flex items-center text-sm text-gray-500">
+                                    <MailIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                                    <span className="truncate">{item.Email}</span>
+                                  </p>
+                                </div>
+                                <button
+                                  onClick={() => setOpen(true)}
+                                  type="button"
+                                  className="md:hidden sm:inline-flex -ml-px relative items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-900 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
+                                >
+
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                                    <path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd" />
+                                  </svg>
+                                  <span>Editar</span>
+                                </button>
+                              </div>
+                            </div>
+                            <div>
+                              <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                            </div>
+                          </div>
+                        </a>
+                      </li>
+
+                    ))}
+                  </ul> */}
                 </nav>
               </div>
             </aside>
