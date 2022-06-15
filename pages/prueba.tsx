@@ -595,8 +595,8 @@ export default function Example() {
                 {/* Message header */}
               </div>
               {/* cambio */}
-              <div className="min-h-0 flex-1 overflow-y-auto">
-                <div className="pb-6 ">
+              <div className="divide-y divide-gray-200">
+                <div className="pb-6">
                   <div className="h-24 bg-indigo-700 sm:h-20 lg:h-28" />
                   <div className="lg:-mt-15 -mt-12 flow-root px-4 sm:-mt-8 sm:flex sm:items-end sm:px-6">
                     <div>

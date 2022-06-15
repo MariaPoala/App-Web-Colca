@@ -1,34 +1,5 @@
-import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
-import { CheckCircleIcon, ChevronRightIcon, MailIcon } from '@heroicons/react/solid'
 import { Fragment, useEffect, useState } from 'react'
-import { Dialog, Menu, Transition } from '@headlessui/react'
-import {
-    ArchiveIcon as ArchiveIconSolid,
-    ChevronDownIcon,
-    ChevronUpIcon,
-    DotsVerticalIcon,
-    FolderDownloadIcon,
-    PencilIcon,
-    ReplyIcon,
-    SearchIcon,
-    UserAddIcon,
-} from '@heroicons/react/solid'
-import {
-    ArchiveIcon as ArchiveIconOutline,
-    BanIcon,
-    BellIcon,
-    FlagIcon,
-    InboxIcon,
-    MenuIcon,
-    PencilAltIcon,
-    UserCircleIcon,
-    XIcon,
-} from '@heroicons/react/outline'
-
-function classNames(...classes: any) {
-    return classes.filter(Boolean).join(' ')
-}
 
 const fetcherEmpleado = (url: string, params: any): Promise<any> =>
     fetch(url, {
@@ -40,41 +11,55 @@ const fetcherEmpleado = (url: string, params: any): Promise<any> =>
 const fetcherDistrito = (url: string): Promise<any> =>
     fetch(url, { method: 'GET' }).then(r => r.json());
 
-export default function AxPersona({ idEmpleado }: any) {
+export default function AxPersona({ idEmpleado,setIdEmpleado, tipoEdicion }: any) {
     const [open, setOpen] = useState(true)
-
     const { data } = useSWRImmutable(idEmpleado ? ['/api/empleadoDetalle', { idEmpleado: idEmpleado }] : null, fetcherEmpleado)
     const { data: listaDistrito } = useSWRImmutable(idEmpleado ? '/api/distrito' : null, fetcherDistrito)
 
+    if (idEmpleado == -1) return <></>
+
     const handleSubmit = async (event: any) => {
         event.preventDefault()
-
+        console.log(tipoEdicion);
+        return;
+        console.log(tipoEdicion);
         let form = event.target;
         const dataForm = {
             idEmpleado: idEmpleado,
             DNI: form.DNI.value,
             Nombres: form.Nombres.value,
+            Apellidos: form.Apellidos.value,
+            Celular: form.Celular.value,
+            Direccion: form.Direccion.value,
+            Email: form.Email.value,
+            EsActivo: form.EsActivo.value,
+            Sexo: form.Sexo.value,
+            TipoContrato: form.TipoContrato.value,
         }
+        if (tipoEdicion == "Agregar") {
+            console.log("agregando empelado");
+        }
+        if ((tipoEdicion == "Editar")) {
+            console.log("etitando empelado");
+            const JSONdata = JSON.stringify(dataForm)
+            const response = await fetch('/api/guardarempleado', {
+                body: JSONdata,
+                headers: { 'Content-Type': 'application/json', },
+                method: 'PUT'
+            })
 
-        const JSONdata = JSON.stringify(dataForm)
-        const response = await fetch('/api/guardarempleado', {
-            body: JSONdata,
-            headers: { 'Content-Type': 'application/json', },
-            method: 'PUT'
-        })
-
-        const result = await response.json()
-        alert(`Is this your full name: ${result}`)
-       
+            const result = await response.json()
+            alert(`Is this your full name: ${result}`)
+        }
     }
-
+    
     return (
         <>
-            <div className=" h-full flex-col bg-white shadow-xl ">
+            <div className="flex h-full flex-col  bg-white shadow-xl">
                 {/* Main */}
-                <div className="divide-y divide-gray-200 ">
-                    <div className="pb-6  ">
-                        <div className="h-24 bg-indigo-700 sm:h-20 lg:h-28" />
+                <div className="divide-y divide-gray-200">
+                    <div className="pb-6">
+                        <div className="h-24 bg-indigo-700 sm:h-20 lg:h-28 " />
                         <div className="lg:-mt-15 -mt-12 flow-root px-4 sm:-mt-8 sm:flex sm:items-end sm:px-6">
                             <div>
                                 <div className="-m-1 flex">
@@ -90,7 +75,6 @@ export default function AxPersona({ idEmpleado }: any) {
                                                     <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                                                 </svg>
                                         }
-
                                     </div>
                                 </div>
                             </div>
@@ -105,26 +89,21 @@ export default function AxPersona({ idEmpleado }: any) {
                                     <p className="text-sm text-gray-500">{data ? data.Email : ""}</p>
                                 </div>
                                 <div className="mt-5 flex flex-wrap space-y-3 sm:space-y-0 sm:space-x-3">
-
                                     <button
                                         type="button"
                                         className="inline-flex w-full flex-shrink-0 items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:flex-1"
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                        </svg>
-                                        Enviar mensaje
+                                        Message
                                     </button>
-
                                     <button
                                         type="button"
+
                                         className="inline-flex w-full flex-1 items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                        </svg>
-                                        Llamar
+                                        <a href='https://wa.me/51916411151'>  Call</a>
+
                                     </button>
+
                                 </div>
                             </div>
                         </div>
@@ -172,14 +151,14 @@ export default function AxPersona({ idEmpleado }: any) {
                                             </div>
 
                                             <div className="sm:col-span-3">
-                                                <label htmlFor="last-name" className="block text-sm font-medium text-gray-700">
+                                                <label htmlFor="Apellidos" className="block text-sm font-medium text-gray-700">
                                                     Apellidos
                                                 </label>
                                                 <div className="mt-1">
                                                     <input
                                                         type="text"
-                                                        name="last-name"
-                                                        id="last-name"
+                                                        name="Apellidos"
+                                                        id="Apellidos"
                                                         autoComplete="family-name"
                                                         defaultValue={data ? data.Apellidos : ""}
                                                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
@@ -188,13 +167,13 @@ export default function AxPersona({ idEmpleado }: any) {
                                             </div>
 
                                             <div className="sm:col-span-2">
-                                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                                <label htmlFor="FechaNacimiento" className="block text-sm font-medium text-gray-700">
                                                     Fecha Nacimiento
                                                 </label>
                                                 <div className="mt-1">
                                                     <input
-                                                        id="email"
-                                                        name="email"
+                                                        id="FechaNacimiento"
+                                                        name="FechaNacimiento"
                                                         type="text"
                                                         autoComplete="email"
                                                         defaultValue={data ? data.FechaNacimiento : ""}
@@ -204,14 +183,14 @@ export default function AxPersona({ idEmpleado }: any) {
                                             </div>
 
                                             <div className="sm:col-span-2">
-                                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                                <label htmlFor="Sexo" className="block text-sm font-medium text-gray-700">
                                                     Sexo
                                                 </label>
                                                 <div className="mt-1">
                                                     <select
-                                                        id="country"
-                                                        name="country"
-                                                        autoComplete="country-name"
+                                                        id="Sexo"
+                                                        name="Sexo"
+                                                        autoComplete="Sexo"
                                                         defaultValue={data ? data.Sexo : ""}
                                                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                                                     >
@@ -222,30 +201,30 @@ export default function AxPersona({ idEmpleado }: any) {
                                             </div>
 
                                             <div className="sm:col-span-4">
-                                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                                <label htmlFor="Email" className="block text-sm font-medium text-gray-700">
                                                     Correo Electronico
                                                 </label>
                                                 <div className="mt-1">
                                                     <input
-                                                        id="email"
-                                                        name="email"
-                                                        type="email"
-                                                        autoComplete="email"
+                                                        id="Email"
+                                                        name="Email"
+                                                        type="Email"
+                                                        autoComplete="Email"
                                                         defaultValue={data ? data.Email : ""}
                                                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                                                 </div>
                                             </div>
 
                                             <div className="sm:col-span-2">
-                                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                                <label htmlFor="Celular" className="block text-sm font-medium text-gray-700">
                                                     Nro Celular
                                                 </label>
                                                 <div className="mt-1">
                                                     <input
-                                                        id="email"
-                                                        name="email"
+                                                        id="Celular"
+                                                        name="Celular"
                                                         type="text"
-                                                        autoComplete="email"
+                                                        autoComplete="Celular"
                                                         defaultValue={data ? data.Celular : ""}
                                                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                                                 </div>
@@ -273,15 +252,15 @@ export default function AxPersona({ idEmpleado }: any) {
                                             </div>
 
                                             <div className="sm:col-span-3">
-                                                <label htmlFor="street-address" className="block text-sm font-medium text-gray-700">
+                                                <label htmlFor="Direccion" className="block text-sm font-medium text-gray-700">
                                                     Dirección
                                                 </label>
                                                 <div className="mt-1">
                                                     <input
                                                         type="text"
-                                                        name="street-address"
-                                                        id="street-address"
-                                                        autoComplete="street-address"
+                                                        name="Direccion"
+                                                        id="Direccion"
+                                                        autoComplete="Direccion"
                                                         defaultValue={data ? data.Direccion : ""}
                                                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                                                 </div>
@@ -306,8 +285,8 @@ export default function AxPersona({ idEmpleado }: any) {
                                                     <div className="relative flex items-start">
                                                         <div className="flex items-center h-5">
                                                             <input
-                                                                id="comments"
-                                                                name="comments"
+                                                                id="EsActivo"
+                                                                name="EsActivo"
                                                                 type="checkbox"
                                                                 defaultChecked={data ? data.EsActivo : ""}
                                                                 className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
@@ -329,8 +308,8 @@ export default function AxPersona({ idEmpleado }: any) {
                                                 <div className="mt-4 space-y-4">
                                                     <div className="flex items-center">
                                                         <input
-                                                            id="push-everything"
-                                                            name="push-notifications"
+                                                            id="TipoContrato"
+                                                            name="TipoContrato"
                                                             type="radio"
                                                             defaultChecked={data ? data.TipoContrato == "Indefinido" : false}
                                                             className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
@@ -371,7 +350,9 @@ export default function AxPersona({ idEmpleado }: any) {
 
                                 <div className="pt-5">
                                     <div className="flex justify-end">
-                                        <button
+                                        <button onClick={()=>{
+                                            setIdEmpleado(-1)
+                                        }}
                                             type="button"
                                             className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                         >
