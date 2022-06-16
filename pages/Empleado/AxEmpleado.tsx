@@ -2,13 +2,6 @@ import { useEffect, useReducer, useState } from 'react';
 import useSWRImmutable from 'swr/immutable'
 import { useForm } from "react-hook-form";
 
-const fetcherEmpleado = (url: string, params: any): Promise<any> =>
-    fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(params),
-        headers: { 'Content-Type': 'application/json' }
-    }).then(r => r.json());
-
 const fetcherDistrito = (url: string): Promise<any> =>
     fetch(url, { method: 'GET' }).then(r => r.json());
 
@@ -27,15 +20,21 @@ const formReducer = (state: any, event: any) => {
         [event.name]: event.value
     }
 }
+function AxInput({ name, value, handleChange, type }: any) {
+    return <input type={type || "text"}
+        name={name}
+        value={value || ''}
+        onChange={handleChange}
+        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+    />
+}
 
-export default function AxEmpleado({ idEmpleado, setIdEmpleado, tipoEdicion }: any) {
-    const [formData, setFormData] = useReducer(formReducer, {
-        DNI: '2222',
-        count: 100
-    });
+export default function AxEmpleado({ idEmpleado, setIdEmpleado }: any) {
+    const { data: listaDistrito } = useSWRImmutable(idEmpleado ? '/api/distrito' : null, fetcherDistrito);
+    const [formData, setFormData] = useReducer(formReducer, { DNI: '2222', count: 100 });
     const [submitting, setSubmitting] = useState(false);
-    const [empleado, setEmpleado] = useState<any>({});
-    const [tipoEdicionInterno, setTipoEdicionInterno] = useState(tipoEdicion)
+    const [tipoEdicion, setTipoEdicion] = useState("VISUALIZAR")
+
     useEffect(() => {
         const fetchData = async () => {
             const response = await fetch(`/api/empleado/${idEmpleado}`);
@@ -44,27 +43,23 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado, tipoEdicion }: a
         }
         fetchData().catch(console.error);
     }, [idEmpleado])
-    // const { data: dataEmpleado } = useSWRImmutable(idEmpleado ? ['/api/empleadoDetalle', { idEmpleado: idEmpleado }] : null, fetcherEmpleado)
 
-    // const { data } = useSWRImmutable(idEmpleado ? ['/api/empleadoDetalle', { idEmpleado: idEmpleado }] : null, fetcherEmpleado)
-    const { data: listaDistrito } = useSWRImmutable(idEmpleado ? '/api/distrito' : null, fetcherDistrito);
-    // const empleado = { ...data };
-    // if (idEmpleadoInterno != idEmpleado) setTipoEdicionInterno("VISUALIZAR");
-    // console.log(tipoEdicion)
-    // console.log(tipoEdicionInterno)
+
     if (idEmpleado == -1) return <></>
 
     const handleChange = (event: any) => {
+        const isCheckbox = event.target.type === 'checkbox';
         setFormData({
             name: event.target.name,
-            value: event.target.value,
+            value: isCheckbox ? event.target.checked : event.target.value,
         });
     }
 
     const handleSubmit = (event: any) => {
         event.preventDefault();
         setSubmitting(true);
-
+        console.log(formData);
+return;
         setTimeout(() => {
             setSubmitting(false);
             setFormData({
@@ -72,7 +67,6 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado, tipoEdicion }: a
             })
         }, 3000);
     }
-
 
     // const handleSubmit = async (event: any) => {
     //     event.preventDefault()
@@ -118,10 +112,10 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado, tipoEdicion }: a
                             <div>
                                 <div className="-m-1 flex">
                                     <div className="inline-flex overflow-hidden rounded-lg border-4 border-white">
-                                        {empleado ?
+                                        {formData.ImgURL ?
                                             <img
                                                 className="h-24 w-24 flex-shrink-0 sm:h-40 sm:w-40 lg:h-48 lg:w-48"
-                                                src={empleado.ImgURL}
+                                                src={formData.ImgURL}
                                             /> :
                                             <svg xmlns="http://www.w3.org/2000/svg" className="bg-indigo-300 text-white h-24 w-24 flex-shrink-0 sm:h-40 sm:w-40 lg:h-48 lg:w-48" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
@@ -133,12 +127,12 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado, tipoEdicion }: a
                             <div className="mt-6 sm:ml-6 sm:flex-1">
                                 <div>
                                     <div className="flex items-center">
-                                        <h3 className="text-xl font-bold text-gray-900 sm:text-2xl">{empleado ? empleado.Nombres + " " + empleado.Apellidos : ""}</h3>
+                                        <h3 className="text-xl font-bold text-gray-900 sm:text-2xl">{formData.Nombres + " " + formData.Apellidos || ""}</h3>
                                         <span className="ml-2.5 inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-400">
                                             <span className="sr-only">Online</span>
                                         </span>
                                     </div>
-                                    <p className="text-sm text-gray-500">{empleado ? empleado.Email : ""}</p>
+                                    <p className="text-sm text-gray-500">{formData.Email || ""}</p>
                                 </div>
                                 <div className="mt-5 flex flex-wrap space-y-3 sm:space-y-0 sm:space-x-3">
                                     <button
@@ -152,7 +146,7 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado, tipoEdicion }: a
                                     </button>
                                     <button type="button"
                                         onClick={() => {
-                                            setTipoEdicionInterno("EDITAR")
+                                            setTipoEdicion("EDITAR")
                                         }}
                                         className="inline-flex w-full flex-1 items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" >
                                         Editar
@@ -164,50 +158,35 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado, tipoEdicion }: a
                     <div className="px-4 py-5 sm:px-0 sm:py-0">
                         <div className="p-4 md:p-6">
                             <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit}>
-                                <fieldset disabled={submitting} className="space-y-8 divide-y divide-gray-200">
+                                <fieldset disabled={tipoEdicion == "VISUALIZAR"} className="space-y-8 divide-y divide-gray-200">
                                     <div className="">
                                         <div>
                                             <h3 className="text-lg leading-6 font-medium text-gray-900">Información Personal </h3>
                                         </div>
-                                        <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">                                            
-                                                <div className="sm:col-span-2">
-                                                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                                        DNI
-                                                    </label>
-                                                    <div className="mt-1">
-                                                        <input type="text"
-                                                            name="DNI"
-                                                            value={formData.DNI || ''}
-                                                            onChange={handleChange}
-                                                            readOnly={tipoEdicionInterno == "VISUALIZAR"}
-                                                            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                                        />
-                                                    </div>
+                                        <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                                            <div className="sm:col-span-2">
+                                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                                    DNI
+                                                </label>
+                                                <div className="mt-1">
+                                                    <AxInput name="DNI" value={formData.DNI} handleChange={handleChange} />
                                                 </div>
-                                                <div className="sm:col-span-4" />
-                                                <div className="sm:col-span-3">
-                                                    <label htmlFor="first-name" className="block text-sm font-medium text-gray-700">
-                                                        Nombres
-                                                    </label>
-                                                    <div className="mt-1">
-                                                        <input type="text"
-                                                            name="Nombres"
-                                                            value={formData.Nombres || ''}
-                                                            onChange={handleChange}
-                                                            readOnly={tipoEdicionInterno == "VISUALIZAR"}
-                                                            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                                        />
-                                                    </div>
-                                                </div>                                            
+                                            </div>
+                                            <div className="sm:col-span-4" />
+                                            <div className="sm:col-span-3">
+                                                <label htmlFor="first-name" className="block text-sm font-medium text-gray-700">
+                                                    Nombres
+                                                </label>
+                                                <div className="mt-1">
+                                                    <AxInput name="Nombres" value={formData.Nombres} handleChange={handleChange} />
+                                                </div>
+                                            </div>
                                             <div className="sm:col-span-3">
                                                 <label htmlFor="Apellidos" className="block text-sm font-medium text-gray-700">
                                                     Apellidos
                                                 </label>
                                                 <div className="mt-1">
-                                                    <input type="text" name="Apellidos" id="Apellidos" autoComplete="family-name"
-                                                        defaultValue={empleado ? empleado.Apellidos : ""}
-                                                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                                    />
+                                                    <AxInput name="Apellidos" value={formData.Apellidos} handleChange={handleChange} />
                                                 </div>
                                             </div>
                                             <div className="sm:col-span-2">
@@ -215,10 +194,7 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado, tipoEdicion }: a
                                                     Fecha Nacimiento
                                                 </label>
                                                 <div className="mt-1">
-                                                    <input id="FechaNacimiento" name="FechaNacimiento" type="text" autoComplete="email"
-                                                        defaultValue={empleado ? empleado.FechaNacimiento : ""}
-                                                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                                    />
+                                                    <AxInput name="FechaNacimiento" value={formData.FechaNacimiento} handleChange={handleChange} type="text" />
                                                 </div>
                                             </div>
                                             <div className="sm:col-span-2">
@@ -226,8 +202,9 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado, tipoEdicion }: a
                                                     Sexo
                                                 </label>
                                                 <div className="mt-1">
-                                                    <select id="Sexo" name="Sexo" autoComplete="Sexo"
-                                                        defaultValue={empleado ? empleado.Sexo : ""}
+                                                    <select name="Sexo"
+                                                        value={formData.Sexo || ""}
+                                                        onChange={handleChange}
                                                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                                                     >
                                                         <option>MUJER</option>
@@ -240,9 +217,7 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado, tipoEdicion }: a
                                                     Correo Electronico
                                                 </label>
                                                 <div className="mt-1">
-                                                    <input id="Email" name="Email" type="Email" autoComplete="Email"
-                                                        defaultValue={empleado ? empleado.Email : ""}
-                                                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+                                                    <AxInput name="Email" value={formData.Email} handleChange={handleChange} />
                                                 </div>
                                             </div>
                                             <div className="sm:col-span-2">
@@ -250,9 +225,7 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado, tipoEdicion }: a
                                                     Nro Celular
                                                 </label>
                                                 <div className="mt-1">
-                                                    <input id="Celular" name="Celular" type="text" autoComplete="Celular"
-                                                        defaultValue={empleado ? empleado.Celular : ""}
-                                                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+                                                    <AxInput name="Celular" value={formData.Celular} handleChange={handleChange} />
                                                 </div>
                                             </div>
 
@@ -261,8 +234,9 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado, tipoEdicion }: a
                                                     Distrito
                                                 </label>
                                                 <div className="mt-1">
-                                                    <select id="country" name="country" autoComplete="country-name"
-                                                        // value={empleado ? empleado.IDDistritoRef : ""}
+                                                    <select name="IDDistritoRef"
+                                                        value={formData.IDDistritoRef || ""}
+                                                        onChange={handleChange}
                                                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                                                     >
                                                         {listaDistrito && listaDistrito.map((distrito: any) =>
@@ -276,9 +250,7 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado, tipoEdicion }: a
                                                     Dirección
                                                 </label>
                                                 <div className="mt-1">
-                                                    <input type="text" name="Direccion" id="Direccion" autoComplete="Direccion"
-                                                        defaultValue={empleado ? empleado.Direccion : ""}
-                                                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+                                                    <AxInput name="Direccion" value={formData.Direccion} handleChange={handleChange} />
                                                 </div>
                                             </div>
                                         </div>
@@ -297,12 +269,13 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado, tipoEdicion }: a
                                                     <div className="relative flex items-start">
                                                         <div className="flex items-center h-5">
                                                             <input id="EsActivo" name="EsActivo" type="checkbox"
-                                                                defaultChecked={empleado ? empleado.EsActivo : ""}
+                                                                checked={formData.EsActivo || ""}
+                                                                onChange={handleChange}
                                                                 className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                                                             />
                                                         </div>
                                                         <div className="ml-3 text-sm">
-                                                            <label htmlFor="comments" className="font-medium text-gray-700">
+                                                            <label htmlFor="EsActivo" className="font-medium text-gray-700">
                                                                 ¿Es Activo?
                                                             </label>
                                                         </div>
@@ -313,29 +286,35 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado, tipoEdicion }: a
                                                 <legend className="contents text-base font-medium text-gray-900">Tipo de Contrato</legend>
                                                 <div className="mt-4 space-y-4">
                                                     <div className="flex items-center">
-                                                        <input id="TipoContrato" name="TipoContrato" type="radio"
-                                                            defaultChecked={empleado ? empleado.TipoContrato == "Indefinido" : false}
+                                                        <input id="Indefinido" name="TipoContrato" type="radio"
+                                                            value="Indefinido"
+                                                            checked={formData.TipoContrato == "Indefinido" || false}
+                                                            onChange={handleChange}
                                                             className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                                                         />
-                                                        <label htmlFor="push-everything" className="ml-3 block text-sm font-medium text-gray-700">
+                                                        <label htmlFor="Indefinido" className="ml-3 block text-sm font-medium text-gray-700">
                                                             Indefinido
                                                         </label>
                                                     </div>
                                                     <div className="flex items-center">
-                                                        <input id="push-email" name="push-notifications" type="radio"
-                                                            defaultChecked={empleado ? empleado.TipoContrato == "Contrato3Meses" : false}
+                                                        <input id="Contrato3Meses" name="TipoContrato" type="radio"
+                                                            value="Contrato3Meses"
+                                                            checked={formData.TipoContrato == "Contrato3Meses" || false}
+                                                            onChange={handleChange}
                                                             className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                                                         />
-                                                        <label htmlFor="push-email" className="ml-3 block text-sm font-medium text-gray-700">
+                                                        <label htmlFor="Contrato3Meses" className="ml-3 block text-sm font-medium text-gray-700">
                                                             Contrato 3 Meses
                                                         </label>
                                                     </div>
                                                     <div className="flex items-center">
-                                                        <input id="push-nothing" name="push-notifications" type="radio"
-                                                            defaultChecked={empleado ? empleado.TipoContrato == "Contrato6Meses" : false}
+                                                        <input id="Contrato6Meses" name="TipoContrato" type="radio"
+                                                            value="Contrato6Meses"
+                                                            checked={formData.TipoContrato == "Contrato6Meses" || false}
+                                                            onChange={handleChange}
                                                             className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                                                         />
-                                                        <label htmlFor="push-nothing" className="ml-3 block text-sm font-medium text-gray-700">
+                                                        <label htmlFor="Contrato6Meses" className="ml-3 block text-sm font-medium text-gray-700">
                                                             Contrato 6 Meses
                                                         </label>
                                                     </div>
