@@ -2,7 +2,7 @@ import { CheckCircleIcon, ChevronRightIcon, MailIcon } from '@heroicons/react/so
 import useSWRImmutable from 'swr/immutable'
 import { Fragment, useState } from 'react'
 import { UserAddIcon } from '@heroicons/react/solid'
-import AxDetalle from './Empleado/AxDetalle'
+import AxEmpleado from './Empleado/AxEmpleado'
 
 const fetcherEmpleado = (url: string, params: any): Promise<Array<any>> =>
     fetch(url, {
@@ -20,7 +20,16 @@ export default function Example() {
             <div className="h-full flex flex-col">
                 <div className="min-h-0 flex-1 flex overflow-hidden ">
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
-                        <AxDetalle idEmpleado={idEmpleado} setIdEmpleado={setIdEmpleado} clic></AxDetalle>
+                        <section aria-labelledby="message-heading" className="min-w-0 flex-1 h-full flex flex-col overflow-hidden xl:order-last" >
+
+                            <div className="min-h-0 flex-1 overflow-y-auto">
+                                <div className="bg-white pt-5 pb-6 shadow">
+                                    <div className="px-4 ">
+                                        <AxEmpleado idEmpleado={idEmpleado} setIdEmpleado={setIdEmpleado} tipoEdicion={idEmpleado == 0 ? "AGREGAR" : "VISUALIZAR"}></AxEmpleado>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
                         <aside className="md:flex-shrink-0 md:order-first ">
                             <div className="h-full relative flex flex-col w-96 md:w-96 border-r border-gray-200 bg-gray-100">
                                 <div className="flex-shrink-0">

@@ -1,4 +1,7 @@
+import { useEffect, useReducer, useState } from 'react';
 import useSWRImmutable from 'swr/immutable'
+import { useForm } from "react-hook-form";
+
 const fetcherEmpleado = (url: string, params: any): Promise<any> =>
     fetch(url, {
         method: 'POST',
@@ -9,46 +12,105 @@ const fetcherEmpleado = (url: string, params: any): Promise<any> =>
 const fetcherDistrito = (url: string): Promise<any> =>
     fetch(url, { method: 'GET' }).then(r => r.json());
 
-export default function AxPersona({ idEmpleado, setIdEmpleado, tipoEdicion }: any) {
-    const { data } = useSWRImmutable(idEmpleado ? ['/api/empleadoDetalle', { idEmpleado: idEmpleado }] : null, fetcherEmpleado)
-    const { data: listaDistrito } = useSWRImmutable(idEmpleado ? '/api/distrito' : null, fetcherDistrito)
-
-    if (idEmpleado == -1) return <></>
-
-    const handleSubmit = async (event: any) => {
-        event.preventDefault()
-        console.log(tipoEdicion);
-        return;
-        console.log(tipoEdicion);
-        let form = event.target;
-        const dataForm = {
-            idEmpleado: idEmpleado,
-            DNI: form.DNI.value,
-            Nombres: form.Nombres.value,
-            Apellidos: form.Apellidos.value,
-            Celular: form.Celular.value,
-            Direccion: form.Direccion.value,
-            Email: form.Email.value,
-            EsActivo: form.EsActivo.value,
-            Sexo: form.Sexo.value,
-            TipoContrato: form.TipoContrato.value,
-        }
-        if (tipoEdicion == "Agregar") {
-            console.log("agregando empelado");
-        }
-        if ((tipoEdicion == "Editar")) {
-            console.log("etitando empelado");
-            const JSONdata = JSON.stringify(dataForm)
-            const response = await fetch('/api/guardarempleado', {
-                body: JSONdata,
-                headers: { 'Content-Type': 'application/json', },
-                method: 'PUT'
-            })
-
-            const result = await response.json()
-            alert(`Is this your full name: ${result}`)
+const formReducer = (state: any, event: any) => {
+    if (event.loadData) {
+        return { ...event.loadData }
+    }
+    if (event.reset) {
+        return {
+            DNI: '1111',
+            apple: '',
+            count: 0,
+            name: '',
+            'gift-wrap': false,
         }
     }
+    return {
+        ...state,
+        [event.name]: event.value
+    }
+}
+
+export default function AxPersona({ idEmpleado, setIdEmpleado, tipoEdicion }: any) {
+    const [formData, setFormData] = useReducer(formReducer, {
+        DNI: '2222',
+        count: 100
+    });
+    const [submitting, setSubmitting] = useState(false);
+    const [empleado, setEmpleado] = useState<any>({});
+    const [tipoEdicionInterno, setTipoEdicionInterno] = useState(tipoEdicion)
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await fetch(`/api/empleado/${idEmpleado}`);
+            const data = await response.json();
+            setFormData({ loadData: data });
+        }
+        fetchData().catch(console.error);
+    }, [idEmpleado])
+    // const { data: dataEmpleado } = useSWRImmutable(idEmpleado ? ['/api/empleadoDetalle', { idEmpleado: idEmpleado }] : null, fetcherEmpleado)
+
+    // const { data } = useSWRImmutable(idEmpleado ? ['/api/empleadoDetalle', { idEmpleado: idEmpleado }] : null, fetcherEmpleado)
+    const { data: listaDistrito } = useSWRImmutable(idEmpleado ? '/api/distrito' : null, fetcherDistrito);
+    // const empleado = { ...data };
+    // if (idEmpleadoInterno != idEmpleado) setTipoEdicionInterno("VISUALIZAR");
+    // console.log(tipoEdicion)
+    // console.log(tipoEdicionInterno)
+    if (idEmpleado == -1) return <></>
+
+    const handleChange = (event: any) => {
+        setFormData({
+            name: event.target.name,
+            value: event.target.value,
+        });
+    }
+
+    const handleSubmit = (event: any) => {
+        event.preventDefault();
+        setSubmitting(true);
+
+        setTimeout(() => {
+            setSubmitting(false);
+            setFormData({
+                reset: true
+            })
+        }, 3000);
+    }
+
+
+    // const handleSubmit = async (event: any) => {
+    //     event.preventDefault()
+    //     console.log(tipoEdicion);
+    //     return;
+    //     console.log(tipoEdicion);
+    //     let form = event.target;
+    //     const dataForm = {
+    //         idEmpleado: idEmpleado,
+    //         DNI: form.DNI.value,
+    //         Nombres: form.Nombres.value,
+    //         Apellidos: form.Apellidos.value,
+    //         Celular: form.Celular.value,
+    //         Direccion: form.Direccion.value,
+    //         Email: form.Email.value,
+    //         EsActivo: form.EsActivo.value,
+    //         Sexo: form.Sexo.value,
+    //         TipoContrato: form.TipoContrato.value,
+    //     }
+    //     if (tipoEdicion == "Agregar") {
+    //         console.log("agregando empelado");
+    //     }
+    //     if ((tipoEdicion == "Editar")) {
+    //         console.log("etitando empelado");
+    //         const JSONdata = JSON.stringify(dataForm)
+    //         const response = await fetch('/api/guardarempleado', {
+    //             body: JSONdata,
+    //             headers: { 'Content-Type': 'application/json', },
+    //             method: 'PUT'
+    //         })
+
+    //         const result = await response.json()
+    //         alert(`Is this your full name: ${result}`)
+    //     }
+    // }
     return (
         <>
             <div className="flex h-full flex-col  bg-white shadow-xl">
@@ -59,27 +121,17 @@ export default function AxPersona({ idEmpleado, setIdEmpleado, tipoEdicion }: an
                             <div>
                                 <div className="-m-1 flex">
                                     <div className="inline-flex overflow-hidden rounded-lg border-4 border-white">
-                                        {data ?
-                                            <img
-                                                className="h-24 w-24 flex-shrink-0 sm:h-40 sm:w-40 lg:h-48 lg:w-48"
-                                                src={data.ImgURL}
-                                            /> :
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="bg-indigo-300 text-white h-24 w-24 flex-shrink-0 sm:h-40 sm:w-40 lg:h-48 lg:w-48" viewBox="0 0 20 20" fill="currentColor">
-                                                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                                            </svg>
-                                        }
+
                                     </div>
                                 </div>
                             </div>
                             <div className="mt-6 sm:ml-6 sm:flex-1">
                                 <div>
                                     <div className="flex items-center">
-                                        <h3 className="text-xl font-bold text-gray-900 sm:text-2xl">{data ? data.Nombres + " " + data.Apellidos : ""}</h3>
                                         <span className="ml-2.5 inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-400">
                                             <span className="sr-only">Online</span>
                                         </span>
                                     </div>
-                                    <p className="text-sm text-gray-500">{data ? data.Email : ""}</p>
                                 </div>
                                 <div className="mt-5 flex flex-wrap space-y-3 sm:space-y-0 sm:space-x-3">
                                     <button
@@ -91,13 +143,22 @@ export default function AxPersona({ idEmpleado, setIdEmpleado, tipoEdicion }: an
                                         className="inline-flex w-full flex-1 items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" >
                                         <a href='https://wa.me/51916411151'>  Call</a>
                                     </button>
+                                    <button type="button"
+                                        onClick={() => {
+                                            console.log(tipoEdicionInterno);
+                                            setTipoEdicionInterno("EDITAR")
+                                        }}
+                                        className="inline-flex w-full flex-1 items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" >
+                                        Editar
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="px-4 py-5 sm:px-0 sm:py-0">
                         <div className="p-4 md:p-6">
-                            <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit}>
+
+                            <form className="space-y-8 divide-y divide-gray-200" >
                                 <div className="space-y-8 divide-y divide-gray-200">
                                     <div className="">
                                         <div>
@@ -109,8 +170,10 @@ export default function AxPersona({ idEmpleado, setIdEmpleado, tipoEdicion }: an
                                                     DNI
                                                 </label>
                                                 <div className="mt-1">
-                                                    <input id="DNI" name="DNI" type="text"
-                                                        defaultValue={data ? data.Dni : ""}
+                                                    <input readOnly={tipoEdicionInterno == "VISUALIZAR"} id="DNI" name="DNI" type="text"
+                                                        value={formData.DNI || ''}
+                                                        onChange={handleChange}
+                                                        // defaultValue={empleado ? empleado.DNI : ""}
                                                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                                                     />
                                                 </div>
@@ -122,7 +185,8 @@ export default function AxPersona({ idEmpleado, setIdEmpleado, tipoEdicion }: an
                                                 </label>
                                                 <div className="mt-1">
                                                     <input type="text" name="Nombres" id="Nombres" autoComplete="given-name"
-                                                        defaultValue={data ? data.Nombres : ""}
+                                                        value={formData.Nombres || ''}
+                                                        onChange={handleChange}
                                                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                                                     />
                                                 </div>
@@ -133,7 +197,7 @@ export default function AxPersona({ idEmpleado, setIdEmpleado, tipoEdicion }: an
                                                 </label>
                                                 <div className="mt-1">
                                                     <input type="text" name="Apellidos" id="Apellidos" autoComplete="family-name"
-                                                        defaultValue={data ? data.Apellidos : ""}
+                                                        defaultValue={empleado ? empleado.Apellidos : ""}
                                                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                                                     />
                                                 </div>
@@ -144,7 +208,7 @@ export default function AxPersona({ idEmpleado, setIdEmpleado, tipoEdicion }: an
                                                 </label>
                                                 <div className="mt-1">
                                                     <input id="FechaNacimiento" name="FechaNacimiento" type="text" autoComplete="email"
-                                                        defaultValue={data ? data.FechaNacimiento : ""}
+                                                        defaultValue={empleado ? empleado.FechaNacimiento : ""}
                                                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                                                     />
                                                 </div>
@@ -155,7 +219,7 @@ export default function AxPersona({ idEmpleado, setIdEmpleado, tipoEdicion }: an
                                                 </label>
                                                 <div className="mt-1">
                                                     <select id="Sexo" name="Sexo" autoComplete="Sexo"
-                                                        defaultValue={data ? data.Sexo : ""}
+                                                        defaultValue={empleado ? empleado.Sexo : ""}
                                                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                                                     >
                                                         <option>MUJER</option>
@@ -169,7 +233,7 @@ export default function AxPersona({ idEmpleado, setIdEmpleado, tipoEdicion }: an
                                                 </label>
                                                 <div className="mt-1">
                                                     <input id="Email" name="Email" type="Email" autoComplete="Email"
-                                                        defaultValue={data ? data.Email : ""}
+                                                        defaultValue={empleado ? empleado.Email : ""}
                                                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                                                 </div>
                                             </div>
@@ -179,7 +243,7 @@ export default function AxPersona({ idEmpleado, setIdEmpleado, tipoEdicion }: an
                                                 </label>
                                                 <div className="mt-1">
                                                     <input id="Celular" name="Celular" type="text" autoComplete="Celular"
-                                                        defaultValue={data ? data.Celular : ""}
+                                                        defaultValue={empleado ? empleado.Celular : ""}
                                                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                                                 </div>
                                             </div>
@@ -190,7 +254,7 @@ export default function AxPersona({ idEmpleado, setIdEmpleado, tipoEdicion }: an
                                                 </label>
                                                 <div className="mt-1">
                                                     <select id="country" name="country" autoComplete="country-name"
-                                                        value={data ? data.IDDistritoRef : ""}
+                                                        // value={empleado ? empleado.IDDistritoRef : ""}
                                                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                                                     >
                                                         {listaDistrito && listaDistrito.map((distrito: any) =>
@@ -205,7 +269,7 @@ export default function AxPersona({ idEmpleado, setIdEmpleado, tipoEdicion }: an
                                                 </label>
                                                 <div className="mt-1">
                                                     <input type="text" name="Direccion" id="Direccion" autoComplete="Direccion"
-                                                        defaultValue={data ? data.Direccion : ""}
+                                                        defaultValue={empleado ? empleado.Direccion : ""}
                                                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                                                 </div>
                                             </div>
@@ -225,7 +289,7 @@ export default function AxPersona({ idEmpleado, setIdEmpleado, tipoEdicion }: an
                                                     <div className="relative flex items-start">
                                                         <div className="flex items-center h-5">
                                                             <input id="EsActivo" name="EsActivo" type="checkbox"
-                                                                defaultChecked={data ? data.EsActivo : ""}
+                                                                defaultChecked={empleado ? empleado.EsActivo : ""}
                                                                 className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                                                             />
                                                         </div>
@@ -242,7 +306,7 @@ export default function AxPersona({ idEmpleado, setIdEmpleado, tipoEdicion }: an
                                                 <div className="mt-4 space-y-4">
                                                     <div className="flex items-center">
                                                         <input id="TipoContrato" name="TipoContrato" type="radio"
-                                                            defaultChecked={data ? data.TipoContrato == "Indefinido" : false}
+                                                            defaultChecked={empleado ? empleado.TipoContrato == "Indefinido" : false}
                                                             className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                                                         />
                                                         <label htmlFor="push-everything" className="ml-3 block text-sm font-medium text-gray-700">
@@ -251,7 +315,7 @@ export default function AxPersona({ idEmpleado, setIdEmpleado, tipoEdicion }: an
                                                     </div>
                                                     <div className="flex items-center">
                                                         <input id="push-email" name="push-notifications" type="radio"
-                                                            defaultChecked={data ? data.TipoContrato == "Contrato3Meses" : false}
+                                                            defaultChecked={empleado ? empleado.TipoContrato == "Contrato3Meses" : false}
                                                             className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                                                         />
                                                         <label htmlFor="push-email" className="ml-3 block text-sm font-medium text-gray-700">
@@ -260,7 +324,7 @@ export default function AxPersona({ idEmpleado, setIdEmpleado, tipoEdicion }: an
                                                     </div>
                                                     <div className="flex items-center">
                                                         <input id="push-nothing" name="push-notifications" type="radio"
-                                                            defaultChecked={data ? data.TipoContrato == "Contrato6Meses" : false}
+                                                            defaultChecked={empleado ? empleado.TipoContrato == "Contrato6Meses" : false}
                                                             className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                                                         />
                                                         <label htmlFor="push-nothing" className="ml-3 block text-sm font-medium text-gray-700">
