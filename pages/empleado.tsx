@@ -1,13 +1,8 @@
 import { CheckCircleIcon, ChevronRightIcon, MailIcon } from '@heroicons/react/solid'
 import useSWRImmutable from 'swr/immutable'
 import { Fragment, useState } from 'react'
-import {
-    ArchiveIcon as ArchiveIconSolid,
-    UserAddIcon,
-} from '@heroicons/react/solid'
-
+import { UserAddIcon } from '@heroicons/react/solid'
 import AxDetalle from './Empleado/AxDetalle'
-
 
 const fetcherEmpleado = (url: string, params: any): Promise<Array<any>> =>
     fetch(url, {
@@ -20,17 +15,12 @@ export default function Example() {
     const [open, setOpen] = useState(false)
     const [idEmpleado, setIdEmpleado] = useState(-1)
     const { data } = useSWRImmutable(['/api/empleado', {}], fetcherEmpleado)
-    const [clic, setclic] = useState(false);    
     return (
         <>
             <div className="h-full flex flex-col">
-                {/* Bottom section */}
                 <div className="min-h-0 flex-1 flex overflow-hidden ">
-                    {/* Narrow sidebar*/}
-                    {/* Main area */}
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
                         <AxDetalle idEmpleado={idEmpleado} setIdEmpleado={setIdEmpleado} clic></AxDetalle>
-                        {/* Message list*/}
                         <aside className="md:flex-shrink-0 md:order-first ">
                             <div className="h-full relative flex flex-col w-96 md:w-96 border-r border-gray-200 bg-gray-100">
                                 <div className="flex-shrink-0">
@@ -68,19 +58,15 @@ export default function Example() {
                                                                             <span className="truncate">{item.Email}</span>
                                                                         </p>
                                                                     </div>
-
                                                                 </div>
                                                                 <button
                                                                     onClick={() => setOpen(true)}
                                                                     type="button"
-                                                                    className="md:hidden sm:inline-flex -ml-px relative items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-900 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
-                                                                >
-
+                                                                    className="md:hidden sm:inline-flex -ml-px relative items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-900 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                                                         <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
                                                                         <path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd" />
                                                                     </svg>
-
                                                                 </button>
                                                             </div>
                                                             <div>

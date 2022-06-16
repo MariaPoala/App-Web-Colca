@@ -49,7 +49,8 @@ export default function AxSidebar({ isSidebarOpen, setIsSidebarOpen }: IProps) {
             {/* Sidebar component, swap this element with another sidebar if you like */}
             <div className="flex flex-col flex-grow bg-blue-600 pt-5 pb-4 overflow-y-auto">
                 <div className="flex items-center flex-shrink-0 px-4">
-                    <img className="h-12 w-auto" src="/logo-text-blanco.svg" alt="Easywire logo" />
+                    <img className="h-12 w-auto" src="/logo.svg" alt="Easywire logo" />
+                    <h1 className='text-zinc-50'>MUNICIPALIDAD DISTRITAL DE COLCA</h1>
                 </div>
                 <nav className="mt-5 flex-1 flex flex-col divide-y divide-blue-500 overflow-y-auto" aria-label="Sidebar">
                     <div className="px-2 space-y-1">
@@ -141,7 +142,7 @@ export default function AxSidebar({ isSidebarOpen, setIsSidebarOpen }: IProps) {
                                     </div>
                                 </Transition.Child>
                                 <div className="flex-shrink-0 flex items-center px-4">
-                                    <img className="h-12 w-auto" src="/logo-text-blanco.svg" alt="Easywire logo" />
+                                    <img className="h-12 w-auto" src="/logo.svg" alt="Easywire logo" />
                                 </div>
                                 <nav className="mt-5 flex-shrink-0 h-full divide-y divide-blue-800 overflow-y-auto" aria-label="Sidebar">
                                     <div className="px-2 space-y-1">
