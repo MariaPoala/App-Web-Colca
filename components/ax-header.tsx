@@ -36,7 +36,7 @@ export default function AxHeader({ setIsSidebarOpen }: IProps) {
     // if (error) return <div>{error.message}</div>;
 
     return <>
-        <div className="relative z-10 flex-shrink-0 flex h-16 bg-blue-100 border-b border-blue-00 lg:border-none">
+        <div className=" z-10 flex-shrink-0 flex h-16 bg-blue-100 border-b border-blue-00 lg:border-none sticky top-0 border-gray-200" >
             <button
                 type="button"
                 className="px-4 border-r border-blue-200 text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 lg:hidden"
