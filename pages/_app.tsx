@@ -1,5 +1,5 @@
 import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+// import type { AppProps } from 'next/app'
 import { UserProvider } from '@auth0/nextjs-auth0';
 import AxLayout from 'components/ax-layout';
 

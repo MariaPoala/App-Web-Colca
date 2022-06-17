@@ -28,10 +28,12 @@ interface IProps {
 }
 
 export default function AxHeader({ setIsSidebarOpen }: IProps) {
-    const { user, error, isLoading } = useUser();
-
+    // const { user, error, isLoading } = useUser();
+    const user = null
+    const isLoading = false
+    const error = null
     if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>{error.message}</div>;
+    // if (error) return <div>{error.message}</div>;
 
     return <>
         <div className="relative z-10 flex-shrink-0 flex h-16 bg-blue-100 border-b border-blue-00 lg:border-none">
@@ -70,7 +72,7 @@ export default function AxHeader({ setIsSidebarOpen }: IProps) {
                     <Menu as="div" className="ml-3 relative">
                         <div>
                             <Menu.Button className="max-w-xs bg-blue-100 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 lg:p-2 lg:rounded-md lg:hover:bg-blue-50">
-                                {user
+                                {/* {user
                                     ? <>
                                         <img className="h-8 w-8 rounded-full" src={user.picture || ""} alt="" />
                                         <span className="hidden ml-3 text-gray-700 text-sm font-medium lg:block">
@@ -78,7 +80,7 @@ export default function AxHeader({ setIsSidebarOpen }: IProps) {
                                         </span>
                                     </>
                                     : <UserCircleIcon className="h-8 w-8 rounded-full"></UserCircleIcon>
-                                }
+                                } */}
                                 <ChevronDownIcon className="hidden flex-shrink-0 ml-1 h-5 w-5 text-gray-400 lg:block" aria-hidden="true" />
                             </Menu.Button>
                         </div>
