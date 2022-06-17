@@ -142,51 +142,22 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado }: any) {
         });
     }
 
-    const handleSubmit = (event: any) => {
+    const handleSubmit = async (event: any) => {
         event.preventDefault();
         setIsSubmitting(true);
-        setTimeout(() => {
-            setIsSubmitting(false);
-            // setFormData({
-            //     reset: true
-            // })
-        }, 3000);
+        console.log(formData);
+        const dataEnvio = JSON.stringify({ ...formData, idEmpleado: idEmpleado });
+        const response = await fetch('/api/empleado/edicion', {
+            body: dataEnvio,
+            headers: { 'Content-Type': 'application/json', },
+            method: tipoEdicion == "EDITAR" ? "PUT" : "POST"
+        })
+        const result = await response.json()
+        setIsSubmitting(false);
+        setTipoEdicion("VISUALIZAR")
+        console.log(result);
     }
 
-    // const handleSubmit = async (event: any) => {
-    //     event.preventDefault()
-    //     console.log(tipoEdicion);
-    //     return;
-    //     console.log(tipoEdicion);
-    //     let form = event.target;
-    //     const dataForm = {
-    //         idEmpleado: idEmpleado,
-    //         DNI: form.DNI.value,
-    //         Nombres: form.Nombres.value,
-    //         Apellidos: form.Apellidos.value,
-    //         Celular: form.Celular.value,
-    //         Direccion: form.Direccion.value,
-    //         Email: form.Email.value,
-    //         EsActivo: form.EsActivo.value,
-    //         Sexo: form.Sexo.value,
-    //         TipoContrato: form.TipoContrato.value,
-    //     }
-    //     if (tipoEdicion == "Agregar") {
-    //         console.log("agregando empelado");
-    //     }
-    //     if ((tipoEdicion == "Editar")) {
-    //         console.log("etitando empelado");
-    //         const JSONdata = JSON.stringify(dataForm)
-    //         const response = await fetch('/api/guardarempleado', {
-    //             body: JSONdata,
-    //             headers: { 'Content-Type': 'application/json', },
-    //             method: 'PUT'
-    //         })
-
-    //         const result = await response.json()
-    //         alert(`Is this your full name: ${result}`)
-    //     }
-    // }
     return (
         <>
             <div className={isLoading ? "animate-pulse" : "" + " flex h-full flex-col  bg-white shadow-xl"}>
