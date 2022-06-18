@@ -38,7 +38,7 @@ function AxInput({ name, value, label, handleChange, type }: any) {
                     name={name}
                     value={value || ''}
                     onChange={handleChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md disabled:text-gray-500"
+                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full md:text-sm border-gray-300 rounded-md disabled:text-gray-500"
                 />
             </div>
         </>
@@ -172,35 +172,26 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado }: any) {
             <div className={isLoading ? "animate-pulse" : "" + " flex h-full flex-col  bg-white shadow-xl"}>
                 <div className="divide-y divide-gray-200">
                     {/*PORTADA*/}
-                    <div className="pb-4">
-                        <div className="h-16 bg-indigo-700 sm:h-16 lg:h-16 " />
-                        <div className="lg:-mt-6 -mt-12 flow-root px-4 sm:-mt-8 sm:flex sm:items-end sm:px-6">
+                    <div className="pb-6">
+                        <div className="h-16 bg-indigo-700 rounded-md" />
+                        <div className="-mt-8 flex items-end px-6">
                             {/*IMG PERFIL*/}
-                            <div>
-                                <div className="-m-1 flex">
-                                    <div className="inline-flex overflow-hidden rounded-lg border-4 border-white">
-                                        {formData.ImgURL
-                                            ? <img className="h-24 w-24 flex-shrink-0 sm:h-32 sm:w-32 lg:h-36 lg:w-36" src={formData.ImgURL} />
-                                            : <svg xmlns="http://www.w3.org/2000/svg" className="bg-indigo-300 text-white h-24 w-24 flex-shrink-0 sm:h-32 sm:w-32 lg:h-36 lg:w-36" viewBox="0 0 20 20" fill="currentColor">
-                                                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                                            </svg>
-                                        }
-                                    </div>
-                                </div>
+                            <div className="-m-4 inline-block relative">
+                                {formData.ImgURL
+                                    ? <img className="h-20 w-20 rounded-full border-4 border-white" src={formData.ImgURL} />
+                                    : <svg className="bg-indigo-300 rounded-full text-white border-4 border-white h-20 w-20 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                                    </svg>
+                                }
+                                <span className="absolute bottom-1 right-2 block h-4 w-4 rounded-full ring-2 ring-white bg-green-400" />
                             </div>
                             {/*CABECERA*/}
-                            <div className="sm:ml-6 sm:flex-1">
-                                <div>
-                                    <div className="flex items-center">
-                                        <h3 className="text-xl font-bold text-gray-900 sm:text-2xl">{formData.Nombres + " " + formData.Apellidos || ""}</h3>
-                                        <span className={(formData.EsActivo ? "bg-green-500" : "bg-slate-500") + " ml-2.5 inline-block h-2 w-2 flex-shrink-0 rounded-full"}>
-                                            <span className="sr-only">Online</span>
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-gray-500">{formData.Email || ""}</p>
+                            <div className="ml-6 flex-1">
+                                <div className="-mt-2">
+                                    <h3 className="font-bold text-white text-2xl">{formData.Nombres + " " + formData.Apellidos || ""}</h3>
                                 </div>
                                 {/*AREA DE EDICIÓN*/}
-                                <div className="w-0 flex-1">
+                                <div className="w-0 flex-1 pt-2">
                                     <div className="mt-2 flex">
                                         <button type="button" disabled={tipoEdicion != EnumTipoEdicion.VISUALIZAR}
                                             className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md 
@@ -247,39 +238,39 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado }: any) {
                                         <div>
                                             <h3 className="text-lg leading-6 font-medium text-gray-900">Información Personal </h3>
                                         </div>
-                                        <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                                            <div className="sm:col-span-2">
+                                        <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
+                                            <div className="md:col-span-2">
                                                 <AxInput name="DNI" label="DNI" value={formData.DNI} handleChange={handleChange} />
                                             </div>
-                                            <div className="hidden sm:flex sm:col-span-4" />
-                                            <div className="sm:col-span-3">
+                                            <div className="hidden md:flex md:col-span-4" />
+                                            <div className="md:col-span-3">
                                                 <AxInput name="Nombres" label="Nombres" value={formData.Nombres} handleChange={handleChange} />
                                             </div>
-                                            <div className="sm:col-span-3">
+                                            <div className="md:col-span-3">
                                                 <AxInput name="Apellidos" label="Apellidos" value={formData.Apellidos} handleChange={handleChange} />
                                             </div>
-                                            <div className="sm:col-span-2">
+                                            <div className="md:col-span-3">
                                                 <AxInput name="FechaNacimiento" label="Fecha Nacimiento" value={formData.FechaNacimiento} handleChange={handleChange} type="text" />
                                             </div>
-                                            <div className="sm:col-span-2">
+                                            <div className="md:col-span-3">
                                                 <AxSelect name="Sexo" value={formData.Sexo} label="Sexo" handleChange={handleChange}>
                                                     <option>MUJER</option>
                                                     <option>VARON</option>
                                                 </AxSelect>
                                             </div>
-                                            <div className="sm:col-span-4">
+                                            <div className="md:col-span-4">
                                                 <AxInput name="Email" label="Correo Electronico" value={formData.Email} handleChange={handleChange} />
                                             </div>
-                                            <div className="sm:col-span-2">
+                                            <div className="md:col-span-2">
                                                 <AxInput name="Celular" label="Nro Celular" value={formData.Celular} handleChange={handleChange} />
                                             </div>
 
-                                            <div className="sm:col-span-3">
+                                            <div className="md:col-span-3">
                                                 <AxSelect name="IDDistritoRef" value={formData.IDDistritoRef} label="Distrito" handleChange={handleChange}>
                                                     {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.id} value={"/distrito/" + distrito.id}>{distrito.Nombre}</option>)}
                                                 </AxSelect>
                                             </div>
-                                            <div className="sm:col-span-3">
+                                            <div className="md:col-span-3">
                                                 <AxInput name="Direccion" label="Dirección" value={formData.Direccion} handleChange={handleChange} />
                                             </div>
                                         </div>
@@ -312,7 +303,7 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado }: any) {
                                 {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">
                                     <div className="flex justify-end">
                                         <button onClick={() => { tipoEdicion == EnumTipoEdicion.EDITAR ? setTipoEdicion(EnumTipoEdicion.VISUALIZAR) : setIdEmpleado(-1) }} type="button"
-                                            className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                            className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                         >
                                             Cancelar
                                         </button>

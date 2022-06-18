@@ -23,34 +23,29 @@ export default function Example() {
     // const {numero}= React.data.count(data);
     //   const {numero}= count(data:any[]);
     //   console.log(count(data:any[]));
-      console.count(data);
+    //   console.count(data);
     return (
         <>
-
-
-
             <div className="h-full flex flex-col">
                 <div className="min-h-0 flex-1 flex overflow-hidden ">
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
                         {/*DETALLE DEL EMPLEADO*/}
                         {/* <section aria-labelledby="message-heading" className="min-w-0 flex-1 h-full flex flex-col overflow-hidden xl:order-last" > */}
-                        <section aria-labelledby="message-heading" className="min-w-0 flex-1 h-full flex flex-col lg:pl-96 overflow-hidden xl:order-last" >
-                            <div className="min-h-0 flex-1 overflow-y-auto">
-                                <div className="bg-white p-1 lg:p-4 shadow">
-                                    <div className="">
-                                        {idEmpleado == -1 ?
-                                               <AxInicioEmpleado></AxInicioEmpleado>
-                                               
-                                            : <AxEmpleado idEmpleado={idEmpleado} setIdEmpleado={setIdEmpleado}></AxEmpleado>
-                                        }
-                                    </div>
+                        <div className="min-h-0 flex-1 overflow-y-auto sm:pl-72 md:pl-80 lg:pl-80">
+                            <div className="bg-white p-1 lg:p-4 shadow">
+                                <div className="">
+                                    {idEmpleado == -1 ?
+                                        <AxInicioEmpleado></AxInicioEmpleado>
+
+                                        : <AxEmpleado idEmpleado={idEmpleado} setIdEmpleado={setIdEmpleado}></AxEmpleado>
+                                    }
                                 </div>
                             </div>
-                        </section>
+                        </div>
                         {/*LISTA DE EMPLEADOS*/}
                         {/* <aside className="md:flex-shrink-0 md:order-first "> */}
-                        <aside className="flex-shrink-0 order-first fixed lg:inset-y-0 mt-16">
-                            <div className="h-full relative flex flex-col w-96 md:w-96 border-r border-gray-200 bg-gray-100">
+                        <aside className="flex-shrink-0 order-first fixed sm:inset-y-0 mt-16">
+                            <div className="h-full relative flex flex-col w-96 sm:w-72 md:w-80 lg:w-80 border-r border-gray-200 bg-gray-100">
                                 {/*CABECERA */}
                                 <div className="flex-shrink-0">
                                     <div className="px-6 pt-2 pb-2 ">
@@ -101,8 +96,8 @@ export default function Example() {
                                 <nav aria-label="Message list" className="min-h-0 flex-1 overflow-y-auto">
                                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
                                         <ul role="list" className="divide-y divide-gray-200">
-                                            {data && data.map((empleado) => (                                                
-                                                <li key={empleado.id}>                                                    
+                                            {data && data.map((empleado) => (
+                                                <li key={empleado.id}>
                                                     <a onClick={() => { setIdEmpleado(empleado.id) }}
                                                         className={(empleado.id == idEmpleado ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
                                                         <div className="flex px-4 py-4 sm:px-6">
@@ -126,15 +121,6 @@ export default function Example() {
                                                                         </p>
                                                                     </div>
                                                                 </div>
-                                                                <button
-                                                                    onClick={() => setOpen(true)}
-                                                                    type="button"
-                                                                    className="md:hidden sm:inline-flex -ml-px relative items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-900 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                                                        <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
-                                                                        <path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd" />
-                                                                    </svg>
-                                                                </button>
                                                             </div>
                                                             <div>
                                                                 <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
