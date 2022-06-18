@@ -31,7 +31,7 @@ export default function Example() {
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
                         {/*DETALLE DEL EMPLEADO*/}
                         {/* <section aria-labelledby="message-heading" className="min-w-0 flex-1 h-full flex flex-col overflow-hidden xl:order-last" > */}
-                        <div className="min-h-0 flex-1 overflow-y-auto sm:pl-72 md:pl-80 lg:pl-80">
+                        <div className="invisible sm:visible min-h-0 flex-1 overflow-y-auto sm:pl-72 md:pl-80 lg:pl-80">
                             <div className="bg-white p-1 lg:p-4 shadow">
                                 <div className="">
                                     {idEmpleado == -1 ?
@@ -44,8 +44,8 @@ export default function Example() {
                         </div>
                         {/*LISTA DE EMPLEADOS*/}
                         {/* <aside className="md:flex-shrink-0 md:order-first "> */}
-                        <aside className="flex-shrink-0 order-first fixed sm:inset-y-0 mt-16">
-                            <div className="h-full relative flex flex-col w-96 sm:w-72 md:w-80 lg:w-80 border-r border-gray-200 bg-gray-100">
+                        <aside className="flex-shrink-0 order-first w-full fixed inset-y-0 mt-16">
+                            <div className="h-full relative flex flex-col w-full sm:w-72 md:w-80 lg:w-80 border-r border-gray-200 bg-gray-100">
                                 {/*CABECERA */}
                                 <div className="flex-shrink-0">
                                     <div className="px-6 pt-2 pb-2 ">
