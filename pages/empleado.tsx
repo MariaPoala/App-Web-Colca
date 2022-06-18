@@ -4,6 +4,9 @@ import useSWRImmutable from 'swr/immutable'
 import { Fragment, useState } from 'react'
 import { UserAddIcon } from '@heroicons/react/solid'
 import AxEmpleado from './Empleado/AxEmpleado'
+import AxInicioEmpleado from './prueba'
+import { count } from 'console'
+import React from 'react'
 
 const fetcherEmpleado = (url: string, params: any): Promise<Array<any>> =>
     fetch(url, {
@@ -16,8 +19,16 @@ export default function Example() {
     const [open, setOpen] = useState(false)
     const [idEmpleado, setIdEmpleado] = useState(-1)
     const { data } = useSWRImmutable(['/api/empleado', {}], fetcherEmpleado)
+    // const [count, setCount] = useState(0);
+    // const {numero}= React.data.count(data);
+    //   const {numero}= count(data:any[]);
+    //   console.log(count(data:any[]));
+      console.count(data);
     return (
         <>
+
+
+
             <div className="h-full flex flex-col">
                 <div className="min-h-0 flex-1 flex overflow-hidden ">
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
@@ -28,8 +39,8 @@ export default function Example() {
                                 <div className="bg-white p-1 lg:p-4 shadow">
                                     <div className="">
                                         {idEmpleado == -1 ?
-                                            <div className="text-center">
-                                            </div>
+                                               <AxInicioEmpleado></AxInicioEmpleado>
+                                               
                                             : <AxEmpleado idEmpleado={idEmpleado} setIdEmpleado={setIdEmpleado}></AxEmpleado>
                                         }
                                     </div>
@@ -90,8 +101,8 @@ export default function Example() {
                                 <nav aria-label="Message list" className="min-h-0 flex-1 overflow-y-auto">
                                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
                                         <ul role="list" className="divide-y divide-gray-200">
-                                            {data && data.map((empleado) => (
-                                                <li key={empleado.id}>
+                                            {data && data.map((empleado) => (                                                
+                                                <li key={empleado.id}>                                                    
                                                     <a onClick={() => { setIdEmpleado(empleado.id) }}
                                                         className={(empleado.id == idEmpleado ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
                                                         <div className="flex px-4 py-4 sm:px-6">
