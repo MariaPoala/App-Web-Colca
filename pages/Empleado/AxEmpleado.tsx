@@ -257,7 +257,7 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado, setLuegoEdicion 
                                                 <AxInput name="Apellidos" label="Apellidos" value={formData.Apellidos} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="FechaNacimiento" label="Fecha Nacimiento" value={formData.FechaNacimiento} handleChange={handleChange} type="text" />
+                                                <AxInput name="FechaNacimiento" label="Fecha Nacimiento" value={formData.FechaNacimiento} handleChange={handleChange} type="date" />
                                             </div>
                                             <div className="md:col-span-3">
                                                 <AxSelect name="Sexo" value={formData.Sexo} label="Sexo" handleChange={handleChange}>

@@ -36,10 +36,10 @@ export default function AxHeader({ setIsSidebarOpen }: IProps) {
     // if (error) return <div>{error.message}</div>;
 
     return <>
-        <div className=" z-10 flex-shrink-0 flex h-16 bg-blue-100 border-b border-blue-00 lg:border-none sticky top-0 border-gray-200" >
+        <div className=" z-10 flex-shrink-0 flex h-16 bg-indigo-300 border-b border-indigo-00 lg:border-none sticky top-0 border-gray-200" >
             <button
                 type="button"
-                className="px-4 border-r border-blue-200 text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 lg:hidden"
+                className="px-4 border-r border-indigo-200 text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 lg:hidden"
                 onClick={() => {
                     setIsSidebarOpen(true)
                 }}
@@ -55,15 +55,15 @@ export default function AxHeader({ setIsSidebarOpen }: IProps) {
                             Buscar
                         </label>
                         <div className="relative w-full text-gray-400 focus-within:text-gray-600">
-                            <div className="text-blue-500 absolute inset-y-0 left-0 flex items-center pointer-events-none" aria-hidden="true">
+                            <div className="text-indigo-500 absolute inset-y-0 left-0 flex items-center pointer-events-none" aria-hidden="true">
                                 <SearchIcon className="h-5 w-5" aria-hidden="true" />
                             </div>
-                            <input id="search-field" name="search-field" type="search" placeholder="Buscar" className="bg-blue-100 block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm" />
+                            <input id="search-field" name="search-field" type="search" placeholder="Buscar" className="bg-indigo-300 block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm" />
                         </div>
                     </form>
                 </div>
                 <div className="ml-4 flex items-center md:ml-6">
-                    <button type="button" className="bg-blue-200 p-1 rounded-full text-blue-400 hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <button type="button" className="bg-indigo-300 p-1 rounded-full text-indigo-500 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         <span className="sr-only">Ver notificaciones</span>
                         <BellIcon className="h-6 w-6" aria-hidden="true" />
                     </button>
@@ -71,7 +71,7 @@ export default function AxHeader({ setIsSidebarOpen }: IProps) {
                     {/* Profile dropdown */}
                     <Menu as="div" className="ml-3 relative">
                         <div>
-                            <Menu.Button className="max-w-xs bg-blue-100 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 lg:p-2 lg:rounded-md lg:hover:bg-blue-50">
+                            <Menu.Button className="max-w-xs bg-indigo-400 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 lg:p-2 lg:rounded-md lg:hover:bg-indigo-500">
                                 {/* {user
                                     ? <>
                                         <img className="h-8 w-8 rounded-full" src={user.picture || ""} alt="" />
@@ -81,7 +81,7 @@ export default function AxHeader({ setIsSidebarOpen }: IProps) {
                                     </>
                                     : <UserCircleIcon className="h-8 w-8 rounded-full"></UserCircleIcon>
                                 } */}
-                                <ChevronDownIcon className="hidden flex-shrink-0 ml-1 h-5 w-5 text-gray-400 lg:block" aria-hidden="true" />
+                                <ChevronDownIcon className="hidden flex-shrink-0 ml-1 h-5 w-5 text-indigo-600 lg:block" aria-hidden="true" />
                             </Menu.Button>
                         </div>
                         <Transition
