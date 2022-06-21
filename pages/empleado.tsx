@@ -25,33 +25,9 @@ export default function Example() {
     const [activo, setActivo] = useState(true)
     const [idEmpleado, setIdEmpleado] = useState(-1)
     const [numActivo, setnumActivo] = useState(0)
-    const { data } = useSWRImmutable(['/api/empleado', {}], fetcherEmpleado)
+    const { data: listaEmpleado } = useSWRImmutable(['/api/empleado', {}], fetcherEmpleado)
     const [filtrotodos, setFiltrotodos] = useState(false)
 
-    // function AxInput() {
-    //     return (
-    //         <>
-    //             {data && data.map((empleado) => (
-
-    //                 setnumActivo(empleado + empleado)
-
-    //             ))}
-    //         </>
-    //     )
-    // }
-
-    // data && data.forEach((empleado) => (
-
-    //     console.log( count(empleado))
-
-    // ))
-
-    // console.log(numActivo)
-    // const [count, setCount] = useState(0);
-    // const {numero}= React.data.count(data);
-    //   const {numero}= count(data:any[]);
-    // console.log(count(data && data):any[]);
-    //   console.count(data);
     return (
         <>
             <div className="h-full flex flex-col">
@@ -96,8 +72,6 @@ export default function Example() {
                                                         placeholder="Search"
 
                                                     />
-
-
                                                 </div>
                                             </div>
                                             <Menu as="div" className="relative z-1 inline-block text-left">
@@ -133,7 +107,7 @@ export default function Example() {
                                     <div className="border-t border-b border-gray-200 bg-gray-100 px-6 py-2 text-sm font-medium text-gray-500">
                                         <div className="flex items-center space-x-4">
                                             <div className='flex-1'>
-                                                <p className="text-sm font-medium text-gray-500">{fetcherEmpleado.length} Registros</p>
+                                                <p className="text-sm font-medium text-gray-500">{listaEmpleado?.length || 0} Registros</p>
                                             </div>
                                             <div>
                                                 <button onClick={() => { setIdEmpleado(0) }} type="button" className="bg-indigo-200 p-1 rounded-full text-indigo-500 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:text-indigo-600">
@@ -148,7 +122,7 @@ export default function Example() {
                                 <nav aria-label="Message list" className="min-h-0 flex-1 overflow-y-auto">
                                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
                                         <ul role="list" className="divide-y divide-gray-200">
-                                            {data && data.map((empleado) => (
+                                            {listaEmpleado && listaEmpleado.map((empleado) => (
                                                 (empleado.EsActivo == activo && activo == activo ?
                                                     <li key={empleado.id}>
                                                         <a onClick={() => { setIdEmpleado(empleado.id) }}
