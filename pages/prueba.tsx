@@ -14,7 +14,7 @@
   }
   ```
 */
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { MenuIcon, XIcon, PlusIcon } from '@heroicons/react/outline'
 import { ChevronRightIcon } from '@heroicons/react/solid'
@@ -27,6 +27,7 @@ const navigation = [
 ]
 
 export default function AxInicioEmpleado() {
+    const [idEmpleado, setIdEmpleado] = useState(-1)
     return (
         <div className="relative overflow-hidden">
             <main>
@@ -59,9 +60,9 @@ export default function AxInicioEmpleado() {
                                         </div>
                                     </div>
                                     <div className="text-center ">
-                                        
+
                                         <div className="mt-14">
-                                            <button
+                                            <button onClick={() => { setIdEmpleado(0) }}
                                                 type="button"
                                                 className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                             >

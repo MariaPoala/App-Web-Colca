@@ -18,8 +18,9 @@ import { useRouter } from 'next/router'
 const navigation = [
     { name: 'Inicio', href: '/', icon: HomeIcon, current: true },
     { name: 'Empleado', href: '/empleado', icon: DocumentReportIcon, current: false },
-    { name: 'Prueba', href: '/prueba ', icon: DocumentReportIcon, current: false },
-    { name: 'Otro', href: '/otro ', icon: DocumentReportIcon, current: false },
+    { name: 'Ciudadano', href: '/ciudadano', icon: DocumentReportIcon, current: false },
+    // { name: 'Archivos', href: '/subirarchivo', icon: DocumentReportIcon, current: false },
+    { name: 'Distrito', href: '/distrito', icon: DocumentReportIcon, current: false },
     // { name: 'History', href: '#', icon: ClockIcon, current: false },
     // { name: 'Balances', href: '#', icon: ScaleIcon, current: false },
     // { name: 'Cards', href: '#', icon: CreditCardIcon, current: false },
