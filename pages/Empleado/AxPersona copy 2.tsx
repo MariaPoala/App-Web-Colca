@@ -1,7 +1,5 @@
 import { useEffect, useReducer, useState } from 'react';
 import useSWRImmutable from 'swr/immutable'
-import { useForm } from "react-hook-form";
-
 const fetcherEmpleado = (url: string, params: any): Promise<any> =>
     fetch(url, {
         method: 'POST',
