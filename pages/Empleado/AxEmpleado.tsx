@@ -193,16 +193,20 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado }: any) {
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="w-0 flex-1 pt-2">
                                     <div className="mt-2 flex">
-                                        <button type="button" disabled={tipoEdicion != EnumTipoEdicion.VISUALIZAR}
-                                            className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md 
+                                        <a href={`tel:${'+51' + formData.Celular}`}>
+                                        <button  type="button" disabled={tipoEdicion != EnumTipoEdicion.VISUALIZAR}
+                                           
+                                           className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md 
                                             text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
                                             disabled:bg-blue-300"
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" >
+                                            <svg  xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" >
                                                 <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                             </svg>
                                             Llamar
                                         </button>
+                                        </a>
+                                        <a href={`https://wa.me/51`+ formData.Celular}>
                                         <button type="button" disabled={tipoEdicion != EnumTipoEdicion.VISUALIZAR}
                                             className="ml-3 inline-flex items-center px-3 py-2 border 
                                             border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
@@ -213,6 +217,7 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado }: any) {
                                             </svg>
                                             Mensaje
                                         </button>
+                                        </a>
                                         <button type="button" disabled={tipoEdicion != EnumTipoEdicion.VISUALIZAR}
                                             onClick={() => setTipoEdicion(EnumTipoEdicion.EDITAR)}
                                             className="ml-3 inline-flex items-center px-3 py-2 border 
