@@ -185,7 +185,7 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado, setLuegoEdicion 
                                         <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                                     </svg>
                                 }
-                                <span className="absolute bottom-1 right-2 block h-4 w-4 rounded-full ring-2 ring-white bg-green-400" />
+                                <span className={(formData.EsActivo==true? "bg-green-400 ": "bg-red-400 ")+ " absolute bottom-1 right-2 block h-4 w-4 rounded-full ring-2 ring-white" }/>
                             </div>
                             {/*CABECERA*/}
                             <div className="ml-6 flex-1">

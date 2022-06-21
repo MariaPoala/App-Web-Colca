@@ -1,4 +1,4 @@
-import { CheckCircleIcon, ChevronRightIcon, MailIcon } from '@heroicons/react/solid'
+import { CheckCircleIcon, ChevronRightIcon, MailIcon, UsersIcon } from '@heroicons/react/solid'
 import { PlusIcon, SearchIcon, FilterIcon } from '@heroicons/react/solid'
 import useSWRImmutable from 'swr/immutable'
 import { Fragment, useState, useEffect } from 'react'
@@ -7,12 +7,16 @@ import AxEmpleado from './Empleado/AxEmpleado'
 import AxInicioEmpleado from './Empleado/AxInicioEmpleado'
 import { count } from 'console'
 import React from 'react'
-import { Dialog, Disclosure, Menu, Popover, Transition } from '@headlessui/react'
+import { Combobox, Dialog, Disclosure, Menu, Popover, Transition } from '@headlessui/react'
 const sortOptions = [
     { name: 'Most Popular', href: '#' },
     { name: 'Best Rating', href: '#' },
     { name: 'Newest', href: '#' },
 ]
+function classNames(...classes: any) {
+    return classes.filter(Boolean).join(' ')
+}
+
 const fetcherEmpleado = (url: string, params: any): Promise<Array<any>> =>
     fetch(url, {
         method: 'POST',
@@ -26,19 +30,29 @@ export default function Example() {
     const [luegoEdicion, setLuegoEdicion] = useState("INICIAL")
     const [isLoading, setIsLoading] = useState(true);
     const [tipoFiltro, setTipoFiltro] = useState("TODOS")
-    
-        useEffect(() => {
-            if (luegoEdicion == "LISTA") return;
-            setIsLoading(true)
-            const fetchData = async () => {
-                const response = await fetch(`/api/empleado`);
-                const data = await response.json();
-                setListaEmpleado(data);
-                setIsLoading(false)
-                setLuegoEdicion("LISTA");
-            }
-            fetchData().catch(console.error);
-        }, [luegoEdicion])
+    const [query, setQuery] = useState('')
+    const [open, setOpen] = useState(true)
+
+    const filteredPeople =
+        query === ''
+            ? listaEmpleado
+            :
+            listaEmpleado.filter((empleado) => {
+                return empleado.Nombres.toLowerCase().includes(query.toLowerCase())
+            })
+
+    useEffect(() => {
+        if (luegoEdicion == "LISTA") return;
+        setIsLoading(true)
+        const fetchData = async () => {
+            const response = await fetch(`/api/empleado`);
+            const data = await response.json();
+            setListaEmpleado(data);
+            setIsLoading(false)
+            setLuegoEdicion("LISTA");
+        }
+        fetchData().catch(console.error);
+    }, [luegoEdicion])
 
     return (
         <>
@@ -71,18 +85,26 @@ export default function Example() {
                                                     Search
                                                 </label>
 
-                                                <div className="relative rounded-md shadow-sm">
-                                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                        <SearchIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                    </div>
-                                                    <input
-                                                        type="search"
-                                                        name="search"
-                                                        id="search"
-                                                        className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-indigo-300 rounded-md"
-                                                        placeholder="Search"
+                                                <div className="relative rounded-md shadow-sm overflow-y-auto">
+                                                    <div className="flex-1 min-w-0">
+                                                        <label htmlFor="search" className="sr-only">
+                                                            Search
+                                                        </label>
 
-                                                    />
+                                                        <div className="relative rounded-md shadow-sm">
+                                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                                <SearchIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                                            </div>
+                                                            <input
+                                                                type="search"
+                                                                name="search"
+                                                                id="search"
+                                                                className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-indigo-300 rounded-md"
+                                                                placeholder="Search..."
+                                                                onChange={(event) => setQuery(event.target.value)}
+                                                            />
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <Menu as="div" className="relative z-1 inline-block text-left">
@@ -132,47 +154,49 @@ export default function Example() {
                                 {/*EMPLEADOS*/}
                                 <nav aria-label="Message list" className="min-h-0 flex-1 overflow-y-auto">
                                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                                        <ul role="list" className="divide-y divide-gray-200">
-                                            {listaEmpleado && listaEmpleado.map((empleado) => (
-                                                (tipoFiltro == "TODOS" || empleado.EsActivo == (tipoFiltro == "ACTIVO") ?
-                                                    <li key={empleado.id}>
-                                                        <a onClick={() => { setIdEmpleado(empleado.id) }}
-                                                            className={(empleado.id == idEmpleado ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
-                                                            <div className="flex px-4 py-4 sm:px-6">
-                                                                <div className="min-w-0 flex-1 flex">
-                                                                    <div className="flex-shrink-0">
-                                                                        {
-                                                                            empleado.ImgURL
-                                                                                ? <img className="h-12 w-12 rounded-full" src={empleado.ImgURL} alt="" >
-                                                                                    <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white bg-green-400" />
-                                                                                </img>
-                                                                                : <span className="inline-block relative">
-                                                                                    <svg className="bg-indigo-300 text-white h-12 w-12 rounded-full" viewBox="0 0 20 20" fill="currentColor">
-                                                                                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                                                                                    </svg>
-                                                                                    <span className={(empleado.EsActivo == true ? " bg-green-400 " : " bg-red-400 ") + " absolute bottom-0 right-0 block h-3.5 w-3.5 rounded-full ring-2 ring-white "} />
-                                                                                </span>
-                                                                        }
-                                                                    </div>
-                                                                    <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
-                                                                        <div>
-                                                                            <p className="text-sm font-medium text-indigo-600 truncate">{empleado.Nombres + ' ' + empleado.Apellidos}</p>
-                                                                            <p className="mt-2 flex text-sm text-gray-500">
-                                                                                <MailIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                                                <span className="truncate">{empleado.Email}</span>
-                                                                            </p>
+                                        {filteredPeople.length > 0 && (
+                                            <ul role="list" className="divide-y divide-gray-200">
+                                                {filteredPeople && filteredPeople.map((empleado) => (
+                                                    (tipoFiltro == "TODOS" || empleado.EsActivo == (tipoFiltro == "ACTIVO") ?
+                                                        <li key={empleado.id}>
+                                                            <a onClick={() => { setIdEmpleado(empleado.id) }}
+                                                                className={(empleado.id == idEmpleado ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
+                                                                <div className="flex px-4 py-4 sm:px-6">
+                                                                    <div className="min-w-0 flex-1 flex">
+                                                                        <div className="flex-shrink-0">
+                                                                            {
+                                                                                empleado.ImgURL
+                                                                                    ? <img className="h-12 w-12 rounded-full" src={empleado.ImgURL} alt="" >
+                                                                                        <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white bg-green-400" />
+                                                                                    </img>
+                                                                                    : <span className="inline-block relative">
+                                                                                        <svg className="bg-indigo-300 text-white h-12 w-12 rounded-full" viewBox="0 0 20 20" fill="currentColor">
+                                                                                            <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                                                                                        </svg>
+                                                                                        <span className={(empleado.EsActivo == true ? " bg-green-400 " : " bg-red-400 ") + " absolute bottom-0 right-0 block h-3.5 w-3.5 rounded-full ring-2 ring-white "} />
+                                                                                    </span>
+                                                                            }
+                                                                        </div>
+                                                                        <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
+                                                                            <div>
+                                                                                <p className="text-sm font-medium text-indigo-600 truncate">{empleado.Nombres + ' ' + empleado.Apellidos}</p>
+                                                                                <p className="mt-2 flex text-sm text-gray-500">
+                                                                                    <MailIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                                                                                    <span className="truncate">{empleado.Email}</span>
+                                                                                </p>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
+                                                                    <div>
+                                                                        <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                                                    </div>
                                                                 </div>
-                                                                <div>
-                                                                    <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                                </div>
-                                                            </div>
-                                                        </a>
-                                                    </li> : ""
-                                                )))}
-                                        </ul>
+                                                            </a>
+                                                        </li> : ""
+                                                    )))};
 
+                                            </ul>
+                                        )}
                                     </div>
                                 </nav>
                             </div>
