@@ -1,6 +1,5 @@
 import { Fragment, useState } from 'react'
-import AxPersona from './AxPersona'
-
+// import AxPersona from '../AxPersona'
 function classNames(...classes: any) {
     return classes.filter(Boolean).join(' ')
 }
@@ -13,7 +12,7 @@ export default function AxDetalle({ idEmpleado, setIdEmpleado }: any) {
             <div className="min-h-0 flex-1 overflow-y-auto">
                 <div className="bg-white pt-5 pb-6 shadow">
                     <div className="px-4 ">
-                        <AxPersona idEmpleado={idEmpleado} setIdEmpleado={setIdEmpleado} tipoEdicion={idEmpleado == 0 ? "AGREGAR" : tipoEdicion}></AxPersona>
+                        {/* <AxPersona idEmpleado={idEmpleado} setIdEmpleado={setIdEmpleado} tipoEdicion={idEmpleado == 0 ? "AGREGAR" : tipoEdicion}></AxPersona> */}
                     </div>
                 </div>
             </div>

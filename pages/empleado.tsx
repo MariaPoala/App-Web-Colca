@@ -4,7 +4,7 @@ import useSWRImmutable from 'swr/immutable'
 import { Fragment, useState, useEffect } from 'react'
 import { UserAddIcon } from '@heroicons/react/solid'
 import AxEmpleado from './Empleado/AxEmpleado'
-import AxInicioEmpleado from './prueba'
+import AxInicioEmpleado from './Empleado/AxInicioEmpleado'
 import { count } from 'console'
 import React from 'react'
 import { Dialog, Disclosure, Menu, Popover, Transition } from '@headlessui/react'
@@ -26,19 +26,19 @@ export default function Example() {
     const [luegoEdicion, setLuegoEdicion] = useState("INICIAL")
     const [isLoading, setIsLoading] = useState(true);
     const [tipoFiltro, setTipoFiltro] = useState("TODOS")
-
-    useEffect(() => {
-        if (luegoEdicion == "LISTA") return;
-        setIsLoading(true)
-        const fetchData = async () => {
-            const response = await fetch(`/api/empleado`);
-            const data = await response.json();
-            setListaEmpleado(data);
-            setIsLoading(false)
-            setLuegoEdicion("LISTA");
-        }
-        fetchData().catch(console.error);
-    }, [luegoEdicion])
+    
+        useEffect(() => {
+            if (luegoEdicion == "LISTA") return;
+            setIsLoading(true)
+            const fetchData = async () => {
+                const response = await fetch(`/api/empleado`);
+                const data = await response.json();
+                setListaEmpleado(data);
+                setIsLoading(false)
+                setLuegoEdicion("LISTA");
+            }
+            fetchData().catch(console.error);
+        }, [luegoEdicion])
 
     return (
         <>
