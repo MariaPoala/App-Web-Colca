@@ -1,7 +1,7 @@
 import { CheckCircleIcon, ChevronRightIcon, MailIcon } from '@heroicons/react/solid'
 import { PlusIcon, SearchIcon, FilterIcon } from '@heroicons/react/solid'
 import useSWRImmutable from 'swr/immutable'
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { UserAddIcon } from '@heroicons/react/solid'
 import AxEmpleado from './Empleado/AxEmpleado'
 import AxInicioEmpleado from './prueba'
@@ -21,16 +21,28 @@ const fetcherEmpleado = (url: string, params: any): Promise<Array<any>> =>
     }).then(r => r.json());
 
 export default function Example() {
-    const [open, setOpen] = useState(false)
-    const [activo, setActivo] = useState(true)
     const [idEmpleado, setIdEmpleado] = useState(-1)
-    const [numActivo, setnumActivo] = useState(0)
-    const { data: listaEmpleado } = useSWRImmutable(['/api/empleado', {}], fetcherEmpleado)
-    const [filtrotodos, setFiltrotodos] = useState(false)
+    const [listaEmpleado, setListaEmpleado] = useState<Array<any>>([]);
+    const [luegoEdicion, setLuegoEdicion] = useState("INICIAL")
+    const [isLoading, setIsLoading] = useState(true);
+    const [tipoFiltro, setTipoFiltro] = useState("TODOS")
+
+    useEffect(() => {
+        if (luegoEdicion == "LISTA") return;
+        setIsLoading(true)
+        const fetchData = async () => {
+            const response = await fetch(`/api/empleado`);
+            const data = await response.json();
+            setListaEmpleado(data);
+            setIsLoading(false)
+            setLuegoEdicion("LISTA");
+        }
+        fetchData().catch(console.error);
+    }, [luegoEdicion])
 
     return (
         <>
-            <div className="h-full flex flex-col">
+            <div className={isLoading ? "animate-pulse" : "" + " h-full flex flex-col"}>
                 <div className="min-h-0 flex-1 flex overflow-hidden ">
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
                         {/*DETALLE DEL EMPLEADO*/}
@@ -40,16 +52,15 @@ export default function Example() {
                                 <div className="">
                                     {idEmpleado == -1 ?
                                         <AxInicioEmpleado></AxInicioEmpleado>
-
-                                        : <AxEmpleado idEmpleado={idEmpleado} setIdEmpleado={setIdEmpleado}></AxEmpleado>
+                                        : <AxEmpleado idEmpleado={idEmpleado} setIdEmpleado={setIdEmpleado} setLuegoEdicion={setLuegoEdicion}></AxEmpleado>
                                     }
                                 </div>
                             </div>
                         </div>
                         {/*LISTA DE EMPLEADOS*/}
                         {/* <aside className="md:flex-shrink-0 md:order-first "> */}
-                        <aside className="flex-shrink-0 order-first w-full fixed inset-y-0 mt-16">
-                            <div className="h-full relative flex flex-col w-full sm:w-72 md:w-80 lg:w-80 border-r border-gray-200 bg-gray-100">
+                        <aside className="flex-shrink-0 order-first fixed inset-y-0 mt-16 w-full sm:w-72 md:w-80 lg:w-80">
+                            <div className="h-full relative flex flex-col border-r border-gray-200 bg-gray-100">
                                 {/*CABECERA */}
                                 <div className="flex-shrink-0">
                                     <div className="px-6 pt-2 pb-2 ">
@@ -85,16 +96,16 @@ export default function Example() {
                                                     leaveFrom="transform opacity-100 scale-100" leaveTo="transform opacity-0 scale-95"                                                >
                                                     <Menu.Items className="origin-top-left absolute left-0 z-10 mt-2 w-40 rounded-md shadow-2xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                                                         <div className="py-1">
-                                                            <a onClick={() => { setActivo(true) }} className='hover:bg-indigo-100 block px-4 py-2 text-sm font-medium text-gray-900'>
+                                                            <a onClick={() => { setTipoFiltro("ACTIVO") }} className='hover:bg-indigo-100 block px-4 py-2 text-sm font-medium text-gray-900'>
                                                                 <span className="absolute  right-16 block h-3 w-3 rounded-full ring-2 ring-white bg-green-300" />
                                                                 Activos
                                                             </a>
 
-                                                            <a onClick={() => { setActivo(false) }} className='hover:bg-indigo-100 block px-4 py-2 text-sm font-medium text-gray-900'>
+                                                            <a onClick={() => { setTipoFiltro("DESACTIVADO") }} className='hover:bg-indigo-100 block px-4 py-2 text-sm font-medium text-gray-900'>
                                                                 <span className="absolute  right-16 block h-3 w-3 rounded-full ring-2 ring-white bg-gray-300" />
                                                                 Inactivos
                                                             </a>
-                                                            <a onClick={() => { setFiltrotodos(true) }} className='hover:bg-indigo-100 block px-4 py-2 text-sm font-medium text-gray-900'>
+                                                            <a onClick={() => { setTipoFiltro("TODOS") }} className='hover:bg-indigo-100 block px-4 py-2 text-sm font-medium text-gray-900'>
                                                                 <span className="absolute  right-16 block h-3 w-3 rounded-full ring-2 ring-white bg-gray-300" />
                                                                 Todos
                                                             </a>
@@ -123,7 +134,7 @@ export default function Example() {
                                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
                                         <ul role="list" className="divide-y divide-gray-200">
                                             {listaEmpleado && listaEmpleado.map((empleado) => (
-                                                (empleado.EsActivo == activo && activo == activo ?
+                                                (tipoFiltro == "TODOS" || empleado.EsActivo == (tipoFiltro == "ACTIVO") ?
                                                     <li key={empleado.id}>
                                                         <a onClick={() => { setIdEmpleado(empleado.id) }}
                                                             className={(empleado.id == idEmpleado ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
