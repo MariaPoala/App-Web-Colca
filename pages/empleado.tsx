@@ -88,7 +88,7 @@ export default function Example() {
                                             <Menu as="div" className="relative z-1 inline-block text-left">
                                                 <div>
                                                     <Menu.Button className="inline-flex justify-center px-3.5 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                                        <FilterIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                                        <FilterIcon className={(tipoFiltro == "ACTIVO" ? "text-green-300 " : tipoFiltro == "DESACTIVADO" ? "text-red-400 " : "text-blue-300 ") + "  h-5 w-5 "} aria-hidden="true" />
                                                     </Menu.Button>
                                                 </div>
                                                 <Transition as={Fragment} enter="transition ease-out duration-100" enterFrom="transform opacity-0 scale-95"
@@ -96,17 +96,17 @@ export default function Example() {
                                                     leaveFrom="transform opacity-100 scale-100" leaveTo="transform opacity-0 scale-95"                                                >
                                                     <Menu.Items className="origin-top-left absolute left-0 z-10 mt-2 w-40 rounded-md shadow-2xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                                                         <div className="py-1">
-                                                            <a onClick={() => { setTipoFiltro("ACTIVO") }} className='hover:bg-indigo-100 block px-4 py-2 text-sm font-medium text-gray-900'>
+                                                            <a onClick={() => { setTipoFiltro("ACTIVO") }} className={(tipoFiltro == "ACTIVO" ? "bg-indigo-100" : "") + " hover:bg-indigo-200 block px-4 py-2 text-sm font-medium text-gray-900"}>
                                                                 <span className="absolute  right-16 block h-3 w-3 rounded-full ring-2 ring-white bg-green-300" />
                                                                 Activos
                                                             </a>
 
-                                                            <a onClick={() => { setTipoFiltro("DESACTIVADO") }} className='hover:bg-indigo-100 block px-4 py-2 text-sm font-medium text-gray-900'>
-                                                                <span className="absolute  right-16 block h-3 w-3 rounded-full ring-2 ring-white bg-gray-300" />
+                                                            <a onClick={() => { setTipoFiltro("DESACTIVADO") }} className={(tipoFiltro == "DESACTIVADO" ? "bg-indigo-100" : "") + " hover:bg-indigo-200 block px-4 py-2 text-sm font-medium text-gray-900"}>
+                                                                <span className="absolute  right-16 block h-3 w-3 rounded-full ring-2 ring-white bg-red-400" />
                                                                 Inactivos
                                                             </a>
-                                                            <a onClick={() => { setTipoFiltro("TODOS") }} className='hover:bg-indigo-100 block px-4 py-2 text-sm font-medium text-gray-900'>
-                                                                <span className="absolute  right-16 block h-3 w-3 rounded-full ring-2 ring-white bg-gray-300" />
+                                                            <a onClick={() => { setTipoFiltro("TODOS") }} className={(tipoFiltro == "TODOS" ? "bg-indigo-100" : "") + " hover:bg-indigo-200 block px-4 py-2 text-sm font-medium text-gray-900"}>
+                                                                <span className="absolute  right-16 block h-3 w-3 rounded-full ring-2 ring-white bg-blue-300" />
                                                                 Todos
                                                             </a>
                                                         </div>
@@ -143,12 +143,16 @@ export default function Example() {
                                                                     <div className="flex-shrink-0">
                                                                         {
                                                                             empleado.ImgURL
-                                                                                ? <img className="h-12 w-12 rounded-full" src={empleado.ImgURL} alt="" />
-                                                                                : <svg className="bg-indigo-300 text-white h-12 w-12 rounded-full" viewBox="0 0 20 20" fill="currentColor">
-                                                                                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                                                                                </svg>
+                                                                                ? <img className="h-12 w-12 rounded-full" src={empleado.ImgURL} alt="" >
+                                                                                    <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white bg-green-400" />
+                                                                                </img>
+                                                                                : <span className="inline-block relative">
+                                                                                    <svg className="bg-indigo-300 text-white h-12 w-12 rounded-full" viewBox="0 0 20 20" fill="currentColor">
+                                                                                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                                                                                    </svg>
+                                                                                    <span className={(empleado.EsActivo == true ? " bg-green-400 " : " bg-red-400 ") + " absolute bottom-0 right-0 block h-3.5 w-3.5 rounded-full ring-2 ring-white "} />
+                                                                                </span>
                                                                         }
-
                                                                     </div>
                                                                     <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
                                                                         <div>
