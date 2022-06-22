@@ -116,7 +116,6 @@ function AxButtonGuardar({ loading }: any) {
     </button>
 }
 
-
 export default function AxEmpleado({ idEmpleado, setIdEmpleado, setLuegoEdicion }: any) {
     const { data: listaDistrito } = useSWRImmutable('/api/distrito', fetcherDistrito);
     const [formData, setFormData] = useReducer(formReducer, { DNI: '2222', count: 100 });

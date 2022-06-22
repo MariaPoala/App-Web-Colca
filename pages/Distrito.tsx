@@ -3,8 +3,8 @@ import { PlusIcon, SearchIcon, FilterIcon } from '@heroicons/react/solid'
 import useSWRImmutable from 'swr/immutable'
 import { Fragment, useEffect, useState } from 'react'
 import { UserAddIcon } from '@heroicons/react/solid'
-import AxDistrito from './Distrito/AxDistrito'
-import AxInicioEmpleado from './Empleado/AxInicioEmpleado'
+import AxDistrito from 'pages/distrito/AxDistrito'
+import AxInicioEmpleado from 'pages/empleado/AxInicioEmpleado'
 import { count } from 'console'
 import React from 'react'
 import { Dialog, Disclosure, Menu, Popover, Transition } from '@headlessui/react'
@@ -79,8 +79,9 @@ export default function Ciudadano() {
                         </div>
                         {/*LISTA DE EMPLEADOS*/}
                         {/* <aside className="md:flex-shrink-0 md:order-first "> */}
-                        <aside className="flex-shrink-0 order-first fixed sm:inset-y-0 mt-16">
-                            <div className="h-full relative flex flex-col w-full sm:w-80 md:w-96 lg:w-96 border-r border-gray-200 bg-gray-100">
+                        <aside className="flex-shrink-0 order-first fixed inset-y-0 mt-16 w-full sm:w-72 md:w-80 lg:w-96">
+                            <div className="h-full relative flex flex-col border-r border-gray-200 bg-gray-100">
+                                {/*CABECERA */}
                                 <div className="flex-shrink-0">
                                     <div className="px-6 pt-2 pb-2 ">
                                         <h2 className="text-lg font-medium text-gray-900">Lista de Distritos</h2>
@@ -89,7 +90,7 @@ export default function Ciudadano() {
                                                 <div className="relative rounded-md shadow-sm overflow-y-auto">
                                                     <div className="flex-1 min-w-0">
                                                         <label htmlFor="search" className="sr-only">
-                                                            Search
+                                                            Buscar
                                                         </label>
                                                         <div className="relative rounded-md shadow-sm">
                                                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -100,7 +101,7 @@ export default function Ciudadano() {
                                                                 name="search"
                                                                 id="search"
                                                                 className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-indigo-300 rounded-md"
-                                                                placeholder="Search..."
+                                                                placeholder="Buscar..."
                                                                 onChange={(event) => setQuery(event.target.value)}
                                                             />
                                                         </div>
@@ -123,16 +124,15 @@ export default function Ciudadano() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="px-4 sm:px-6 lg:px-8">
-                                    <div className="mt-4 flex  overflow-auto ">
+                                {/*LISTA DE DATOS*/}
+                                <div className="min-h-0 flex-1 overflow-y-auto">
+                                    <div className="bg-white shadow overflow-hidden">
                                         <div className="-my-2 -mx-4  sm:-mx-6 lg:-mx-8  ">
                                             <div className="inline-block  min-w-full py-1 align-middle md:px-6 lg:px-8">
-                                                <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                                                <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5">
                                                     <table className=" min-w-full divide-y divide-gray-300">
                                                         <thead className="bg-indigo-500">
-
                                                             <tr>
-
                                                                 <th
                                                                     scope="col"
                                                                     className="py-3 pl-4 pr-3 text-left text-xs font-medium uppercase tracking-wide text-gray-100 sm:pl-6"
