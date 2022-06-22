@@ -30,7 +30,7 @@ const navigation = [
     {
         name: 'Documento', href: '', icon: DocumentDuplicateIcon, current: false,
         children: [
-            { name: 'Requisitos', href: '/rol', icon: SortAscendingIcon },
+            { name: 'Requisitos', href: '/requisito' },
             { name: 'Documentos', href: '#' },
         ],
     },

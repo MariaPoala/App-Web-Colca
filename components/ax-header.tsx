@@ -72,7 +72,7 @@ export default function AxHeader({ setIsSidebarOpen }: IProps) {
                     <Menu as="div" className="ml-3 relative">
                         <div>
                             <Menu.Button className="max-w-xs bg-indigo-400 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 lg:p-2 lg:rounded-md lg:hover:bg-indigo-500">
-                                {/* {user
+                                {user
                                     ? <>
                                         <img className="h-8 w-8 rounded-full" src={user.picture || ""} alt="" />
                                         <span className="hidden ml-3 text-gray-700 text-sm font-medium lg:block">
@@ -80,7 +80,7 @@ export default function AxHeader({ setIsSidebarOpen }: IProps) {
                                         </span>
                                     </>
                                     : <UserCircleIcon className="h-8 w-8 rounded-full"></UserCircleIcon>
-                                } */}
+                                }
                                 <ChevronDownIcon className="hidden flex-shrink-0 ml-1 h-5 w-5 text-indigo-600 lg:block" aria-hidden="true" />
                             </Menu.Button>
                         </div>

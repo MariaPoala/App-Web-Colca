@@ -31,7 +31,7 @@ export default function AxpMiPerfil({ user }: any) {
     const { data: informacionPaciente } = useSWR(['/api/infopaciente'], fetcherInfoPaciente)
     return (<>
         <Head>
-            <title>Mi Perfil - Clínica Ortega</title>
+            <title>Mi Perfil - Municipalidad de Colca</title>
         </Head>
         {!informacionPaciente ?
              <div className="max-w-screen-xl mx-auto pb-6 px-4 sm:px-6 lg:pb-16 lg:px-8">

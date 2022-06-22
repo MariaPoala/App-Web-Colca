@@ -111,7 +111,7 @@ export default function AxDistrito({ idDistrito, setIdDistrito, setLuegoEdicion 
             setIsLoading(true)
             const fetchData = async () => {
                 // await new Promise(resolve => setTimeout(resolve, 1000));
-                const response = await fetch(`/api/Distrito/${idDistrito}`);
+                const response = await fetch(`/api/distrito/${idDistrito}`);
                 const data = await response.json();
                 setFormData({ FORM_DATA: data });
                 setIsLoading(false)
@@ -134,7 +134,7 @@ export default function AxDistrito({ idDistrito, setIdDistrito, setLuegoEdicion 
         const dataEnvio = JSON.stringify({ ...formData, idDistrito: idDistrito });
         const dataEnvioDelete = JSON.stringify({ idDistrito: idDistrito });
         if (tipoEdicion == EnumTipoEdicion.ELIMINAR) console.log("0");
-        const response = await fetch('/api/Distrito/edicion', {
+        const response = await fetch('/api/distrito/edicion', {
             body: tipoEdicion == EnumTipoEdicion.ELIMINAR ? dataEnvioDelete : dataEnvio,
             headers: { 'Content-Type': 'application/json', },
             method: tipoEdicion == EnumTipoEdicion.EDITAR ? "PUT" : tipoEdicion == EnumTipoEdicion.ELIMINAR ? "DELETE" : "POST"
@@ -160,6 +160,9 @@ export default function AxDistrito({ idDistrito, setIdDistrito, setLuegoEdicion 
                             {/*CABECERA*/}
                             <div className="ml-6 flex-1">
                                 {/*AREA DE EDICIÓN*/}
+                                <div className="-mt-2">
+                                    <h3 className="font-bold text-white text-2xl">{"Distrito de " + formData.Nombre || ""}</h3>
+                                </div>
                                 <div className="w-0 flex-1 pt-2">
                                     <div className="mt-2 flex " >
 

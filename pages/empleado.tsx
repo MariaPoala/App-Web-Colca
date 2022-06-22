@@ -1,12 +1,15 @@
+import type { NextPage } from 'next'
 import { CheckCircleIcon, ChevronRightIcon, MailIcon, UsersIcon } from '@heroicons/react/solid'
 import { PlusIcon, SearchIcon, FilterIcon } from '@heroicons/react/solid'
 import useSWRImmutable from 'swr/immutable'
 import { Fragment, useState, useEffect } from 'react'
 import { UserAddIcon } from '@heroicons/react/solid'
-import AxEmpleado from 'pages/empleado/AxEmpleado'
-import AxInicioEmpleado from 'pages/empleado/AxInicioEmpleado'
+import AxEmpleado from 'pages/empleado/ax-empleado'
+import AxInicio from 'components/ax-inicio'
 import React from 'react'
 import { Combobox, Dialog, Disclosure, Menu, Popover, Transition } from '@headlessui/react'
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+export const getServerSideProps = withPageAuthRequired();
 const sortOptions = [
     { name: 'Most Popular', href: '#' },
     { name: 'Best Rating', href: '#' },
@@ -37,7 +40,7 @@ export default function Example() {
             ? listaEmpleado
             :
             listaEmpleado.filter((empleado) => {
-                return empleado.Nombres.toLowerCase().includes(query.toLowerCase())
+                return empleado.Nombres.toLowerCase().includes(query.toLowerCase()), empleado.Apellidos.toLowerCase().includes(query.toLowerCase())
             })
 
     useEffect(() => {
@@ -64,7 +67,7 @@ export default function Example() {
                             <div className="bg-white p-1 lg:p-4 shadow">
                                 <div className="">
                                     {idEmpleado == -1 ?
-                                        <AxInicioEmpleado></AxInicioEmpleado>
+                                        <AxInicio></AxInicio>
                                         : <AxEmpleado idEmpleado={idEmpleado} setIdEmpleado={setIdEmpleado} setLuegoEdicion={setLuegoEdicion}></AxEmpleado>
                                     }
                                 </div>
@@ -109,7 +112,7 @@ export default function Example() {
                                             <Menu as="div" className="relative z-1 inline-block text-left">
                                                 <div>
                                                     <Menu.Button className="inline-flex justify-center px-3.5 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                                        <FilterIcon className={(tipoFiltro == "ACTIVO" ? "text-green-300 " : tipoFiltro == "DESACTIVADO" ? "text-red-400 " : "text-blue-300 ") + "  h-5 w-5 "} aria-hidden="true" />
+                                                        <FilterIcon className={(tipoFiltro == "ACTIVO" ? "text-green-400 " : tipoFiltro == "DESACTIVADO" ? "text-red-400 " : "text-blue-300 ") + "  h-5 w-5 "} aria-hidden="true" />
                                                     </Menu.Button>
                                                 </div>
                                                 <Transition as={Fragment} enter="transition ease-out duration-100" enterFrom="transform opacity-0 scale-95"
