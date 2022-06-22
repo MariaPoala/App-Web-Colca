@@ -193,7 +193,8 @@ export default function Example() {
                                                                 </div>
                                                             </a>
                                                         </li> : ""
-                                                    )))};
+                                                    ))
+                                                )};
 
                                             </ul>
                                         )}

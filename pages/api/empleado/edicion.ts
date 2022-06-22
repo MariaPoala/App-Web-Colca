@@ -13,6 +13,7 @@ export default async function handler(req: any, res: any) {
             setDoc(docRef, req.body, { merge: true });
             res.status(200).json("documento actualizado")
         }
+      
     } catch (e) {
         console.log(e);
         res.status(500).json({ error: e })

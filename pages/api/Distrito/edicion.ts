@@ -1,5 +1,5 @@
 import db from "lib/firebase-config";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, deleteDoc } from "firebase/firestore";
 import { doc, setDoc } from "firebase/firestore";
 
 export default async function handler(req: any, res: any) {
@@ -12,6 +12,11 @@ export default async function handler(req: any, res: any) {
             const docRef = doc(db, 'distrito', req.body.idDistrito);
             setDoc(docRef, req.body, { merge: true });
             res.status(200).json("documento actualizado")
+        }
+        else if (req.method == "DELETE") {
+            const docRef = doc(db, 'distrito', req.body.idDistrito);
+            deleteDoc(docRef)            
+            res.status(200).json("documento eliminado")
         }
     } catch (e) {
         console.log(e);
