@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
-import {getStorage, ref, uploadBytes} from 'firebase/storage'
+import React, { useState, useEffect } from 'react'
+import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
 import * as uuid from 'uuid'
 import { initializeApp, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { url } from 'inspector';
 const firebaseConfig = {
     // apiKey: "AIzaSyDg64UwtUnU5YpLIpoYnXMRe7wcFaqC9CI",
     // authDomain: "appcolca.firebaseapp.com",
@@ -28,22 +29,41 @@ function initializeAppIfNecessary() {
 }
 
 initializeAppIfNecessary();
+
+
 export default function ModalEmpresa() {
     const [imagenupload, setImagen] = useState(null);
     const storage = getStorage();
+    const [listaimage, setListaimage] = useState<Array<any>>([]);
+
     //OBTENIENDO LA IMAGEN
-    const changeImagen = (e:any) => {
+    const changeImagen = (e: any) => {
         setImagen(e.target.files[0]);
         console.log(imagenupload);
-        
+
     }
-    const uploadimage=()=>{
-        if(imagenupload==null) return;
-        const imageRef= ref(storage, `images/${setImagen.name + uuid.v4()}`)
+    const igameListRef = ref(storage, "images/")
+    const uploadimage = () => {
+        if (imagenupload == null) return;
+        const imageRef = ref(storage, `images/${setImagen.name + uuid.v4()}`)
         uploadBytes(imageRef, imagenupload).then((snapshot) => {
             alert('Uploaded a blob or file!');
-          });
+            getDownloadURL(snapshot.ref).then((url) => {
+                setListaimage((prev) => [...prev, url]);
+            })
+        });
     }
+
+    useEffect(() => {
+        listAll(igameListRef).then((response) => {
+            response.items.forEach((item) => {
+                getDownloadURL(item).then((url) => {
+                    setListaimage((prev) => [...prev, url]);
+                })
+            })
+            console.log(response)
+        })
+    }, [imagenupload])
     return (
         <aside id="modal" className="modal">
             <div className="content-modal">
@@ -52,6 +72,9 @@ export default function ModalEmpresa() {
                     <button onClick={uploadimage} >GUARDAR IMAGEN</button>
                     <button >GUARDAR </button>
                 </header>
+                {listaimage && listaimage.map((url) => (
+                    <img src={url}></img>
+                ))}
             </div>
         </aside>
     )
