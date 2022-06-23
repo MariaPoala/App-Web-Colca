@@ -1,4 +1,4 @@
-import { CheckCircleIcon, ChevronRightIcon, MailIcon, PhoneIcon } from '@heroicons/react/solid'
+import { CheckCircleIcon, ChevronRightIcon, MailIcon, PhoneIcon, UserGroupIcon } from '@heroicons/react/solid'
 import { PlusIcon, SearchIcon, FilterIcon } from '@heroicons/react/solid'
 import { Fragment, useState, useEffect } from 'react'
 import { UserAddIcon } from '@heroicons/react/solid'
@@ -18,8 +18,8 @@ export default function Example() {
             ? listaCiudadano
             :
             listaCiudadano.filter((Ciudadano) => {
-                return Ciudadano.Nombres.toLowerCase().includes(query.toLowerCase()),Ciudadano.Apellidos.toLowerCase().includes(query.toLowerCase())
-             
+                return Ciudadano.Nombres.toLowerCase().includes(query.toLowerCase()), Ciudadano.Apellidos.toLowerCase().includes(query.toLowerCase())
+
             })
 
     useEffect(() => {
@@ -60,11 +60,11 @@ export default function Example() {
                                     <div className="px-6 pt-2 pb-2 ">
                                         <h2 className="text-lg font-medium text-gray-900">Lista de Ciudadanos</h2>
                                         <div className="mt-2 flex space-x-4">
-                                            <div className="flex-1 min-w-0">                                              
+                                            <div className="flex-1 min-w-0">
                                                 <div className="relative rounded-md shadow-sm overflow-y-auto">
                                                     <div className="flex-1 min-w-0">
                                                         <label htmlFor="search" className="sr-only">
-                                                        Buscar
+                                                            Buscar
                                                         </label>
 
                                                         <div className="relative rounded-md shadow-sm">
@@ -105,35 +105,41 @@ export default function Example() {
                                         {filteredPeople.length > 0 && (
                                             <ul role="list" className="divide-y divide-gray-200">
                                                 {filteredPeople && filteredPeople.map((ciudadano) => (
-                                                        <li key={ciudadano.id}>
-                                                            <a onClick={() => { setIdCiudadano(ciudadano.id) }}
-                                                                className={(ciudadano.id == idCiudadano ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
-                                                                <div className="flex px-4 py-4 sm:px-6">
-                                                                    <div className="min-w-0 flex-1 flex">                                                                        
-                                                                        <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
-                                                                            <div>
-                                                                                <p className="text-sm font-medium text-indigo-600 truncate">{ciudadano.Nombres + ' ' + ciudadano.Apellidos}</p>
-                                                                                <p className="mt-2 flex text-sm text-gray-500">
-                                                                                    <MailIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                                                    <span className="truncate">{ciudadano.Email}</span>
-                                                                                </p>
-                                                                                <p className="mt-2 flex text-sm text-gray-500">
-                                                                                    <PhoneIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                                                    <span className="truncate">{ciudadano.Celular}</span>
-                                                                                </p>
-                                                                            </div>
+                                                    <li key={ciudadano.id}>
+                                                        <a onClick={() => { setIdCiudadano(ciudadano.id) }}
+                                                            className={(ciudadano.id == idCiudadano ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
+                                                            <div className="flex px-4 py-4 sm:px-6">
+                                                                <div className="min-w-0 flex-1 flex">
+                                                                    <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
+                                                                        <div>
+                                                                            <p className="text-sm font-medium text-indigo-600 truncate">{ciudadano.Nombres + ' ' + ciudadano.Apellidos}</p>
+                                                                            <p className="mt-2 flex text-sm text-gray-500">
+                                                                                <MailIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                                                                                <span className="truncate">{ciudadano.Email}</span>
+                                                                            </p>
+                                                                            <p className="mt-2 flex text-sm text-gray-500">
+                                                                                <PhoneIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                                                                                <span className="truncate">{ciudadano.Celular}</span>
+                                                                            </p>
                                                                         </div>
                                                                     </div>
-                                                                    <div>
-                                                                        <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                                    </div>
                                                                 </div>
-                                                            </a>
-                                                        </li> 
-                                                    )
+                                                                <div>
+                                                                    <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                )
                                                 )};
 
                                             </ul>
+                                        )}
+                                        {query !== '' && filteredPeople.length === 0 && (
+                                            <div className="py-14 px-4 text-center sm:px-14">
+                                                <UserGroupIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
+                                                <p className="mt-4 text-sm text-gray-900">No se encontraron ciudadanos usando ese término de búsqueda.</p>
+                                            </div>
                                         )}
                                     </div>
                                 </nav>

@@ -1,4 +1,4 @@
-import { PlusIcon, SearchIcon, FilterIcon } from '@heroicons/react/solid'
+import { PlusIcon, SearchIcon, ClipboardCheckIcon } from '@heroicons/react/solid'
 import useSWRImmutable from 'swr/immutable'
 import Head from 'next/head'
 import { Fragment, useEffect, useState } from 'react'
@@ -138,6 +138,12 @@ export default function Ciudadano() {
 
                                                                 </tr>
                                                             ))}
+                                                            {query !== '' && filteredPeople.length === 0 && (
+                                                                <div className="py-14 px-4 text-center sm:px-14">
+                                                                    <ClipboardCheckIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
+                                                                    <p className="mt-4 text-sm text-gray-900">No se encontraron requisitos usando ese término de búsqueda.</p>
+                                                                </div>
+                                                            )}
                                                         </tbody>
                                                     </table>
                                                 </div>
