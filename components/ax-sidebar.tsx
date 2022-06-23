@@ -20,8 +20,8 @@ const navigation = [
     {
         name: 'Seguridad', href: '', icon: FingerPrintIcon, current: false,
         children: [
-            { name: 'Roles', href: '/rol', icon: SortAscendingIcon },
-            { name: 'Nivel Seguridad', href: '#' },
+            { name: 'Roles', href: '/roles', icon: SortAscendingIcon },
+            
         ],
     },
     { name: 'Empleado', href: '/empleado', icon: UserIcon, current: false },
@@ -30,8 +30,8 @@ const navigation = [
     {
         name: 'Documento', href: '', icon: DocumentDuplicateIcon, current: false,
         children: [
-            { name: 'Requisitos', href: '/requisito' },
-            { name: 'Documentos', href: '#' },
+            { name: 'Requisitos', href: '/requisito',icon: DocumentDuplicateIcon, current: false },
+            { name: 'Documentos', href: '/documento' },
         ],
     },
     {
@@ -125,8 +125,14 @@ export default function AxSidebar({ isSidebarOpen, setIsSidebarOpen }: IProps) {
                                                 {item.children.map((subItem) => (
                                                     <Link key={subItem.name} href={subItem.href}>
                                                         <Disclosure.Button
-                                                            className="group w-full flex items-center pl-11 pr-2 py-2 text-sm font-medium text-indigo-200 rounded-md hover:text-white hover:bg-indigo-500"
-                                                        >
+                                                            className={classNames(
+                                                                router.pathname == item.href
+                                                                    ? 'bg-indigo-800 text-white'
+                                                                    : 'text-indigo-100 ',
+                                                                'group w-full  pl-2 pr-1  text-left  focus:outline-none focus:ring-2  focus:ring-indigo-500  group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md hover:text-white hover:bg-indigo-500'
+                                                            )}
+                                                            aria-current={item.current ? 'page' : undefined}
+                                                       >
                                                             {subItem.name}
 
                                                         </Disclosure.Button>
@@ -265,7 +271,14 @@ export default function AxSidebar({ isSidebarOpen, setIsSidebarOpen }: IProps) {
                                                                 {item.children.map((subItem) => (
                                                                     <Link key={subItem.name} href={subItem.href}>
                                                                         <Disclosure.Button
-                                                                            className="group w-full flex items-center pl-11 pr-2 py-2 text-sm font-medium text-indigo-200 rounded-md hover:text-white hover:bg-indigo-500"
+                                                                            className={classNames(
+                                                                                router.pathname == item.href
+                                                                                    ? 'bg-indigo-800 text-white'
+                                                                                    : 'text-indigo-100 ',
+                                                                                'group w-full  pl-2 pr-1  text-left  focus:outline-none focus:ring-2  focus:ring-indigo-500  group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md hover:text-white hover:bg-indigo-500'
+                                                                            )}
+                                                                            aria-current={item.current ? 'page' : undefined}
+                                                                     
                                                                         >
                                                                             {subItem.name}
 

@@ -189,7 +189,7 @@ export default function AxEmpleado({ idEmpleado, setIdEmpleado, setLuegoEdicion 
                             {/*CABECERA*/}
                             <div className="ml-6 flex-1">
                                 <div className="-mt-2">
-                                    <h3 className="font-bold text-white text-2xl">{formData.Nombres + " " + formData.Apellidos || ""}</h3>
+                                    <h3 className="font-bold text-white text-2xl">{  formData.Nombres==null ? "": formData.Nombres + " " + formData.Apellidos || ""}</h3>
                                 </div>
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="w-0 flex-1 pt-2">

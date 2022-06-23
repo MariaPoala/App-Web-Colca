@@ -16,7 +16,7 @@ const formReducer = (state: any, event: any) => {
     if (event.FORM_ADD) {
         return {
             Nombre: "",
-            CodigoPostal: ""
+            Descripcion: ""
         }
     }
     return { ...state, [event.name]: event.value }
@@ -42,23 +42,7 @@ function AxInput({ name, value, label, handleChange, type }: any) {
 
 
 
-// function AxButtonGuardar({ loading }: any) {
-//     return <button type="submit"
-//         className="
-//         ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white 
-//         bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400"
-//         disabled={loading}>
-//         {
-//             loading &&
-//             <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-//                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"></circle>
-//                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-//             </svg>
-//         }
-//         {}
-//         Guardar
-//     </button>
-// }
+
 
 function AxButtonGuardar({ loading, tipoEdicion }: any) {
     return <button type="submit"
@@ -92,7 +76,7 @@ function AxBtnGuardarEliminar({ loading, onClick }: any) {
     </button>
 }
 
-export default function AxRequisito({ idRequisito, setIdRequisito, setLuegoEdicion }: any) {
+export default function AxRoles({ idRoles, setIdRoles, setLuegoEdicion }: any) {
     const [formData, setFormData] = useReducer(formReducer, { Nombre: 'm', count: 100 });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -103,22 +87,22 @@ export default function AxRequisito({ idRequisito, setIdRequisito, setLuegoEdici
 
 
     useEffect(() => {
-        setTipoEdicion(idRequisito == 0 ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
-        if (idRequisito == 0) {
+        setTipoEdicion(idRoles == 0 ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
+        if (idRoles == 0) {
             setFormData({ FORM_ADD: true })
         }
         else {
             setIsLoading(true)
             const fetchData = async () => {
                 // await new Promise(resolve => setTimeout(resolve, 1000));
-                const response = await fetch(`/api/requisito/${idRequisito}`);
+                const response = await fetch(`/api/roles/${idRoles}`);
                 const data = await response.json();
                 setFormData({ FORM_DATA: data });
                 setIsLoading(false)
             }
             fetchData().catch(console.error);
         }
-    }, [idRequisito])
+    }, [idRoles])
 
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
@@ -131,21 +115,21 @@ export default function AxRequisito({ idRequisito, setIdRequisito, setLuegoEdici
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         setIsSubmitting(true);
-        const dataEnvio = JSON.stringify({ ...formData, idRequisito: idRequisito });
-        const dataEnvioDelete = JSON.stringify({ idRequisito: idRequisito });
+        const dataEnvio = JSON.stringify({ ...formData, idRoles: idRoles });
+        const dataEnvioDelete = JSON.stringify({ idRoles: idRoles });
         if (tipoEdicion == EnumTipoEdicion.ELIMINAR) console.log("0");
-        const response = await fetch('/api/requisito/edicion', {
+        const response = await fetch('/api/roles/edicion', {
             body: tipoEdicion == EnumTipoEdicion.ELIMINAR ? dataEnvioDelete : dataEnvio,
             headers: { 'Content-Type': 'application/json', },
             method: tipoEdicion == EnumTipoEdicion.EDITAR ? "PUT" : tipoEdicion == EnumTipoEdicion.ELIMINAR ? "DELETE" : "POST"
         })
 
         const result = await response.json()
-        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setIdRequisito(result.idRequisito);
+        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setIdRoles(result.idRoles);
         setIsSubmitting(false);
         setLuegoEdicion("GRABAR");
         setOpen(false);
-        if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setIdRequisito(-1);
+        if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setIdRoles(-1);
         setTipoEdicion(EnumTipoEdicion.VISUALIZAR)
     }
     return (
@@ -161,7 +145,7 @@ export default function AxRequisito({ idRequisito, setIdRequisito, setLuegoEdici
                             <div className="ml-6 flex-1">
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="-mt-2">
-                                    <h3 className="font-bold text-white text-2xl">{formData.Nombre==null ? "":"Requisito " + formData.Nombre || ""}</h3>
+                                    <h3 className="font-bold text-white text-2xl">{formData.Nombre==null ? "":"Rol de " + formData.Nombre || ""}</h3>
                                 </div>
                                 <div className="w-0 flex-1 pt-2">
                                     <div className="mt-2 flex " >
@@ -218,7 +202,7 @@ export default function AxRequisito({ idRequisito, setIdRequisito, setLuegoEdici
                                                                 </Dialog.Title>
                                                                 <div className="mt-2">
                                                                     <p className="text-lg text-gray-500">
-                                                                        {`Estas seguro que quieres eliminar el requisito : ${formData.Nombre}`}
+                                                                        {`Estas seguro que quieres eliminar el rol : ${formData.Nombre}`}
                                                                     </p>
                                                                 </div>
                                                             </div>
@@ -265,32 +249,11 @@ export default function AxRequisito({ idRequisito, setIdRequisito, setLuegoEdici
                                     </div>
 
                                 </fieldset>
-                                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                                    <label htmlFor="cover-photo" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                                        Adjuntar formato de Ejemplo
-                                    </label>
-                                    <div className="mt-1 sm:mt-0 sm:col-span-2">
-                                        <div className="max-w-lg flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                            <div className="space-y-1 text-center">
-                                                <img className="mx-auto h-12 w-12 text-gray-400" src="/upload-file.svg" alt="Easywire logo" />
-                                                <div className="flex   text-sm text-center text-gray-600">
-                                                    <label 
-                                                        htmlFor="file-upload"
-                                                        className="relative ml-7 cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
-                                                    >
-                                                        <span className="text-center ">Subir Archivo</span>
-                                                        <input id="file-upload" name="file-upload" type="file" className="text-center  sr-only" />
-                                                    </label>                                                  
-                                                </div>
-                                                <p className="text-xs text-gray-500">Word, Pdf, Img hasta 10MB</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                
                                 {(tipoEdicion == EnumTipoEdicion.EDITAR || tipoEdicion == EnumTipoEdicion.AGREGAR) &&
                                     <div className="pt-5">
                                         <div className="flex justify-end ">
-                                            <button onClick={() => { tipoEdicion == EnumTipoEdicion.EDITAR ? setTipoEdicion(EnumTipoEdicion.VISUALIZAR) : setIdRequisito(-1) }} type="button"
+                                            <button onClick={() => { tipoEdicion == EnumTipoEdicion.EDITAR ? setTipoEdicion(EnumTipoEdicion.VISUALIZAR) : setIdRoles(-1) }} type="button"
                                                 className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                             >
                                                 Cancelar

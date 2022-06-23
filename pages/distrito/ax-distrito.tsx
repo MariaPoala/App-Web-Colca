@@ -161,7 +161,7 @@ export default function AxDistrito({ idDistrito, setIdDistrito, setLuegoEdicion 
                             <div className="ml-6 flex-1">
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="-mt-2">
-                                    <h3 className="font-bold text-white text-2xl">{"Distrito de " + formData.Nombre || ""}</h3>
+                                    <h3 className="font-bold text-white text-2xl">{formData.Nombre==null ? "": "Distrito de " + formData.Nombre || ""}</h3>
                                 </div>
                                 <div className="w-0 flex-1 pt-2">
                                     <div className="mt-2 flex " >

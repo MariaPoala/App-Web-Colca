@@ -4,31 +4,9 @@ import * as uuid from 'uuid'
 import { initializeApp, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { url } from 'inspector';
-const firebaseConfig = {
-    // apiKey: "AIzaSyDg64UwtUnU5YpLIpoYnXMRe7wcFaqC9CI",
-    // authDomain: "appcolca.firebaseapp.com",
-    // projectId: "appcolca",
-    // storageBucket: "appcolca.appspot.com",
-    // messagingSenderId: "865337723011",
-    // appId: "1:865337723011:web:7e0ad370f8cf5ef480f3b6"
-    apiKey: "AIzaSyB1yUWinJNnyzjazzjpBows8br3drb0Eq4",
-    authDomain: "mdcolca-d6172.firebaseapp.com",
-    projectId: "mdcolca-d6172",
-    storageBucket: "mdcolca-d6172.appspot.com",
-    messagingSenderId: "547890961127",
-    appId: "1:547890961127:web:18f73793e7696aa70c6042"
-};
-// Initialize Firebase
+import db from "lib/firebase-config";
 
-function initializeAppIfNecessary() {
-    try {
-        return getApp();
-    } catch (any) {
-        return initializeApp(firebaseConfig);
-    }
-}
-
-initializeAppIfNecessary();
+db.app
 
 
 export default function ModalEmpresa() {
@@ -45,7 +23,7 @@ export default function ModalEmpresa() {
     const igameListRef = ref(storage, "images/")
     const uploadimage = () => {
         if (imagenupload == null) return;
-        const imageRef = ref(storage, `images/${setImagen.name + uuid.v4()}`)
+        const imageRef = ref(storage, `images/${setImagen.name}`)
         uploadBytes(imageRef, imagenupload).then((snapshot) => {
             alert('Uploaded a blob or file!');
             getDownloadURL(snapshot.ref).then((url) => {
@@ -72,9 +50,28 @@ export default function ModalEmpresa() {
                     <button onClick={uploadimage} >GUARDAR IMAGEN</button>
                     <button >GUARDAR </button>
                 </header>
-                {listaimage && listaimage.map((url) => (
-                    <img src={url}></img>
-                ))}
+                <div className="bg-white">
+                    <div className="mx-auto py-12 px-4 max-w-7xl sm:px-6 lg:px-8 lg:py-24">
+                        <div className="space-y-12">
+
+                            <ul
+                                role="list"
+                                className="space-y-12 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 lg:grid-cols-3 lg:gap-x-8"
+                            >
+                                {listaimage && listaimage.map((url) => (
+                                    <li key={url.url}>
+                                        <div className="space-y-4">
+                                            <div className="aspect-w-3 aspect-h-2">
+                                              
+                                                <img className="object-cover shadow-lg rounded-lg" src=  {url}alt="" />
+                                            </div>                                            
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </div>                
             </div>
         </aside>
     )
