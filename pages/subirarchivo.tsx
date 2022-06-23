@@ -1,8 +1,8 @@
-import db from "lib/firebase-config";
-// Create a root reference
+import React, { useState } from 'react'
+import {getStorage, ref, uploadBytes} from 'firebase/storage'
+import * as uuid from 'uuid'
 import { initializeApp, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, uploadBytesResumable, uploadString } from "firebase/storage";
 const firebaseConfig = {
     // apiKey: "AIzaSyDg64UwtUnU5YpLIpoYnXMRe7wcFaqC9CI",
     // authDomain: "appcolca.firebaseapp.com",
@@ -27,53 +27,32 @@ function initializeAppIfNecessary() {
     }
 }
 
-const app = initializeAppIfNecessary();
-export default function Example() {
+initializeAppIfNecessary();
+export default function ModalEmpresa() {
+    const [imagenupload, setImagen] = useState(null);
     const storage = getStorage();
-
-    // Points to the root reference
-    const storageRef = ref(storage);
-    // Points to 'archivos'
-    const imagesRef = ref(storageRef, 'nuevos');
-
-    // Points to 'archivos/space.jpg'
-    // Note that you can use variables to create child values
-    const fileName = 'Sin título.png';
-    const spaceRef = ref(imagesRef, fileName);
-
-    // File path is 'archivos/space.jpg'
-    const path = spaceRef.fullPath;
-
-    // File name is 'space.jpg'
-    const name = spaceRef.name;
-
-    // Points to 'archivos'
-    const imagesRefAgain = spaceRef.parent;
-
-
-    // Raw string is the default if no format is provided
-    const message = 'This is my message.';
-    uploadString(spaceRef, message).then((snapshot) => {
-      console.log('Uploaded a raw string!');
-      console.log(imagesRef)
-    });
-
-    // const message= 'C:/Users/Maria/Pictures/Sin título.png';
-    // uploadString(imagesRef, message, 'base64url').then((snapshot) => {
-    //     console.log('Uploaded a base64url string!');
-    // });
-
+    //OBTENIENDO LA IMAGEN
+    const changeImagen = (e:any) => {
+        setImagen(e.target.files[0]);
+        console.log(imagenupload);
+        
+    }
+    const uploadimage=()=>{
+        if(imagenupload==null) return;
+        const imageRef= ref(storage, `images/${setImagen.name + uuid.v4()}`)
+        uploadBytes(imageRef, imagenupload).then((snapshot) => {
+            alert('Uploaded a blob or file!');
+          });
+    }
+    return (
+        <aside id="modal" className="modal">
+            <div className="content-modal">
+                <header>
+                    <input type="file" name="imagen" onChange={changeImagen} />
+                    <button onClick={uploadimage} >GUARDAR IMAGEN</button>
+                    <button >GUARDAR </button>
+                </header>
+            </div>
+        </aside>
+    )
 }
-// import { getStorage, ref, uploadString } from "firebase/storage";
-
-// const storage = getStorage();
-// const storageRef = ref(storage, 'some-child');
-
-// // Raw string is the default if no format is provided
-
-
-// // Data URL string
-// const message4 = 'data:text/plain;base64,5b6p5Y+344GX44G+44GX44Gf77yB44GK44KB44Gn44Go44GG77yB';
-// uploadString(storageRef, message4, 'data_url').then((snapshot) => {
-//   console.log('Uploaded a data_url string!');
-// });

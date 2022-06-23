@@ -242,8 +242,8 @@ export default function AxCiudadano({ idCiudadano, setIdCiudadano, setLuegoEdici
                                                     </div>
                                                     <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                                                         <div className="pt-5">
-                                                            <div className="flex justify-end">
-                                                                <button onClick={() => setOpen(false)} type="button"
+                                                            <div className="flex justify-end">                                                                
+                                                                <button onClick={() => { setOpen(false), tipoEdicion == EnumTipoEdicion.ELIMINAR ? setTipoEdicion(EnumTipoEdicion.VISUALIZAR) : "" }} type="button"
                                                                     className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                                                 >
                                                                     Cancelar
