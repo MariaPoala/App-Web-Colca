@@ -48,7 +48,7 @@ export default function Ciudadano() {
                             <div className="bg-white p-1 lg:p-4 shadow">
                                 <div className="">
                                     {idRequisito == -1 ?
-                                        <AxInicio></AxInicio>
+                                        <AxInicio nombre={"Requisito"}></AxInicio>
                                         : <AxDistrito idRequisito={idRequisito} setIdRequisito={setIdRequisito} setLuegoEdicion={setLuegoEdicion}></AxDistrito>
                                     }
                                 </div>

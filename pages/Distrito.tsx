@@ -75,7 +75,7 @@ export default function Ciudadano() {
                             <div className="bg-white p-1 lg:p-4 shadow">
                                 <div className="">
                                     {idDistrito == -1 ?
-                                        <AxInicio></AxInicio>
+                                        <AxInicio nombre={"Distrito"}></AxInicio>
                                         : <AxDistrito idDistrito={idDistrito} setIdDistrito={setIdDistrito} setLuegoEdicion={setLuegoEdicion}></AxDistrito>
                                     }
                                 </div>

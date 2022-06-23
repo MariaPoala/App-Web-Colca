@@ -67,7 +67,7 @@ export default function Example() {
                             <div className="bg-white p-1 lg:p-4 shadow">
                                 <div className="">
                                     {idEmpleado == -1 ?
-                                        <AxInicio></AxInicio>
+                                        <AxInicio nombre={"Empleado"}></AxInicio>
                                         : <AxEmpleado idEmpleado={idEmpleado} setIdEmpleado={setIdEmpleado} setLuegoEdicion={setLuegoEdicion}></AxEmpleado>
                                     }
                                 </div>

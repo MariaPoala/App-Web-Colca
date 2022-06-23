@@ -45,7 +45,7 @@ export default function Example() {
                             <div className="bg-white p-1 lg:p-4 shadow">
                                 <div className="">
                                     {idCiudadano == -1 ?
-                                        <AxInicio></AxInicio>
+                                        <AxInicio nombre={"Ciudadano"}></AxInicio>
                                         : <AxCiudadano idCiudadano={idCiudadano} setIdCiudadano={setIdCiudadano} setLuegoEdicion={setLuegoEdicion}></AxCiudadano>
                                     }
                                 </div>
