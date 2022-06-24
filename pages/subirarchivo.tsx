@@ -5,9 +5,9 @@ import { initializeApp, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { url } from 'inspector';
 import db from "lib/firebase-config";
-
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+export const getServerSideProps = withPageAuthRequired();
 db.app
-
 
 export default function ModalEmpresa() {
     const [imagenupload, setImagen] = useState(null);

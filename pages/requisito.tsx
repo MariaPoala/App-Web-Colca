@@ -5,7 +5,8 @@ import { Fragment, useEffect, useState } from 'react'
 import AxRequisito from 'pages/requisito/ax-requisito'
 import AxInicio from 'components/ax-inicio'
 import React from 'react'
-
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+export const getServerSideProps = withPageAuthRequired();
 export default function Requisito() {
     const [open, setOpen] = useState(false)
     const [listaRequisito, setListaRequisito] = useState<Array<any>>([]);

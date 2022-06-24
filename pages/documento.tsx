@@ -1,4 +1,6 @@
 import Head from 'next/head'
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+export const getServerSideProps = withPageAuthRequired();
 const products = [
   {
     id: 1,

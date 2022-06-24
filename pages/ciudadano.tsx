@@ -6,7 +6,8 @@ import AxCiudadano from 'pages/ciudadano/ax-ciudadano'
 import AxInicio from 'components/ax-inicio'
 import React from 'react'
 import Head from 'next/head'
-
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+export const getServerSideProps = withPageAuthRequired();
 export default function Example() {
     const [idCiudadano, setIdCiudadano] = useState(-1)
     const [listaCiudadano, setListaCiudadano] = useState<Array<any>>([]);

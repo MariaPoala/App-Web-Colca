@@ -1,6 +1,7 @@
 import { useEffect, useReducer, useState } from "react";
 import useSWRImmutable from "swr/immutable"
-
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+export const getServerSideProps = withPageAuthRequired();
 const fetcherDistrito = (url: string): Promise<any> =>
     fetch(url, { method: "GET" }).then(r => r.json());
 

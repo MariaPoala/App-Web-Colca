@@ -9,6 +9,8 @@ import AxInicio from 'components/ax-inicio'
 import { count } from 'console'
 import React from 'react'
 import { Dialog, Disclosure, Menu, Popover, Transition } from '@headlessui/react'
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+export const getServerSideProps = withPageAuthRequired();
 const sortOptions = [
     { name: 'Most Popular', href: '#' },
     { name: 'Best Rating', href: '#' },

@@ -2,9 +2,9 @@ import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { BellIcon, MenuAlt1Icon } from '@heroicons/react/outline'
 import { ChevronDownIcon, SearchIcon } from '@heroicons/react/solid'
-import { useUser } from '@auth0/nextjs-auth0';
 import { UserCircleIcon } from '@heroicons/react/outline'
 import Link from 'next/link'
+import { useUser } from '@auth0/nextjs-auth0';
 
 interface IMenuUsuario {
     name: string,
@@ -28,10 +28,10 @@ interface IProps {
 }
 
 export default function AxHeader({ setIsSidebarOpen }: IProps) {
-    // const { user, error, isLoading } = useUser();
-    const user = null
-    const isLoading = false
-    const error = null
+    const { user, error, isLoading } = useUser();
+    // const user = null
+    // const isLoading = false
+    // const error = null
     if (isLoading) return <div>Loading...</div>;
     // if (error) return <div>{error.message}</div>;
 
@@ -58,7 +58,7 @@ export default function AxHeader({ setIsSidebarOpen }: IProps) {
                             <div className="text-indigo-500 absolute inset-y-0 left-0 flex items-center pointer-events-none" aria-hidden="true">
                                 <SearchIcon className="h-5 w-5" aria-hidden="true" />
                             </div>
-                            <input id="search-field" name="search-field" type="search" placeholder="Buscar" className="bg-indigo-300 block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm" />
+                            <input id="search-field" name="search-field" type="search" placeholder="Buscar" className="bg-indigo-300 block w-full h-full pl-8 pr-3 py-2 border-transparent text-white placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm" />
                         </div>
                     </form>
                 </div>
@@ -75,7 +75,7 @@ export default function AxHeader({ setIsSidebarOpen }: IProps) {
                                 {user
                                     ? <>
                                         <img className="h-8 w-8 rounded-full" src={user.picture || ""} alt="" />
-                                        <span className="hidden ml-3 text-gray-700 text-sm font-medium lg:block">
+                                        <span className="hidden ml-3 text-white text-sm font-medium lg:block">
                                             <span className="sr-only">Open user menu for </span>{user.email || ""}
                                         </span>
                                     </>
@@ -93,12 +93,12 @@ export default function AxHeader({ setIsSidebarOpen }: IProps) {
                             leaveFrom="transform opacity-100 scale-100"
                             leaveTo="transform opacity-0 scale-95"
                         >
-                            <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-blue-100 ring-1 ring-black ring-opacity-5 focus:outline-none">
+                            <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-indigo-300 ring-1 ring-black ring-opacity-5  focus:outline-none">
                                 {
                                     menuUsuario.map(item => (
                                         <Link key={item.name} href={item.href}>
                                             <Menu.Item key={item.name}>
-                                                <a onClick={item.EvClick} href="#" className="block px-4 py-2 text-sm text-gray-700">
+                                                <a onClick={item.EvClick} href="#" className="block px-4 py-2 text-sm text-white hover:bg-indigo-400">
                                                     {item.text + ""}
                                                 </a>
                                             </Menu.Item>

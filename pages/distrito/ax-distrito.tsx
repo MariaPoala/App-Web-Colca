@@ -1,7 +1,8 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationIcon } from "@heroicons/react/outline";
 import { Fragment, useEffect, useReducer, useRef, useState } from "react";
-
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+export const getServerSideProps = withPageAuthRequired();
 const enum EnumTipoEdicion {
     AGREGAR = "AGREGAR",
     EDITAR = "EDITAR",

@@ -5,7 +5,8 @@ import { Fragment, useEffect, useState } from 'react'
 import AxRoles from 'pages/roles/ax-roles'
 import AxInicio from 'components/ax-inicio'
 import React from 'react'
-
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+export const getServerSideProps = withPageAuthRequired();
 export default function Roles() {
     const [open, setOpen] = useState(false)
     const [listaRoles, setListaRoles] = useState<Array<any>>([]);
