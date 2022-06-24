@@ -1,5 +1,4 @@
 import { PlusIcon, SearchIcon, ClipboardCheckIcon } from '@heroicons/react/solid'
-import useSWRImmutable from 'swr/immutable'
 import Head from 'next/head'
 import { Fragment, useEffect, useState } from 'react'
 import AxRoles from 'pages/roles/ax-roles'
@@ -7,8 +6,8 @@ import AxInicio from 'components/ax-inicio'
 import React from 'react'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 export const getServerSideProps = withPageAuthRequired();
+
 export default function Roles() {
-    const [open, setOpen] = useState(false)
     const [listaRoles, setListaRoles] = useState<Array<any>>([]);
     const [luegoEdicion, setLuegoEdicion] = useState("INICIAL")
     const [isLoading, setIsLoading] = useState(true);
@@ -44,7 +43,6 @@ export default function Roles() {
             <div className="h-full flex flex-col">
                 <div className="min-h-0 flex-1 flex overflow-hidden ">
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
-                        {/* <section aria-labelledby="message-heading" className="min-w-0 flex-1 h-full flex flex-col overflow-hidden xl:order-last" > */}
                         <div className="min-h-0 flex-1 overflow-y-auto sm:pl-96 md:pl-96 lg:pl-96">
                             <div className="bg-white p-1 lg:p-4 shadow">
                                 <div className="">
@@ -56,7 +54,6 @@ export default function Roles() {
                             </div>
                         </div>
                         {/*LISTA DE EMPLEADOS*/}
-                        {/* <aside className="md:flex-shrink-0 md:order-first "> */}
                         <aside className="flex-shrink-0 order-first fixed inset-y-0 mt-16 w-full sm:w-96 md:w-96 lg:w-96">
                             <div className="h-full relative flex flex-col border-r border-gray-200 bg-gray-100">
                                 {/*CABECERA */}

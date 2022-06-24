@@ -1,42 +1,19 @@
-import { OfficeBuildingIcon, ChevronRightIcon, MailIcon } from '@heroicons/react/solid'
-import { PlusIcon, SearchIcon, FilterIcon } from '@heroicons/react/solid'
+import { PlusIcon, SearchIcon, OfficeBuildingIcon } from '@heroicons/react/solid'
 import useSWRImmutable from 'swr/immutable'
 import Head from 'next/head'
-import { Fragment, useEffect, useState } from 'react'
-import { UserAddIcon } from '@heroicons/react/solid'
+import {useEffect, useState } from 'react'
 import AxDistrito from 'pages/distrito/ax-distrito'
 import AxInicio from 'components/ax-inicio'
-import { count } from 'console'
 import React from 'react'
-import { Dialog, Disclosure, Menu, Popover, Transition } from '@headlessui/react'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 export const getServerSideProps = withPageAuthRequired();
-const sortOptions = [
-    { name: 'Most Popular', href: '#' },
-    { name: 'Best Rating', href: '#' },
-    { name: 'Newest', href: '#' },
-]
-const people = [
-    { name: 'Lindsay Walton', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
-    // More people...
-]
-
-
-const fetcherDistrito = (url: string): Promise<any> =>
-    fetch(url, { method: "GET" }).then(r => r.json());
 
 export default function Ciudadano() {
-    const [open, setOpen] = useState(false)
     const [listaDistrito, setListaDistrito] = useState<Array<any>>([]);
     const [luegoEdicion, setLuegoEdicion] = useState("INICIAL")
     const [isLoading, setIsLoading] = useState(true);
-    const [activo, setActivo] = useState(true)
     const [idDistrito, setIdDistrito] = useState(-1)
-    const [numActivo, setnumActivo] = useState(0)
     const [query, setQuery] = useState('')
-    const { data } = useSWRImmutable(['/api/distrito', {}], fetcherDistrito)
-    const [filtrotodos, setFiltrotodos] = useState(false)
-    // const { data: listaDistrito } = useSWRImmutable('/api/distrito', fetcherDistrito);
     const filteredPeople =
         query === ''
             ? listaDistrito
@@ -67,7 +44,6 @@ export default function Ciudadano() {
             <div className="h-full flex flex-col">
                 <div className="min-h-0 flex-1 flex overflow-hidden ">
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
-                        {/* <section aria-labelledby="message-heading" className="min-w-0 flex-1 h-full flex flex-col overflow-hidden xl:order-last" > */}
                         <div className="min-h-0 flex-1 overflow-y-auto sm:pl-96 md:pl-96 lg:pl-96">
                             <div className="bg-white p-1 lg:p-4 shadow">
                                 <div className="">
@@ -79,7 +55,6 @@ export default function Ciudadano() {
                             </div>
                         </div>
                         {/*LISTA DE EMPLEADOS*/}
-                        {/* <aside className="md:flex-shrink-0 md:order-first "> */}
                         <aside className="flex-shrink-0 order-first fixed inset-y-0 mt-16 w-full sm:w-96 md:w-96 lg:w-96">
                             <div className="h-full relative flex flex-col border-r border-gray-200 bg-gray-100">
                                 {/*CABECERA */}
@@ -146,11 +121,9 @@ export default function Ciudadano() {
                                                                 >
                                                                     Código Postal
                                                                 </th>
-
                                                             </tr>
                                                         </thead>
                                                         <tbody className="divide-y divide-gray-200 bg-white">
-
                                                             {filteredPeople && filteredPeople.map((distrito: any) => (
                                                                 <tr onClick={() => { setIdDistrito(distrito.id) }}
                                                                     key={distrito.id}
@@ -159,7 +132,6 @@ export default function Ciudadano() {
                                                                         {distrito.Nombre}
                                                                     </td>
                                                                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{distrito.CodigoPostal}</td>
-
                                                                 </tr>
                                                             ))}
                                                             {query !== '' && filteredPeople.length === 0 && (

@@ -1,12 +1,12 @@
 import { PlusIcon, UserAddIcon } from "@heroicons/react/outline"
-
+import Link from 'next/link'
 export default function AxInicio({ nombre, icon }: any) {
   return (
     <>
       <div className="min-h-full pt-16 pb-12 flex flex-col bg-white">
         <main className="flex-grow flex flex-col justify-center max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex-shrink-0 flex justify-center">
-            <a href="/" className="inline-flex">
+            <Link href="/" className="inline-flex">
               <span className="sr-only">Workflow</span>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round"
@@ -19,7 +19,7 @@ export default function AxInicio({ nombre, icon }: any) {
               </svg>
 
 
-            </a>
+            </Link>
           </div>
           <div className="py-16">
             <div className="text-center">

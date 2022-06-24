@@ -11,7 +11,6 @@ export default function AxLayout({ children }: Props) {
     return (
         <>
             <div className="min-h-full">
-                {/* Static sidebar for desktop */}
                 <AxSidebar isSidebarOpen={sidebarOpen} setIsSidebarOpen={setSidebarOpen}></AxSidebar>
                 <div className="lg:pl-64 flex flex-col flex-1">
                     <AxHeader setIsSidebarOpen={setSidebarOpen}></AxHeader>

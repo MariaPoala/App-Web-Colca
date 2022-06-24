@@ -1,7 +1,5 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 export const getServerSideProps = withPageAuthRequired();
 const Home: NextPage = () => {
@@ -13,9 +11,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="bg-white">
-        {/* Hero section */}
         <div className="relative bg-gray-900">
-          {/* Decorative image and overlay */}
           <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
             <img
               src="https://tailwindui.com/img/ecommerce-images/home-page-01-hero-full-width.jpg"
@@ -24,8 +20,6 @@ const Home: NextPage = () => {
             />
           </div>
           <div aria-hidden="true" className="absolute inset-0 bg-gray-900 opacity-50" />
-
-
           <div className="relative max-w-3xl mx-auto py-32 px-6 flex flex-col items-center text-center sm:py-64 lg:px-0">
             <h1 className="text-4xl font-extrabold tracking-tight text-white lg:text-6xl">Sistema de Gestión Documentaria</h1>
             <p className="mt-4 text-xl text-white">
@@ -42,7 +36,6 @@ const Home: NextPage = () => {
             </a>
           </div>
         </div>
-
       </div>
     </>
   )

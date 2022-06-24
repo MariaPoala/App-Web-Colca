@@ -15,12 +15,8 @@ interface IMenuUsuario {
 }
 
 const menuUsuario: Array<IMenuUsuario> = [
-    // { name: "app", text: "Ir al aplicativo", status: "authenticated" },
     { name: "profile", text: "Tu Perfil", status: "authenticated", href: "/miperfil" },
-    // { name: "configuration", text: "Configuración", status: "authenticated", href: "" },
-    { name: "logout", text: "Cerrar Sesión", status: "authenticated", href: "/api/auth/logout" },
-    // { name: "logout", text: "Cerrar Sesión", status: "authenticated", EvClick: signOut, href: "" },
-    // { name: "login", text: "Iniciar Sesión", status: "unauthenticated", href: "/api/auth/login" }
+    { name: "logout", text: "Cerrar Sesión", status: "authenticated", href: "/api/auth/logout" }
 ]
 
 interface IProps {
@@ -29,11 +25,7 @@ interface IProps {
 
 export default function AxHeader({ setIsSidebarOpen }: IProps) {
     const { user, error, isLoading } = useUser();
-    // const user = null
-    // const isLoading = false
-    // const error = null
     if (isLoading) return <div>Loading...</div>;
-    // if (error) return <div>{error.message}</div>;
 
     return <>
         <div className=" z-10 flex-shrink-0 flex h-16 bg-indigo-300 border-b border-indigo-00 lg:border-none sticky top-0 border-gray-200" >

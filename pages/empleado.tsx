@@ -1,7 +1,4 @@
-import type { NextPage } from 'next'
-import { CheckCircleIcon, ChevronRightIcon, MailIcon, UsersIcon } from '@heroicons/react/solid'
-import { PlusIcon, SearchIcon, FilterIcon } from '@heroicons/react/solid'
-import useSWRImmutable from 'swr/immutable'
+import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UsersIcon } from '@heroicons/react/solid'
 import { Fragment, useState, useEffect } from 'react'
 import { UserAddIcon } from '@heroicons/react/solid'
 import AxEmpleado from 'pages/empleado/ax-empleado'
@@ -11,21 +8,6 @@ import Head from 'next/head'
 import { Combobox, Dialog, Disclosure, Menu, Popover, Transition } from '@headlessui/react'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 export const getServerSideProps = withPageAuthRequired();
-const sortOptions = [
-    { name: 'Most Popular', href: '#' },
-    { name: 'Best Rating', href: '#' },
-    { name: 'Newest', href: '#' },
-]
-function classNames(...classes: any) {
-    return classes.filter(Boolean).join(' ')
-}
-
-const fetcherEmpleado = (url: string, params: any): Promise<Array<any>> =>
-    fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(params),
-        headers: { 'Content-Type': 'application/json' }
-    }).then(r => r.json());
 
 export default function Example() {
     const [idEmpleado, setIdEmpleado] = useState(-1)
@@ -34,8 +16,6 @@ export default function Example() {
     const [isLoading, setIsLoading] = useState(true);
     const [tipoFiltro, setTipoFiltro] = useState("TODOS")
     const [query, setQuery] = useState('')
-    const [open, setOpen] = useState(true)
-    const [num, setNum]=useState(0)
 
     const filteredPeople =
         query === ''
@@ -93,7 +73,6 @@ export default function Example() {
                                                 <label htmlFor="search" className="sr-only">
                                                     Search
                                                 </label>
-
                                                 <div className="relative rounded-md shadow-sm overflow-y-auto">
                                                     <div className="flex-1 min-w-0">
                                                         <label htmlFor="search" className="sr-only">

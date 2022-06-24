@@ -1,7 +1,5 @@
 import Head from 'next/head'
-import useSWR from 'swr'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { XCircleIcon } from '@heroicons/react/outline';
 export const getServerSideProps = withPageAuthRequired();
 
 export default function AxpMiPerfil({ user }: any) {
@@ -14,7 +12,6 @@ export default function AxpMiPerfil({ user }: any) {
                 <div className="divide-y divide-gray-200 lg:grid lg:grid-cols-12 lg:divide-y-0">
                     <div className="divide-y divide-gray-200 lg:col-span-2 " ></div>
                     <form className="divide-y divide-gray-200 lg:col-span-8 " action="#" method="POST" >
-                        {/* Profile section */}
                         <div className="py-6 px-4 sm:p-6 lg:pb-8">
                             <div>
                                 <h2 className="text-lg leading-6 font-medium text-gray-900">Mi Perfil</h2>

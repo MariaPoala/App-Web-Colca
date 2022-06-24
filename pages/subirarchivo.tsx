@@ -4,12 +4,13 @@ import * as uuid from 'uuid'
 import { initializeApp, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { url } from 'inspector';
-import db from "lib/firebase-config";
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 export const getServerSideProps = withPageAuthRequired();
+import db from "lib/firebase-config";
 db.app
 
 export default function ModalEmpresa() {
+    //subir archivo
     const [imagenupload, setImagen] = useState(null);
     const storage = getStorage();
     const [listaimage, setListaimage] = useState<Array<any>>([]);
@@ -18,12 +19,11 @@ export default function ModalEmpresa() {
     const changeImagen = (e: any) => {
         setImagen(e.target.files[0]);
         console.log(imagenupload);
-
     }
     const igameListRef = ref(storage, "images/")
     const uploadimage = () => {
         if (imagenupload == null) return;
-        const imageRef = ref(storage, `images/${setImagen.name}`)
+        const imageRef = ref(storage, `images/${setImagen.name + uuid.v4()}`)
         uploadBytes(imageRef, imagenupload).then((snapshot) => {
             alert('Uploaded a blob or file!');
             getDownloadURL(snapshot.ref).then((url) => {
@@ -42,6 +42,8 @@ export default function ModalEmpresa() {
             console.log(response)
         })
     }, [imagenupload])
+
+    //subir archivo
     return (
         <aside id="modal" className="modal">
             <div className="content-modal">
@@ -62,16 +64,16 @@ export default function ModalEmpresa() {
                                     <li key={url.url}>
                                         <div className="space-y-4">
                                             <div className="aspect-w-3 aspect-h-2">
-                                              
-                                                <img className="object-cover shadow-lg rounded-lg" src=  {url}alt="" />
-                                            </div>                                            
+
+                                                <img className="object-cover shadow-lg rounded-lg" src={url} alt="" />
+                                            </div>
                                         </div>
                                     </li>
                                 ))}
                             </ul>
                         </div>
                     </div>
-                </div>                
+                </div>
             </div>
         </aside>
     )

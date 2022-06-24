@@ -1,5 +1,4 @@
-import { CheckCircleIcon, ChevronRightIcon, MailIcon, PhoneIcon, UserGroupIcon } from '@heroicons/react/solid'
-import { PlusIcon, SearchIcon, FilterIcon } from '@heroicons/react/solid'
+import { SearchIcon, ChevronRightIcon, MailIcon, PhoneIcon, UserGroupIcon } from '@heroicons/react/solid'
 import { Fragment, useState, useEffect } from 'react'
 import { UserAddIcon } from '@heroicons/react/solid'
 import AxCiudadano from 'pages/ciudadano/ax-ciudadano'
@@ -14,16 +13,13 @@ export default function Example() {
     const [luegoEdicion, setLuegoEdicion] = useState("INICIAL")
     const [isLoading, setIsLoading] = useState(true);
     const [query, setQuery] = useState('')
-
     const filteredPeople =
         query === ''
             ? listaCiudadano
             :
             listaCiudadano.filter((Ciudadano) => {
                 return Ciudadano.Nombres.toLowerCase().includes(query.toLowerCase()), Ciudadano.Apellidos.toLowerCase().includes(query.toLowerCase())
-
             })
-
     useEffect(() => {
         if (luegoEdicion == "LISTA") return;
         setIsLoading(true)
@@ -46,8 +42,7 @@ export default function Example() {
             <div className={isLoading ? "animate-pulse" : "" + " h-full flex flex-col"}>
                 <div className="min-h-0 flex-1 flex overflow-hidden ">
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
-                        {/*DETALLE DEL EMPLEADO*/}
-                        {/* <section aria-labelledby="message-heading" className="min-w-0 flex-1 h-full flex flex-col overflow-hidden xl:order-last" > */}
+                        {/*DETALLE */}
                         <div className="invisible sm:visible min-h-0 flex-1 overflow-y-auto sm:pl-72 md:pl-80 lg:pl-80">
                             <div className="bg-white p-1 lg:p-4 shadow">
                                 <div className="">
@@ -58,8 +53,7 @@ export default function Example() {
                                 </div>
                             </div>
                         </div>
-                        {/*LISTA DE EMPLEADOS*/}
-                        {/* <aside className="md:flex-shrink-0 md:order-first "> */}
+                        {/*LISTA DE Ciudadanos*/}
                         <aside className="flex-shrink-0 order-first fixed inset-y-0 mt-16 w-full sm:w-72 md:w-80 lg:w-80">
                             <div className="h-full relative flex flex-col border-r border-gray-200 bg-gray-100">
                                 {/*CABECERA */}
@@ -73,7 +67,6 @@ export default function Example() {
                                                         <label htmlFor="search" className="sr-only">
                                                             Buscar
                                                         </label>
-
                                                         <div className="relative rounded-md shadow-sm">
                                                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                                                 <SearchIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -106,7 +99,7 @@ export default function Example() {
                                         </div>
                                     </div>
                                 </div>
-                                {/*EMPLEADOS*/}
+                                {/*Ciudadanos*/}
                                 <nav aria-label="Message list" className="min-h-0 flex-1 overflow-y-auto">
                                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
                                         {filteredPeople.length > 0 && (
