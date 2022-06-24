@@ -7,7 +7,7 @@ export default function AxInicio({ nombre, icon }: any) {
         <main className="flex-grow flex flex-col justify-center max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex-shrink-0 flex justify-center">
             <Link href="/">
-              <a href="/" className="inline-flex">
+              <a className="inline-flex">
                 <span className="sr-only">Workflow</span>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round"

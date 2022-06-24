@@ -38,6 +38,7 @@ const navigation = [
 
 const secondaryNavigation = [
     { name: 'Tu Perfil', href: '/miperfil', icon: CogIcon },
+    { name: 'Prueba', href: '/subirarchivol', icon: CogIcon },
 ]
 
 function classNames(...classes: Array<string>) {
