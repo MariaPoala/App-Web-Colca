@@ -27,7 +27,7 @@ export default function ModalEmpresa() {
         uploadBytes(imageRef, imagenupload).then((snapshot) => {
             alert('Uploaded a blob or file!');
             getDownloadURL(snapshot.ref).then((url) => {
-                setListaimage((prev) => [...prev, url]);
+                //  setListaimage((prev) => [...prev, url]);
             })
         });
     }
@@ -41,7 +41,7 @@ export default function ModalEmpresa() {
             })
             console.log(response)
         })
-    }, [imagenupload])
+    }, [setImagen])
 
     //subir archivo
     return (

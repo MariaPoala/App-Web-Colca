@@ -16,9 +16,10 @@ const navigation = [
 
         ],
     },
+    { name: 'Distrito', href: '/distrito', icon: OfficeBuildingIcon, current: false },
     { name: 'Empleado', href: '/empleado', icon: UserIcon, current: false },
     { name: 'Ciudadano', href: '/ciudadano', icon: UserGroupIcon, current: false },
-    { name: 'Distrito', href: '/distrito', icon: OfficeBuildingIcon, current: false },
+    
     {
         name: 'Documento', href: '', icon: DocumentDuplicateIcon, current: false,
         children: [
@@ -38,7 +39,7 @@ const navigation = [
 
 const secondaryNavigation = [
     { name: 'Tu Perfil', href: '/miperfil', icon: CogIcon },
-    { name: 'Prueba', href: '/subirarchivol', icon: CogIcon },
+    { name: 'Prueba', href: '/subirarchivo', icon: CogIcon, current: false },
 ]
 
 function classNames(...classes: Array<string>) {
