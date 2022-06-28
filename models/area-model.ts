@@ -1,7 +1,7 @@
 interface AreaModel {
     ID: string,
     Nombre: string,
-    Descripcion: string,
+    Descripcion: string
 }
 
 export default AreaModel

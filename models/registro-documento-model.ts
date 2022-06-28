@@ -3,8 +3,8 @@ interface Registro_DocumentoModel {
     Nombre: string,
     Descripcion: string,
     NroDocumento: string,
-    Archivo: number,
-    IDEmpleado: number,
+    Archivo: string,
+    IDEmpleado: string,
     IDCiudadano: string,
     IDDocumento: string
 }
