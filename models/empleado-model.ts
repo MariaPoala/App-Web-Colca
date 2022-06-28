@@ -1,17 +1,36 @@
-interface EmpleadoModel {
-    ID: string,
-    Nombre: string,
-    Apellido: string,
-    FechaNacimiento: Date,
-    NroDocumento: string,
-    Direccion: string,
-    Celular: string,
-    TipoContrato: string,
-    Email: string,
-    Estado: boolean,
-    IDArea: string,
-    IDRol: string,
-    IDDistrito: string,
+class EmpleadoModel {
+    ID: string;
+    Nombres: string;
+    Apellidos: string;
+    FechaNacimiento: Date;
+    NroDocumento: string;
+    Sexo: string;
+    Direccion: string;
+    Celular: string;
+    TipoContrato: string;
+    Email: string;
+    EsActivo: boolean;
+    URLImgPerfil: string;
+    IDArea: string;
+    IDRol: string;
+    IDDistrito: string;
+    constructor() {
+        this.ID = "";
+        this.Nombres = "";
+        this.Apellidos = "";
+        this.FechaNacimiento = new Date();
+        this.NroDocumento = "";
+        this.Sexo = "";
+        this.Direccion = "";
+        this.Celular = "";
+        this.TipoContrato = "";
+        this.Email = "";
+        this.EsActivo = true;
+        this.URLImgPerfil = "";
+        this.IDArea = "";
+        this.IDRol = "";
+        this.IDDistrito = "";
+    }
 }
 
 export default EmpleadoModel
