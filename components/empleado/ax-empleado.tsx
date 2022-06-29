@@ -2,8 +2,9 @@ import { useEffect, useReducer, useState } from "react";
 import useSWRImmutable from "swr/immutable"
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { AxCheck, AxInput, AxRadio, AxSelect, AxSubmit } from 'components/ax-form'
-import { EnumTipoEdicion, EnumLuegoEdicion, TypeFormularioProps } from 'lib/edicion'
+import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
 import EmpleadoModel from 'models/empleado-model'
+import { ChevronLeftIcon } from "@heroicons/react/outline";
 
 export const getServerSideProps = withPageAuthRequired();
 const fetcherDistrito = (url: string): Promise<any> =>
@@ -19,7 +20,7 @@ const formReducer = (state: EmpleadoModel, event: any): EmpleadoModel => {
     return { ...state, [event.name]: event.value }
 }
 
-export default function AxEmpleado({ ID, setID, setLuegoEdicion }: TypeFormularioProps) {
+export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
     const { data: listaDistrito } = useSWRImmutable('/api/distrito', fetcherDistrito);
     const [formData, setFormData] = useReducer(formReducer, new EmpleadoModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -54,7 +55,6 @@ export default function AxEmpleado({ ID, setID, setLuegoEdicion }: TypeFormulari
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         setIsSubmitting(true);
-        console.log(tipoEdicion);
         const dataEnvio = JSON.stringify(formData);
         const response = await fetch('/api/empleado/edicion', {
             body: dataEnvio,
@@ -65,16 +65,24 @@ export default function AxEmpleado({ ID, setID, setLuegoEdicion }: TypeFormulari
         if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.ID);
         setIsSubmitting(false);
         setTipoEdicion(EnumTipoEdicion.VISUALIZAR)
-        setLuegoEdicion(EnumLuegoEdicion.GUARDADO);
+        setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
     }
 
     return (
         <>
+            <nav className="flex items-start pb-1 sm:hidden" aria-label="Breadcrumb">
+                <button
+                    onClick={() => { setEstadoEdicion(EnumEstadoEdicion.CANCELADO); }}
+                    className="hover:bg-indigo-200 rounded-sm p-2 inline-flex items-center space-x-3 text-sm font-medium text-gray-900">
+                    <ChevronLeftIcon className="-ml-2 h-5 w-5 text-indigo-700" aria-hidden="true" />
+                    <span>Lista de Empleados</span>
+                </button>
+            </nav>
             <div className={isLoading ? "animate-pulse" : "" + " flex h-full flex-col  bg-white shadow-xl"}>
                 <div className="divide-y divide-gray-200">
                     {/*PORTADA*/}
                     <div className="pb-6">
-                        <div className="h-16 bg-indigo-700 rounded-md" />
+                        <div className="h-12 bg-indigo-700 rounded-md" />
                         <div className="-mt-8 flex items-end px-6">
                             {/*IMG PERFIL*/}
                             <div className="-m-4 inline-block relative">
@@ -120,7 +128,10 @@ export default function AxEmpleado({ ID, setID, setLuegoEdicion }: TypeFormulari
                                             </button>
                                         </a>
                                         <button type="button" disabled={tipoEdicion != EnumTipoEdicion.VISUALIZAR}
-                                            onClick={() => setTipoEdicion(EnumTipoEdicion.EDITAR)}
+                                            onClick={() => {
+                                                setTipoEdicion(EnumTipoEdicion.EDITAR);
+                                                setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
+                                            }}
                                             className="ml-3 inline-flex items-center px-3 py-2 border 
                                             border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
                                             disabled:bg-indigo-300"
@@ -208,7 +219,10 @@ export default function AxEmpleado({ ID, setID, setLuegoEdicion }: TypeFormulari
                                 </fieldset>
                                 {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">
                                     <div className="flex justify-end">
-                                        <button onClick={() => { tipoEdicion == EnumTipoEdicion.EDITAR ? setTipoEdicion(EnumTipoEdicion.VISUALIZAR) : setID("$NULL") }} type="button"
+                                        <button onClick={() => {
+                                            tipoEdicion == EnumTipoEdicion.EDITAR ? setTipoEdicion(EnumTipoEdicion.VISUALIZAR) : setID("$NULL");
+                                            setEstadoEdicion(EnumEstadoEdicion.CANCELADO);
+                                        }} type="button"
                                             className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                         >
                                             Cancelar

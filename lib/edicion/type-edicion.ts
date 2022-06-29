@@ -1,11 +1,11 @@
-import { EnumLuegoEdicion } from "./enum-luego-edicion";
+import { EnumEstadoEdicion } from "./enum-estado-edicion";
 
 type TypeSetID = (ID: string) => any;
-type TypeSetLuegoEdicion = (luegoEdicion: EnumLuegoEdicion) => any;
+type TypeSetEstadoEdicion = (luegoEdicion: EnumEstadoEdicion) => any;
 type TypeFormularioProps = {
     ID: string
     setID: TypeSetID,
-    setLuegoEdicion: TypeSetLuegoEdicion
+    setEstadoEdicion: TypeSetEstadoEdicion
 }
 
 export type {TypeFormularioProps};
