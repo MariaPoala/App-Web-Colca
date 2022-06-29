@@ -20,9 +20,11 @@ export default function Example() {
         if (luegoEdicion == "LISTA") return;
         setIsLoading(true)
         const fetchData = async () => {
-            const response = await fetch(`/api/empleado`);
-            const data: EmpleadoModel[] = await response.json();
-            setListaEmpleado(data);
+            const response = await fetch(`/api/empleado/edicion`, {
+                method: "GET"
+            })                
+            const result: EmpleadoModel[] = await response.json()
+            setListaEmpleado(result);
             setIsLoading(false)
             setLuegoEdicion("LISTA");
         }

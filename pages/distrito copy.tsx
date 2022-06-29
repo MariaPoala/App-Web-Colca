@@ -1,29 +1,33 @@
 import { PlusIcon, SearchIcon, OfficeBuildingIcon } from '@heroicons/react/solid'
 import useSWRImmutable from 'swr/immutable'
 import Head from 'next/head'
-import { useEffect, useState } from 'react'
+import {useEffect, useState } from 'react'
 import AxDistrito from 'pages/distrito/ax-distrito'
 import AxInicio from 'components/ax-inicio'
 import React from 'react'
-import DistritoModel from 'models/distrito-model'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 export const getServerSideProps = withPageAuthRequired();
 
 export default function Ciudadano() {
-    const [listaDistrito, setListaDistrito] = useState<DistritoModel[]>([]);
+    const [listaDistrito, setListaDistrito] = useState<Array<any>>([]);
     const [luegoEdicion, setLuegoEdicion] = useState("INICIAL")
     const [isLoading, setIsLoading] = useState(true);
-    const [IDDistrito, setIdDistrito] = useState(-1)
-    const [tipoFiltro, setTipoFiltro] = useState("TODOS")
-    const [textoFiltro, setTextoFiltro] = useState('')
-    
+    const [idDistrito, setIdDistrito] = useState(-1)
+    const [query, setQuery] = useState('')
+    const filteredPeople =
+        query === ''
+            ? listaDistrito
+            :
+            listaDistrito.filter((distrito) => {
+                return distrito.Nombre.toLowerCase().includes(query.toLowerCase())
+            })
 
     useEffect(() => {
         if (luegoEdicion == "LISTA") return;
         setIsLoading(true)
         const fetchData = async () => {
             const response = await fetch(`/api/distrito`);
-            const data: DistritoModel[] = await response.json();
+            const data = await response.json();
             setListaDistrito(data);
             setIsLoading(false)
             setLuegoEdicion("LISTA");
@@ -43,9 +47,9 @@ export default function Ciudadano() {
                         <div className="min-h-0 flex-1 overflow-y-auto sm:pl-96 md:pl-96 lg:pl-96">
                             <div className="bg-white p-1 lg:p-4 shadow">
                                 <div className="">
-                                    {IDDistrito == -1 ?
+                                    {idDistrito == -1 ?
                                         <AxInicio nombre={"Distrito"}></AxInicio>
-                                        : <AxDistrito IDDistrito={IDDistrito} setIdDistrito={setIdDistrito} setLuegoEdicion={setLuegoEdicion}></AxDistrito>
+                                        : <AxDistrito idDistrito={idDistrito} setIdDistrito={setIdDistrito} setLuegoEdicion={setLuegoEdicion}></AxDistrito>
                                     }
                                 </div>
                             </div>
@@ -74,7 +78,7 @@ export default function Ciudadano() {
                                                                 id="search"
                                                                 className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-indigo-300 rounded-md"
                                                                 placeholder="Buscar..."
-                                                                onChange={(event) => setTextoFiltro(event.target.value)}
+                                                                onChange={(event) => setQuery(event.target.value)}
                                                             />
                                                         </div>
                                                     </div>
@@ -85,10 +89,7 @@ export default function Ciudadano() {
                                     <div className="border-t border-b border-gray-200 bg-gray-100 px-6 py-2 text-sm font-medium text-gray-500">
                                         <div className="flex items-center space-x-4">
                                             <div className='flex-1'>
-
-                                                <p className="text-sm font-medium text-gray-500">{(textoFiltro == "" ? listaDistrito : listaDistrito.filter(distrito =>
-                                                    (distrito.Nombre.toUpperCase().includes(textoFiltro.toUpperCase()) )                                                 
-                                                )).length || 0} Registros</p>
+                                                <p className="text-sm font-medium text-gray-500">{listaDistrito?.length || 0} Registros</p>
                                             </div>
                                             <div>
                                                 <button onClick={() => { setIdDistrito(0) }} type="button" className="bg-indigo-200 p-1 rounded-full text-indigo-500 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:text-indigo-600">
@@ -123,17 +124,17 @@ export default function Ciudadano() {
                                                             </tr>
                                                         </thead>
                                                         <tbody className="divide-y divide-gray-200 bg-white">
-                                                            {listaDistrito && listaDistrito.map((distrito: any) => (
+                                                            {filteredPeople && filteredPeople.map((distrito: any) => (
                                                                 <tr onClick={() => { setIdDistrito(distrito.id) }}
                                                                     key={distrito.id}
-                                                                    className={(distrito.id == IDDistrito ? "bg-indigo-100" : "") + "  hover:bg-indigo-200"}>
+                                                                    className={(distrito.id == idDistrito ? "bg-indigo-100" : "") + "  hover:bg-indigo-200"}>
                                                                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                                                         {distrito.Nombre}
                                                                     </td>
                                                                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{distrito.CodigoPostal}</td>
                                                                 </tr>
                                                             ))}
-                                                            {textoFiltro !== '' && listaDistrito.length === 0 && (
+                                                            {query !== '' && filteredPeople.length === 0 && (
                                                                 <div className="py-14 px-4 text-center sm:px-14">
                                                                     <OfficeBuildingIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
                                                                     <p className="mt-4 text-sm text-gray-900">No se encontraron distritos usando ese término de búsqueda.</p>

@@ -1,7 +1,7 @@
 import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UsersIcon } from '@heroicons/react/solid'
 import { Fragment, useState, useEffect } from 'react'
 import { UserAddIcon } from '@heroicons/react/solid'
-import AxEmpleado from 'pages/empleado/ax-empleado'
+import AxEmpleado from 'components/empleado/ax-empleado'
 import AxInicio from 'components/ax-inicio'
 import React from 'react'
 import Head from 'next/head'

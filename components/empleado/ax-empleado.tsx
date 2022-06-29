@@ -174,8 +174,8 @@ export default function AxEmpleado({ IDEmpleado, setIDEmpleado, setLuegoEdicion 
                                             </div>
 
                                             <div className="md:col-span-3">
-                                                <AxSelect name="IDDistritoRef" value={formData.IDDistrito} label="Distrito" handleChange={handleChange}>
-                                                    {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.id} value={"/distrito/" + distrito.id}>{distrito.Nombre}</option>)}
+                                                <AxSelect name="IDDistrito" value={formData.IDDistrito} label="Distrito" handleChange={handleChange}>
+                                                    {listaDistrito && listaDistrito.map((distrito: any)=><option key={distrito.id} value={"/distrito/" + distrito.id}>{distrito.Nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
