@@ -14,9 +14,7 @@ export default function AxLayout({ children }: Props) {
                 <AxSidebar isSidebarOpen={sidebarOpen} setIsSidebarOpen={setSidebarOpen}></AxSidebar>
                 <div className="lg:pl-64 flex flex-col flex-1">
                     <AxHeader setIsSidebarOpen={setSidebarOpen}></AxHeader>
-                    <main className="flex-1 pb-8">
-                        {children}
-                    </main>
+                    {children}
                 </div>
             </div>
         </>

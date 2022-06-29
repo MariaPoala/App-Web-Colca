@@ -43,13 +43,9 @@ export default function AxPageEmpleado() {
                 <div className="min-h-0 flex-1 flex overflow-hidden ">
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
                         {/*DETALLE DEL EMPLEADO*/}
-                        {/* <section aria-labelledby="message-heading" className="min-w-0 flex-1 h-full flex flex-col overflow-hidden xl:order-last" > */}
-                        <div className={" min-h-0 flex-1 overflow-y-auto pl-0 sm:pl-72 md:pl-80 lg:pl-80"}>
-                            {/* <div className={"visible flex w-full min-h-0 flex-1 pl-0 sm:pl-72 md:pl-80 lg:pl-80"}> */}
-                            <div className="bg-white p-1 lg:p-4 shadow">
-                                <div className="">
-
-                                    <Transition.Root show={isOpen} as={Fragment}>
+                        {/* <div className={"flex-1 overflow-y-auto pl-0 sm:pl-72 md:pl-80 lg:pl-80"}> */}
+                        <div className={"flex-1 overflow-y-auto pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
+                            {/* <Transition.Root show={isOpen} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setIsOpen}>
                                             <Transition.Child
                                                 as={Fragment}
@@ -60,23 +56,21 @@ export default function AxPageEmpleado() {
                                                 leaveFrom="translate-x-0"
                                                 leaveTo="translate-x-0 sm:translate-x-full"
                                             >
-                                                <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                                                    {IDEmpleado == "$NULL"
-                                                        ? <AxInicio nombre={"Empleado"}></AxInicio>
-                                                        : <>
-                                                            <AxEmpleado ID={IDEmpleado} setID={setIDEmpleado} setLuegoEdicion={setLuegoEdicion}></AxEmpleado>
-                                                        </>
-                                                    }
-                                                </Dialog.Panel>
+                                                <Dialog.Panel className="pointer-events-auto w-screen max-w-md"> */}
+                            {IDEmpleado == "$NULL"
+                                ? <AxInicio nombre={"Empleado"}></AxInicio>
+                                : <>
+                                    <AxEmpleado ID={IDEmpleado} setID={setIDEmpleado} setLuegoEdicion={setLuegoEdicion}></AxEmpleado>
+                                </>
+                            }
+                            {/* </Dialog.Panel>
                                             </Transition.Child>
                                         </Dialog>
-                                    </Transition.Root>
-                                </div>
-                            </div>
+                                    </Transition.Root> */}
                         </div>
                         {/*LISTA DE EMPLEADOS*/}
-                        {/* <aside className="md:flex-shrink-0 md:order-first "> */}
-                        <aside className={" flex-shrink-0 order-first fixed inset-y-0 mt-16 w-full sm:w-72 md:w-80 lg:w-80"}>
+                        {/* <aside className={"flex-shrink-0 order-first fixed inset-y-0 mt-16 w-full sm:w-72 md:w-80 lg:w-80"}> */}
+                        <aside className={" fixed inset-y-0 mt-16 w-full sm:w-72 md:w-80 lg:w-80"}>
                             <div className="h-full relative flex flex-col border-r border-gray-200 bg-gray-100">
                                 {/*CABECERA */}
                                 <div className="flex-shrink-0">
