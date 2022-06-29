@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon } from '@heroicons/react/solid'
-import { Menu, Transition, Dialog } from '@headlessui/react'
+import { Menu, Transition } from '@headlessui/react'
 import AxInicio from 'components/ax-inicio'
 import AxEmpleado from 'components/empleado/ax-empleado'
 import { EnumLuegoEdicion } from 'lib/edicion'
@@ -15,14 +15,11 @@ export default function AxPageEmpleado() {
     const [listaEmpleado, setListaEmpleado] = useState<EmpleadoModel[]>([]);
     const [luegoEdicion, setLuegoEdicion] = useState(EnumLuegoEdicion.INICIAL)
     const [isLoading, setIsLoading] = useState(true);
-    const [isShow, setIsShow] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
     const [tipoFiltro, setTipoFiltro] = useState("TODOS")
     const [textoFiltro, setTextoFiltro] = useState('')
 
     useEffect(() => {
         if (luegoEdicion == EnumLuegoEdicion.LISTAR) return;
-        if (luegoEdicion == EnumLuegoEdicion.GUARDADO) setIsShow(false);
         setIsLoading(true)
         const fetchData = async () => {
             const response = await fetch(`/api/empleado/edicion`, {
@@ -44,39 +41,19 @@ export default function AxPageEmpleado() {
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
                         {/*DETALLE DEL EMPLEADO*/}
                         {/* <section aria-labelledby="message-heading" className="min-w-0 flex-1 h-full flex flex-col overflow-hidden xl:order-last" > */}
-                        <div className={" min-h-0 flex-1 overflow-y-auto pl-0 sm:pl-72 md:pl-80 lg:pl-80"}>
-                            {/* <div className={"visible flex w-full min-h-0 flex-1 pl-0 sm:pl-72 md:pl-80 lg:pl-80"}> */}
+                        <div className="invisible sm:visible min-h-0 flex-1 overflow-y-auto sm:pl-72 md:pl-80 lg:pl-80">
                             <div className="bg-white p-1 lg:p-4 shadow">
                                 <div className="">
-
-                                    <Transition.Root show={isOpen} as={Fragment}>
-                                        <Dialog as="div" className="relative z-10" onClose={setIsOpen}>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="transform transition ease-in-out duration-500"
-                                                enterFrom="translate-x-full"
-                                                enterTo="translate-x-0"
-                                                leave="transform transition ease-in-out duration-500"
-                                                leaveFrom="translate-x-0"
-                                                leaveTo="translate-x-0 sm:translate-x-full"
-                                            >
-                                                <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                                                    {IDEmpleado == "$NULL"
-                                                        ? <AxInicio nombre={"Empleado"}></AxInicio>
-                                                        : <>
-                                                            <AxEmpleado ID={IDEmpleado} setID={setIDEmpleado} setLuegoEdicion={setLuegoEdicion}></AxEmpleado>
-                                                        </>
-                                                    }
-                                                </Dialog.Panel>
-                                            </Transition.Child>
-                                        </Dialog>
-                                    </Transition.Root>
+                                    {IDEmpleado == "$NULL"
+                                        ? <AxInicio nombre={"Empleado"}></AxInicio>
+                                        : <AxEmpleado ID={IDEmpleado} setID={setIDEmpleado} setLuegoEdicion={setLuegoEdicion}></AxEmpleado>
+                                    }
                                 </div>
                             </div>
                         </div>
                         {/*LISTA DE EMPLEADOS*/}
                         {/* <aside className="md:flex-shrink-0 md:order-first "> */}
-                        <aside className={" flex-shrink-0 order-first fixed inset-y-0 mt-16 w-full sm:w-72 md:w-80 lg:w-80"}>
+                        <aside className="flex-shrink-0 order-first fixed inset-y-0 mt-16 w-full sm:w-72 md:w-80 lg:w-80">
                             <div className="h-full relative flex flex-col border-r border-gray-200 bg-gray-100">
                                 {/*CABECERA */}
                                 <div className="flex-shrink-0">
@@ -149,7 +126,7 @@ export default function AxPageEmpleado() {
                                                     )).length || 0} Registros</p>
                                             </div>
                                             <div>
-                                                <button onClick={() => { setIDEmpleado("$ADD"); setIsOpen(true); }} type="button" className="bg-indigo-200 p-1 rounded-full text-indigo-500 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:text-indigo-600">
+                                                <button onClick={() => { setIDEmpleado("$ADD") }} type="button" className="bg-indigo-200 p-1 rounded-full text-indigo-500 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:text-indigo-600">
                                                     <span className="sr-only">Agregar Empleado</span>
                                                     <UserAddIcon className="h-6 w-6 border-solid " aria-hidden="true" />
                                                 </button>
@@ -166,7 +143,7 @@ export default function AxPageEmpleado() {
                                                 (tipoFiltro == "TODOS" || empleado.EsActivo == (tipoFiltro == "ACTIVO"))
                                             )).map(empleado => {
                                                 return <li key={empleado.ID}>
-                                                    <a onClick={() => { setIDEmpleado(empleado.ID); setIsShow(true); }}
+                                                    <a onClick={() => { setIDEmpleado(empleado.ID) }}
                                                         className={(empleado.ID == IDEmpleado ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
                                                         <div className="flex px-4 py-4 sm:px-6">
                                                             <div className="min-w-0 flex-1 flex">
