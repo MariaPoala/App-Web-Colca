@@ -20,7 +20,6 @@ export default function AxPageEmpleado() {
 
     useEffect(() => {
         if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
-        console.log(estadoEdicion);
         setIsLoading(true)
         const fetchData = async () => {
             const response = await fetch(`/api/empleado/edicion`, {
@@ -55,15 +54,8 @@ export default function AxPageEmpleado() {
                                         <h2 className="text-lg font-medium text-gray-900">Lista de Empleados</h2>
                                         <div className="mt-2 flex space-x-4">
                                             <div className="flex-1 min-w-0">
-                                                <label htmlFor="search" className="sr-only">
-                                                    Search
-                                                </label>
                                                 <div className="relative rounded-md shadow-sm overflow-y-auto">
                                                     <div className="flex-1 min-w-0">
-                                                        <label htmlFor="search" className="sr-only">
-                                                            Search
-                                                        </label>
-
                                                         <div className="relative rounded-md shadow-sm">
                                                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                                                 <SearchIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
