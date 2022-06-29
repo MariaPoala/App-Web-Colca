@@ -3,7 +3,7 @@ import { doc, getDoc } from "firebase/firestore";
 
 export default async function handler(req: any, res: any) {
     const { id: IDEmpleado } = req.query
-    const docRef = doc(db, "Empleado2", IDEmpleado);
+    const docRef = doc(db, "Empleado", IDEmpleado);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {

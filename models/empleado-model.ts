@@ -20,10 +20,10 @@ class EmpleadoModel {
         this.Apellidos = "";
         this.FechaNacimiento = new Date();
         this.NroDocumento = "";
-        this.Sexo = "";
+        this.Sexo = "MUJER";
         this.Direccion = "";
         this.Celular = "";
-        this.TipoContrato = "";
+        this.TipoContrato = "Contrato3Meses";
         this.Email = "";
         this.EsActivo = true;
         this.URLImgPerfil = "";

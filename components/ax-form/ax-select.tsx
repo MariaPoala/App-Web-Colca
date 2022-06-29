@@ -10,6 +10,7 @@ export default function AxSelect({ name, value, label, handleChange, children }:
                     onChange={handleChange}
                     className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                 >
+                    <option key="Distrito$NULL" value={""}>Seleccionar...</option>
                     {children}
                 </select>
             </div>

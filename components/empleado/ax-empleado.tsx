@@ -2,7 +2,7 @@ import { useEffect, useReducer, useState } from "react";
 import useSWRImmutable from "swr/immutable"
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { AxCheck, AxInput, AxRadio, AxSelect, AxSubmit } from 'components/ax-form'
-import { EnumTipoEdicion } from 'lib/edicion'
+import { EnumTipoEdicion, EnumLuegoEdicion, TypeFormularioProps } from 'lib/edicion'
 import EmpleadoModel from 'models/empleado-model'
 
 export const getServerSideProps = withPageAuthRequired();
@@ -19,8 +19,7 @@ const formReducer = (state: EmpleadoModel, event: any): EmpleadoModel => {
     return { ...state, [event.name]: event.value }
 }
 
-
-export default function AxEmpleado({ IDEmpleado, setIDEmpleado, setLuegoEdicion }: { IDEmpleado: string, setIDEmpleado: any, setLuegoEdicion: any }) {
+export default function AxEmpleado({ ID, setID, setLuegoEdicion }: TypeFormularioProps) {
     const { data: listaDistrito } = useSWRImmutable('/api/distrito', fetcherDistrito);
     const [formData, setFormData] = useReducer(formReducer, new EmpleadoModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,21 +28,20 @@ export default function AxEmpleado({ IDEmpleado, setIDEmpleado, setLuegoEdicion 
 
     useEffect(() => {
         setIsLoading(true)
-        setTipoEdicion(IDEmpleado == "$ADD" ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
-        if (IDEmpleado == "$ADD") {
+        setTipoEdicion(ID == "$ADD" ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
+        if (ID == "$ADD") {
             setFormData({ FORM_ADD: true })
         }
         else {
-
             const fetchData = async () => {
-                const response = await fetch(`/api/empleado/${IDEmpleado}`);
-                const data = await response.json();
+                const response = await fetch(`/api/empleado/${ID}`);
+                const data: EmpleadoModel = await response.json();
                 setFormData({ FORM_DATA: data });
             }
             fetchData().catch(console.error);
         }
         setIsLoading(false)
-    }, [IDEmpleado])
+    }, [ID])
 
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
@@ -57,17 +55,17 @@ export default function AxEmpleado({ IDEmpleado, setIDEmpleado, setLuegoEdicion 
         event.preventDefault();
         setIsSubmitting(true);
         console.log(tipoEdicion);
-        const dataEnvio = JSON.stringify({ ...formData, IDEmpleado: IDEmpleado });
+        const dataEnvio = JSON.stringify(formData);
         const response = await fetch('/api/empleado/edicion', {
             body: dataEnvio,
             headers: { 'Content-Type': 'application/json', },
             method: tipoEdicion == EnumTipoEdicion.EDITAR ? "PUT" : "POST"
         })
         const result: EmpleadoModel = await response.json()
-        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setIDEmpleado(result.ID);
+        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.ID);
         setIsSubmitting(false);
         setTipoEdicion(EnumTipoEdicion.VISUALIZAR)
-        setLuegoEdicion("GRABAR");
+        setLuegoEdicion(EnumLuegoEdicion.GUARDADO);
     }
 
     return (
@@ -91,7 +89,7 @@ export default function AxEmpleado({ IDEmpleado, setIDEmpleado, setLuegoEdicion 
                             {/*CABECERA*/}
                             <div className="ml-6 flex-1">
                                 <div className="-mt-2">
-                                    <h3 className="font-bold text-white text-2xl">{formData.Nombres == null ? "" : formData.Nombres + " " + formData.Apellidos || ""}</h3>
+                                    <h3 className="font-bold text-white text-2xl">{formData.Nombres ? formData.Nombres + " " + formData.Apellidos : "..."}</h3>
                                 </div>
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="w-0 flex-1 pt-2">
@@ -175,7 +173,7 @@ export default function AxEmpleado({ IDEmpleado, setIDEmpleado, setLuegoEdicion 
 
                                             <div className="md:col-span-3">
                                                 <AxSelect name="IDDistrito" value={formData.IDDistrito} label="Distrito" handleChange={handleChange}>
-                                                    {listaDistrito && listaDistrito.map((distrito: any)=><option key={distrito.id} value={"/distrito/" + distrito.id}>{distrito.Nombre}</option>)}
+                                                    {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.id} value={"/distrito/" + distrito.id}>{distrito.Nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
@@ -210,7 +208,7 @@ export default function AxEmpleado({ IDEmpleado, setIDEmpleado, setLuegoEdicion 
                                 </fieldset>
                                 {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">
                                     <div className="flex justify-end">
-                                        <button onClick={() => { tipoEdicion == EnumTipoEdicion.EDITAR ? setTipoEdicion(EnumTipoEdicion.VISUALIZAR) : setIDEmpleado("$NULL") }} type="button"
+                                        <button onClick={() => { tipoEdicion == EnumTipoEdicion.EDITAR ? setTipoEdicion(EnumTipoEdicion.VISUALIZAR) : setID("$NULL") }} type="button"
                                             className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                         >
                                             Cancelar
