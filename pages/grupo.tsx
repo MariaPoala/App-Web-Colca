@@ -35,7 +35,6 @@ export default function AxPageEmpleado() {
     const listaFiltro = (textoFiltro == "" ? listaGrupo : listaGrupo.filter(item =>
         item.Nombre.toUpperCase().includes(textoFiltro.toUpperCase())
     ))
-    console.log(listaFiltro)
     return (
         <>
             <Head><title>Grupo</title></Head>

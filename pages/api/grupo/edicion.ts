@@ -1,9 +1,15 @@
 import db from "lib/firebase-config";
-import { doc, setDoc, updateDoc, collection, addDoc, getDocs } from "firebase/firestore";
+import { doc, setDoc, updateDoc, collection, addDoc, getDocs, deleteDoc } from "firebase/firestore";
 
 export default async function handler(req: any, res: any) {
     try {
-        if (req.method === 'POST') {
+        if (req.method == "GET") {
+            const querySnapshot = await getDocs(collection(db, "Grupo"));
+            let data: any = []
+            querySnapshot.forEach(doc => data.push(doc.data()));
+            res.status(200).json(data)
+        }
+        else if (req.method === 'POST') {
             const docRef = await addDoc(collection(db, "Grupo"), req.body);
             const updateID = await updateDoc(docRef, {
                 ID: docRef.id
@@ -15,11 +21,10 @@ export default async function handler(req: any, res: any) {
             setDoc(docRef, req.body, { merge: true });
             res.status(200).json("documento actualizado")
         }
-        else if (req.method == "GET") {
-            const querySnapshot = await getDocs(collection(db, "Grupo"));
-            let data: any = []
-            querySnapshot.forEach(doc => data.push(doc.data()));
-            res.status(200).json(data)
+        else if (req.method == "DELETE") {
+            const docRef = doc(db, 'Grupo', req.body.ID);
+            deleteDoc(docRef)
+            res.status(200).json("documento eliminado")
         }
 
     } catch (e) {
