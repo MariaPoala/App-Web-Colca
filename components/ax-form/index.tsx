@@ -3,5 +3,6 @@ import AxInput from 'components/ax-form/ax-input'
 import AxRadio from 'components/ax-form/ax-radio'
 import AxSelect from 'components/ax-form/ax-select'
 import AxSubmit from 'components/ax-form/ax-submit'
+import AxBtnEliminar from 'components/ax-form/ax-btn-eliminar'
 
-export { AxCheck, AxInput, AxRadio, AxSelect, AxSubmit }
+export { AxCheck, AxInput, AxRadio, AxSelect, AxSubmit, AxBtnEliminar }

@@ -9,6 +9,7 @@ import { useRouter } from 'next/router'
 
 const navigation = [
     { name: 'Inicio', href: '/', icon: HomeIcon, current: true },
+    { name: 'Grupo', href: '/grupo', icon: HomeIcon, current: true },
     {
         name: 'Seguridad', href: '', icon: FingerPrintIcon, current: false,
         children: [
