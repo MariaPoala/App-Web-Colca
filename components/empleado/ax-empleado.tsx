@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useState } from "react";
 import useSWRImmutable from "swr/immutable"
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { AxCheck, AxInput, AxRadio, AxSelect, AxSubmit } from 'components/ax-form'
+import { AxBtnCancelar, AxBtnEditar, AxCheck, AxInput, AxRadio, AxSelect, AxSubmit } from 'components/ax-form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
 import EmpleadoModel from 'models/empleado-model'
 import { ChevronLeftIcon } from "@heroicons/react/outline";
@@ -127,20 +127,7 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
                                                 Mensaje
                                             </button>
                                         </a>
-                                        <button type="button" disabled={tipoEdicion != EnumTipoEdicion.VISUALIZAR}
-                                            onClick={() => {
-                                                setTipoEdicion(EnumTipoEdicion.EDITAR);
-                                                setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
-                                            }}
-                                            className="ml-3 inline-flex items-center px-3 py-2 border 
-                                            border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
-                                            disabled:bg-indigo-300"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                            Editar
-                                        </button>
+                                        <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}  ></AxBtnEditar>
                                     </div>
                                 </div>
                             </div>
@@ -219,14 +206,7 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
                                 </fieldset>
                                 {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">
                                     <div className="flex justify-end">
-                                        <button onClick={() => {
-                                            tipoEdicion == EnumTipoEdicion.EDITAR ? setTipoEdicion(EnumTipoEdicion.VISUALIZAR) : setID("$NULL");
-                                            setEstadoEdicion(EnumEstadoEdicion.CANCELADO);
-                                        }} type="button"
-                                            className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                        >
-                                            Cancelar
-                                        </button>
+                                    <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID}></AxBtnCancelar>
                                         <AxSubmit loading={isSubmitting} />
                                     </div>
                                 </div>

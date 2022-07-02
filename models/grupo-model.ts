@@ -1,12 +1,12 @@
 class GrupoModel {
     ID: string;
     Nombre: string;
-    Icono: string;
+    Descripcion: string;
 
     constructor(){
         this.ID="";
         this.Nombre="";
-        this.Icono="";
+        this.Descripcion="";
     }
 }
 

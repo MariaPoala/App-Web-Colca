@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon } from '@heroicons/react/solid'
+import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PlusIcon } from '@heroicons/react/solid'
 import { Menu, Transition, Dialog } from '@headlessui/react'
 import AxInicio from 'components/ax-inicio'
 import AxGrupo from 'components/grupo/ax-grupo'
@@ -91,7 +91,7 @@ export default function AxPageEmpleado() {
                                                     }}
                                                     type="button" className="bg-indigo-200 p-1 rounded-full text-indigo-500 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:text-indigo-600">
                                                     <span className="sr-only">Agregar item</span>
-                                                    <UserAddIcon className="h-6 w-6 border-solid " aria-hidden="true" />
+                                                    <PlusIcon className="h-6 w-6 border-solid " aria-hidden="true" />
                                                 </button>
                                             </div>
                                         </div>

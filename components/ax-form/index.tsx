@@ -3,6 +3,10 @@ import AxInput from 'components/ax-form/ax-input'
 import AxRadio from 'components/ax-form/ax-radio'
 import AxSelect from 'components/ax-form/ax-select'
 import AxSubmit from 'components/ax-form/ax-submit'
+import AxBtnSubmitEliminar from 'components/ax-form/modal/ax-btn-submit-eliminar'
 import AxBtnEliminar from 'components/ax-form/ax-btn-eliminar'
-
-export { AxCheck, AxInput, AxRadio, AxSelect, AxSubmit, AxBtnEliminar }
+import AxBtnEditar from 'components/ax-form/ax-btn-editar'
+import AxBtnModalCancelar from 'components/ax-form/modal/ax-btn-modal-cancelar'
+import AxBtnCancelar from 'components/ax-form/ax-btn-cancelar'
+import AxModalEliminar from 'components/ax-form/modal/ax-modal-eliminar'
+export { AxCheck, AxInput, AxRadio, AxSelect, AxSubmit, AxBtnSubmitEliminar, AxBtnEliminar, AxBtnEditar, AxBtnModalCancelar, AxBtnCancelar, AxModalEliminar }
