@@ -114,13 +114,13 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
                                             <h3 className="text-lg leading-6 font-medium text-gray-900">Datos </h3>
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
-                                            <div className="md:col-span-2">
+                                            <div className="md:col-span-3">
                                                 <AxInput name="Nombre" label="Nombre" value={formData.Nombre} handleChange={handleChange} />
                                             </div>
-                                            <div className="md:col-span-2">
+                                            <div className="md:col-span-3">
                                                 <AxInput name="CodigoPostal" label="Codigo Postal" value={formData.CodigoPostal} handleChange={handleChange} />
                                             </div>
-                                            <div className="md:col-span-3">
+                                            <div className="md:col-span-4">
                                                 <AxInput name="Descripcion" label="Descripcion" value={formData.Descripcion} handleChange={handleChange} />
                                             </div>                                           
                                         </div>

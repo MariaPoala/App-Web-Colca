@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { SearchIcon, ChevronRightIcon, UsersIcon, PlusIcon } from '@heroicons/react/solid'
+import { SearchIcon, ChevronRightIcon, UsersIcon, PlusIcon, MailIcon, PaperClipIcon } from '@heroicons/react/solid'
 import AxInicio from 'components/ax-inicio'
 import AxDistrito from 'components/entidades/ax-distrito'
 import { EnumEstadoEdicion } from 'lib/edicion'
@@ -107,24 +107,13 @@ export default function AxPageEmpleado() {
                                                     }}
                                                         className={(item.ID == IDDistrito ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
                                                         <div className="flex px-4 py-4 sm:px-6">
-                                                            <div className="min-w-0 flex-1 flex">
-                                                                {/* <div className="flex-shrink-0">
-                                                                    {
-                                                                        empleado.URLImgPerfil
-                                                                            ? <img className="h-12 w-12 rounded-full" src={empleado.URLImgPerfil} alt="" >
-                                                                                <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white bg-green-400" />
-                                                                            </img>
-                                                                            : <span className="inline-block relative">
-                                                                                <svg className="bg-indigo-300 text-white h-12 w-12 rounded-full" viewBox="0 0 20 20" fill="currentColor">
-                                                                                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                                                                                </svg>
-                                                                                <span className={(empleado.EsActivo == true ? " bg-green-400 " : " bg-red-400 ") + " absolute bottom-0 right-0 block h-3.5 w-3.5 rounded-full ring-2 ring-white "} />
-                                                                            </span>
-                                                                    }
-                                                                </div> */}
+                                                            <div className="min-w-0 flex-1 flex">                                                                
                                                                 <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
                                                                     <div>
                                                                         <p className="text-sm font-medium text-indigo-600 truncate">{item.Nombre}</p>
+                                                                        <p className="mt-2 flex text-sm text-gray-500">
+                                                                            <span className="truncate">{"Código Postal: "  + item.CodigoPostal}</span>
+                                                                        </p>
                                                                     </div>
                                                                 </div>
                                                             </div>

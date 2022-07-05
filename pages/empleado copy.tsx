@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon } from '@heroicons/react/solid'
+import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon } from '@heroicons/react/solid'
 import { Menu, Transition, Dialog } from '@headlessui/react'
 import AxInicio from 'components/ax-inicio'
 import AxEmpleado from 'components/entidades/ax-empleado'
@@ -32,10 +32,6 @@ export default function AxPageEmpleado() {
         fetchData().catch(console.error);
     }, [estadoEdicion])
 
-    const listaFiltro = ((textoFiltro == "" && tipoFiltro=="TODOS" ? listaEmpleado : listaEmpleado.filter(empleado =>
-        (empleado.Nombres.toUpperCase().includes(textoFiltro.toUpperCase()) || empleado.Apellidos.toUpperCase().includes(textoFiltro.toUpperCase())) &&
-        (tipoFiltro == "TODOS" || empleado.EsActivo == (tipoFiltro == "ACTIVO"))
-    )))
     return (
         <>
             <Head><title>Empleado</title></Head>
@@ -110,7 +106,11 @@ export default function AxPageEmpleado() {
                                         <div className="flex items-center space-x-4">
                                             <div className='flex-1'>
                                                 <p className="text-sm font-medium text-gray-500">{
-                                                    listaFiltro && listaFiltro.length || 0} Registros</p>
+                                                    (textoFiltro == "" ? listaEmpleado : listaEmpleado.filter(empleado =>
+                                                        (empleado.Nombres.toUpperCase().includes(textoFiltro.toUpperCase()) || empleado.Apellidos.toUpperCase().includes(textoFiltro.toUpperCase())) &&
+                                                        (tipoFiltro == "TODOS" || empleado.EsActivo == (tipoFiltro == "ACTIVO"))
+
+                                                    )).length || 0} Registros</p>
                                             </div>
                                             <div>
                                                 <button onClick=
@@ -130,7 +130,10 @@ export default function AxPageEmpleado() {
                                 <nav aria-label="Message list" className="min-h-0 flex-1 overflow-y-auto">
                                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
                                         <ul role="list" className="divide-y divide-gray-200">
-                                            {listaFiltro && listaFiltro.map(empleado => {
+                                            {(textoFiltro == "" ? listaEmpleado : listaEmpleado.filter(empleado =>
+                                                (empleado.Nombres.toUpperCase().includes(textoFiltro.toUpperCase()) || empleado.Apellidos.toUpperCase().includes(textoFiltro.toUpperCase())) &&
+                                                (tipoFiltro == "TODOS" || empleado.EsActivo == (tipoFiltro == "ACTIVO"))
+                                            )).map(empleado => {
                                                 return <li key={empleado.ID}>
                                                     <a onClick={() => {
                                                         setIDEmpleado(empleado.ID);
@@ -172,12 +175,12 @@ export default function AxPageEmpleado() {
                                             })
                                             }
                                         </ul>
-                                        {textoFiltro !== '' && listaFiltro.length === 0 && (
+                                        {/* {query !== '' && listaEmpleadoFiltrado.length === 0 && (
                                             <div className="py-14 px-4 text-center sm:px-14">
                                                 <UsersIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
-                                                <p className="mt-4 text-sm text-gray-900">No se encontraron empleados usando ese término de búsqueda.</p>
+                                                <p className="mt-4 text-sm text-gray-900">No se encontraron distritos usando ese término de búsqueda.</p>
                                             </div>
-                                        )}
+                                        )} */}
                                     </div>
                                 </nav>
                             </div>

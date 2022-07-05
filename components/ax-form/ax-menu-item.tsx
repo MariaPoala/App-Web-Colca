@@ -2,7 +2,7 @@ import {
     CogIcon, FingerPrintIcon, DocumentReportIcon, XIcon,
     HomeIcon, UserIcon, UserGroupIcon, DocumentDuplicateIcon, OfficeBuildingIcon,
     CloudUploadIcon, DocumentTextIcon, DuplicateIcon, DatabaseIcon, CloudIcon,
-    UsersIcon, BadgeCheckIcon, IdentificationIcon, LibraryIcon, ClipboardCheckIcon    
+    UsersIcon, BadgeCheckIcon, IdentificationIcon, LibraryIcon, ClipboardCheckIcon, ClipboardListIcon   
 } from '@heroicons/react/outline'
 
 const navigation = [
@@ -25,7 +25,7 @@ const navigation = [
         name: 'Configuración', href: '', icon: DatabaseIcon, current: false,
         children: [
             { name: 'Grupo', href: '/grupo', icon: DuplicateIcon, current: false },
-            { name: 'Consideraciones', href: '/consideracion', icon: DocumentTextIcon, current: false },
+            { name: 'Consideraciones', href: '/consideracion', icon: ClipboardListIcon, current: false },
             { name: 'Tipo Documento', href: '/tipo-documento', icon: DocumentDuplicateIcon, current: false },
             { name: 'Area', href: '/area', icon: LibraryIcon, current: false },
             { name: 'Requisitos', href: '/requisito', icon: ClipboardCheckIcon, current: false }
@@ -38,13 +38,21 @@ const navigation = [
         ],
     },
     {
-        name: 'seguimiento', href: '', icon: BadgeCheckIcon, current: false,
+        name: 'Seguimiento', href: '', icon: BadgeCheckIcon, current: false,
         children: [
             { name: 'seguimiento', href: '/segimiento', icon: BadgeCheckIcon, current: false },
         ],
     },
     {
         name: 'Reporte', href: '', icon: DocumentReportIcon, current: false,
+        children: [
+            { name: 'Reporte De Empleados', href: '/rol', icon: DocumentReportIcon },
+            { name: 'Reporte De Ciudadanos', href: '#', icon: DocumentReportIcon, current: false },
+            { name: 'Reporte De Documentos', href: '#', icon: DocumentReportIcon, current: false },
+        ],
+    },
+    {
+        name: 'Documento', href: '', icon: DocumentTextIcon, current: false,
         children: [
             { name: 'Reporte De Empleados', href: '/rol', icon: DocumentReportIcon },
             { name: 'Reporte De Ciudadanos', href: '#', icon: DocumentReportIcon, current: false },

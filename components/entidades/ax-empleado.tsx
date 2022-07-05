@@ -10,6 +10,13 @@ export const getServerSideProps = withPageAuthRequired();
 const fetcherDistrito = (url: string): Promise<any> =>
     fetch(url, { method: "GET" }).then(r => r.json());
 
+const fetcherRol = (url: string): Promise<any> =>
+    fetch(url, { method: "GET" }).then(r => r.json());
+
+const fetcherArea = (url: string): Promise<any> =>
+    fetch(url, { method: "GET" }).then(r => r.json());
+
+
 const formReducer = (state: EmpleadoModel, event: any): EmpleadoModel => {
     if (event.FORM_DATA) {
         return { ...event.FORM_DATA }
@@ -21,7 +28,9 @@ const formReducer = (state: EmpleadoModel, event: any): EmpleadoModel => {
 }
 
 export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
-    const { data: listaDistrito } = useSWRImmutable('/api/distrito', fetcherDistrito);
+    const { data: listaDistrito } = useSWRImmutable('/api/distrito/edicion', fetcherDistrito);
+    const { data: listaRol } = useSWRImmutable('/api/rol/edicion', fetcherRol);
+    const { data: listaArea } = useSWRImmutable('/api/area/edicion', fetcherArea);
     const [formData, setFormData] = useReducer(formReducer, new EmpleadoModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -171,7 +180,17 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
 
                                             <div className="md:col-span-3">
                                                 <AxSelect name="IDDistrito" value={formData.IDDistrito} label="Distrito" handleChange={handleChange}>
-                                                    {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.id} value={"/distrito/" + distrito.id}>{distrito.Nombre}</option>)}
+                                                    {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.ID} value={"/distrito/" + distrito.ID}>{distrito.Nombre}</option>)}
+                                                </AxSelect>
+                                            </div>
+                                            <div className="md:col-span-3">
+                                                <AxSelect name="IDRol" value={formData.IDRol} label="Rol" handleChange={handleChange}>
+                                                    {listaRol && listaRol.map((rol: any) => <option key={rol.ID} value={"/rol/" + rol.ID}>{rol.Nombre}</option>)}
+                                                </AxSelect>
+                                            </div>
+                                            <div className="md:col-span-3">
+                                                <AxSelect name="IDArea" value={formData.IDArea} label="Area" handleChange={handleChange}>
+                                                    {listaArea && listaArea.map((area: any) => <option key={area.ID} value={"/area/" + area.ID}>{area.Nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
@@ -206,7 +225,7 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
                                 </fieldset>
                                 {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">
                                     <div className="flex justify-end">
-                                    <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID}></AxBtnCancelar>
+                                        <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID}></AxBtnCancelar>
                                         <AxSubmit loading={isSubmitting} />
                                     </div>
                                 </div>
