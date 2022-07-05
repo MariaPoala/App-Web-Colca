@@ -4,25 +4,25 @@ import { doc, setDoc, updateDoc, collection, addDoc, getDocs, deleteDoc } from "
 export default async function handler(req: any, res: any) {
     try {
         if (req.method == "GET") {
-            const querySnapshot = await getDocs(collection(db, "Distrito"));
+            const querySnapshot = await getDocs(collection(db, "Area"));
             let data: any = []
             querySnapshot.forEach(doc => data.push(doc.data()));
             res.status(200).json(data)
         }
         else if (req.method === 'POST') {
-            const docRef = await addDoc(collection(db, "Distrito"), req.body);
+            const docRef = await addDoc(collection(db, "Area"), req.body);
             const updateID = await updateDoc(docRef, {
                 ID: docRef.id
             });
             res.status(200).json({ ID: docRef.id, msg: "Registro exitoso" })
         }
         else if (req.method == "PUT") {
-            const docRef = doc(db, 'Distrito', req.body.ID);
+            const docRef = doc(db, 'Area', req.body.ID);
             setDoc(docRef, req.body, { merge: true });
             res.status(200).json("documento actualizado")
         }
         else if (req.method == "DELETE") {
-            const docRef = doc(db, 'Distrito', req.body.ID);
+            const docRef = doc(db, 'Area', req.body.ID);
             deleteDoc(docRef)
             res.status(200).json("documento eliminado")
         }

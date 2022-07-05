@@ -3,42 +3,22 @@ import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { Dialog, Disclosure, Transition } from "@headlessui/react";
 import { AxInput, AxModalEliminar, AxSubmit, AxBtnEliminar, AxBtnEditar, AxBtnCancelar } from 'components/ax-form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
-import GrupoModel from 'models/grupo-model'
-import { ChevronLeftIcon, FingerPrintIcon, HomeIcon, OfficeBuildingIcon, SortAscendingIcon } from "@heroicons/react/outline"
-import Link from "next/link";
-import router from "next/router";
-
+import Tipo_DocumentoModel from 'models/tipo-documento-model'
+import { ChevronLeftIcon} from "@heroicons/react/outline"
 export const getServerSideProps = withPageAuthRequired();
-const navigation = [
-    { name: 'Inicio', href: '/', icon: HomeIcon, current: true },
-    { name: 'Grupo', href: '/grupo', icon: HomeIcon, current: true },
-    {
-        name: 'Seguridad', href: '', icon: FingerPrintIcon, current: false,
-        children: [
-            { name: 'Roles', href: '/roles', icon: SortAscendingIcon },
 
-        ],
-    }
-
-]
-function classNames(...classes: Array<string>) {
-    return classes.filter(Boolean).join(' ')
-}
-const formReducer = (state: GrupoModel, event: any): GrupoModel => {
+const formReducer = (state: Tipo_DocumentoModel, event: any): Tipo_DocumentoModel => {
     if (event.FORM_DATA) {
         return { ...event.FORM_DATA }
     }
     if (event.FORM_ADD) {
-        return new GrupoModel()
+        return new Tipo_DocumentoModel()
     }
     return { ...state, [event.name]: event.value }
 }
 
-
-
-
-export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
-    const [formData, setFormData] = useReducer(formReducer, new GrupoModel());
+export default function AxTipoDocumento({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
+    const [formData, setFormData] = useReducer(formReducer, new Tipo_DocumentoModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
@@ -52,8 +32,8 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
         }
         else {
             const fetchData = async () => {
-                const response = await fetch(`/api/grupo/${ID}`);
-                const data: GrupoModel = await response.json();
+                const response = await fetch(`/api/tipo-documento/${ID}`);
+                const data: Tipo_DocumentoModel = await response.json();
                 setFormData({ FORM_DATA: data });
             }
             fetchData().catch(console.error);
@@ -73,13 +53,13 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
         event.preventDefault();
         setIsSubmitting(true);
         const dataEnvio = JSON.stringify(formData);
-        const response = await fetch('/api/grupo/edicion', {
+        const response = await fetch('/api/tipo-documento/edicion', {
             body: dataEnvio,
             headers: { 'Content-Type': 'application/json', },
             method: tipoEdicion == EnumTipoEdicion.EDITAR ? "PUT" : tipoEdicion == EnumTipoEdicion.ELIMINAR ? "DELETE" : "POST"
         })
 
-        const result: GrupoModel = await response.json()
+        const result: Tipo_DocumentoModel = await response.json()
         if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.ID);
         setIsSubmitting(false);
         setOpen(false);
@@ -94,7 +74,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                     onClick={() => { setEstadoEdicion(EnumEstadoEdicion.CANCELADO); }}
                     className="hover:bg-indigo-200 rounded-sm p-2 inline-flex items-center space-x-3 text-sm font-medium text-gray-900">
                     <ChevronLeftIcon className="-ml-2 h-5 w-5 text-indigo-700" aria-hidden="true" />
-                    <span>Lista de Grupos</span>
+                    <span>Lista De Tipo De Docuemntos</span>
                 </button>
             </nav>
             <div className={isLoading ? "animate-pulse" : "" + " flex h-full flex-col  bg-white shadow-xl"}>
@@ -117,7 +97,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                     </div>
                                     <Transition.Root show={open} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Grupo"}> </AxModalEliminar>
+                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Tipo Documento"}> </AxModalEliminar>
                                         </Dialog>
                                     </Transition.Root>
                                 </div>

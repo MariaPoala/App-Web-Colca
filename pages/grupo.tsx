@@ -1,10 +1,9 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PlusIcon } from '@heroicons/react/solid'
-import { Menu, Transition, Dialog } from '@headlessui/react'
+import { SearchIcon, ChevronRightIcon, UsersIcon, PlusIcon } from '@heroicons/react/solid'
 import AxInicio from 'components/ax-inicio'
-import AxGrupo from 'components/grupo/ax-grupo'
+import AxGrupo from 'components/administracion/ax-grupo'
 import { EnumEstadoEdicion } from 'lib/edicion'
 import GrupoModel from 'models/grupo-model'
 
@@ -15,7 +14,6 @@ export default function AxPageEmpleado() {
     const [listaGrupo, setListaGrupo] = useState<GrupoModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
     const [isLoading, setIsLoading] = useState(true);
-    const [tipoFiltro, setTipoFiltro] = useState("TODOS")
     const [textoFiltro, setTextoFiltro] = useState('')
 
     useEffect(() => {

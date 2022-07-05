@@ -1,9 +1,14 @@
-interface AreaModel {
-    ID: string,
-    Nombre: string,
-    Descripcion: string
-}
+class AreaModel {
+    ID: string;
+    Nombre: string;
+    Descripcion: string;
 
+    constructor(){
+        this.ID="";
+        this.Nombre="";
+        this.Descripcion="";
+    }
+}
 export default AreaModel
 
 

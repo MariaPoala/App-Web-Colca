@@ -32,7 +32,6 @@ class EmpleadoModel {
         this.IDDistrito = "";
     }
 }
-
 export default EmpleadoModel
 
 

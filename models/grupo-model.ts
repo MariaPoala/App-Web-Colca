@@ -9,7 +9,6 @@ class GrupoModel {
         this.Descripcion="";
     }
 }
-
 export default GrupoModel
 
 

@@ -11,7 +11,6 @@ class DistritoModel {
         this.CodigoPostal = ""
     }
 }
-
 export default DistritoModel
 
 

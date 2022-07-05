@@ -2,8 +2,8 @@ import db from "lib/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
 
 export default async function handler(req: any, res: any) {
-    const { id: idDistrito} = req.query
-    const docRef = doc(db, "distrito", idDistrito);
+    const { id: IDDistrito } = req.query
+    const docRef = doc(db, "Distrito", IDDistrito);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
