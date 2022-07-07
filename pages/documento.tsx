@@ -9,7 +9,7 @@ import DocumentoModel from 'models/documento-model'
 
 export const getServerSideProps = withPageAuthRequired();
 
-export default function AxPageEmpleado() {
+export default function AxPageDocumento() {
     const [IDDocumento, setIdDocumento] = useState("$NULL")
     const [listaDocumento, setListaDocumento] = useState<DocumentoModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
@@ -33,6 +33,7 @@ export default function AxPageEmpleado() {
     const listaFiltro = ((textoFiltro == "" ? listaDocumento : listaDocumento.filter(documento =>
         (documento.Nombre.toUpperCase().includes(textoFiltro.toUpperCase()))
     )))
+    console.log(listaFiltro)
     return (
         <>
             <Head><title>Documento</title></Head>

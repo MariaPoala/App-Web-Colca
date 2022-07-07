@@ -32,23 +32,12 @@ const formReducer = (state: DocumentoModel, event: any): DocumentoModel => {
     return { ...state, [event.name]: event.value }
 }
 
-const formReducerConsideracionDoc = (state: ConsideracionDocumentoModel, event: any): ConsideracionDocumentoModel => {
-    if (event.FORM_DATA) {
-        return { ...event.FORM_DATA }
-    }
-    if (event.FORM_ADD) {
-        return new ConsideracionDocumentoModel()
-    }
-    return { ...state, [event.name]: event.value }
-}
-
 export default function AxDocumento({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
     const { data: listaGrupo } = useSWRImmutable('/api/grupo/edicion', fetcherGrupo);
     const { data: listaTipoDocumento } = useSWRImmutable('/api/tipo-documento/edicion', fetcherTipoDocumento);
     const { data: listaArea } = useSWRImmutable('/api/area/edicion', fetcherArea);
-    const { data: listaConsideracion} = useSWRImmutable('/api/consideracion/edicion', fetcherConsideracion);
+    const { data: listaConsideracion } = useSWRImmutable('/api/consideracion/edicion', fetcherConsideracion);
     const [formData, setFormData] = useReducer(formReducer, new DocumentoModel());
-    const [formDataConsideracionDoc, setFormDataConsideracionDoc] = useReducer(formReducerConsideracionDoc, new ConsideracionDocumentoModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
@@ -73,22 +62,21 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion }: TypeFormula
 
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
-        if (event.target.name == "IDGrupo") {
-            console.log(event.target.value)
+        if (event.target.name == "IDDocumentoConsideraciones") {
+            const indexAnterior = formData.IDDocumentoConsideraciones.indexOf(event.target.value);
+            if (indexAnterior != -1) formData.IDDocumentoConsideraciones.splice(indexAnterior, 1);
+            else formData.IDDocumentoConsideraciones.push(event.target.value);
             setFormData({
-
                 name: event.target.name,
-                value: ["/grupo/DL6YGupPVz8AVMXdit3h", "/grupo/vEuLy3GL2AhHoBKE4yif"]
+                value: [...formData.IDDocumentoConsideraciones]
             })
-            return;
-
         }
-
-        setFormData({
-
-            name: event.target.name,
-            value: isCheckbox ? event.target.checked : event.target.value,
-        })
+        else {
+            setFormData({
+                name: event.target.name,
+                value: isCheckbox ? event.target.checked : event.target.value,
+            })
+        }
     }
 
     const handleSubmit = async (event: any) => {
@@ -185,8 +173,8 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion }: TypeFormula
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxSelectMultiple name="IDConsideraciones" value={formDataConsideracionDoc.IDConsideraciones} label="Consideraciones" handleChange={handleChange}>
-                                                         {listaConsideracion && listaConsideracion.map((consideracion: any) => <option key={consideracion.ID} value={"/consideracion-documento/" + consideracion.ID}>{consideracion.Nombre}</option>)}
+                                                <AxSelectMultiple name="IDDocumentoConsideraciones" value={formData.IDDocumentoConsideraciones} label="Consideraciones" handleChange={handleChange}>
+                                                    {listaConsideracion && listaConsideracion.map((consideracion: any) => <option key={consideracion.ID} value={"/consideracion-documento/" + consideracion.ID}>{consideracion.Nombre}</option>)}
                                                 </AxSelectMultiple>
                                             </div>
 
