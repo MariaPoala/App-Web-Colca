@@ -1,12 +1,12 @@
 class Consideracion_DocumentoModel {
     ID: string;
     IDDocumento: string;
-    IDConsideraciones: string;
+    IDConsideraciones: string[];
 
     constructor() {
         this.ID = "";
         this.IDDocumento = "";
-        this.IDConsideraciones = "";
+        this.IDConsideraciones = [];
     }
 }
 export default Consideracion_DocumentoModel

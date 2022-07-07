@@ -97,7 +97,7 @@ export default function AxTipoDocumento({ ID, setID, setEstadoEdicion }: TypeFor
                                     </div>
                                     <Transition.Root show={open} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Tipo Documento"}> </AxModalEliminar>
+                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.Nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Tipo Documento"}> </AxModalEliminar>
                                         </Dialog>
                                     </Transition.Root>
                                 </div>

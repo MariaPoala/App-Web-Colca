@@ -93,11 +93,11 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
                                 <div className="w-0 flex-1 pt-2">
                                     <div className="mt-2 flex">
                                         <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}  ></AxBtnEditar>
-                                        <AxBtnEliminar tipoEdicion={tipoEdicion} EnumTipoEdicion setTipoEdicion={setTipoEdicion} setOpen={setOpen} > </AxBtnEliminar>
+                                        <AxBtnEliminar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setOpen={setOpen} > </AxBtnEliminar>
                                     </div>
                                     <Transition.Root show={open} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Distrito"}> </AxModalEliminar>
+                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.Nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Distrito"}> </AxModalEliminar>
                                         </Dialog>
                                     </Transition.Root>
                                 </div>

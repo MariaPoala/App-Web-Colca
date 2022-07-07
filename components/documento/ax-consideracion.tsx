@@ -98,7 +98,7 @@ export default function AxConsideracion({ ID, setID, setEstadoEdicion }: TypeFor
                                     </div>
                                     <Transition.Root show={open} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Consideracion"}> </AxModalEliminar>
+                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.Nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Consideracion"}> </AxModalEliminar>
                                         </Dialog>
                                     </Transition.Root>
                                 </div>
@@ -121,10 +121,8 @@ export default function AxConsideracion({ ID, setID, setEstadoEdicion }: TypeFor
                                             <div className="hidden md:flex md:col-span-4" />
                                             <div className="md:col-span-3">
                                                 <AxInput name="Descripcion" label="Descripcion" value={formData.Descripcion} handleChange={handleChange} />
-                                            </div>
-                                           
+                                            </div>                                           
                                         </div>
-
                                     </div>
                                 </fieldset>
                                 {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">

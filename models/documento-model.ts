@@ -1,5 +1,6 @@
 class DocumentoModel {
     ID: string;
+    Nombre: string;
     Codigo: string;
     Descripcion: string;
     NroDocumento: string;
@@ -11,12 +12,13 @@ class DocumentoModel {
 
     constructor() {
         this.ID = "";
+        this.Nombre = "";
         this.Codigo = "";
         this.Descripcion = "";
         this.NroDocumento = "";
         this.TiempoEntrega = 0;
         this.Costo = 0;
-        this.IDGrupo = "";
+        this.IDGrupo ="";
         this.IDTipoDocumento = "";
         this.IDDocumentoConsideraciones = "";
     }

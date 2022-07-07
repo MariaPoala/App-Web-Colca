@@ -1,7 +1,7 @@
 class CiudadanoModel {
     ID: string;
-    Nombre: string;
-    Apellido: string;
+    Nombres: string;
+    Apellidos: string;
     FechaNacimiento: Date;
     NroDocumento: string;
     Direccion: string;
@@ -12,8 +12,8 @@ class CiudadanoModel {
 
     constructor(){
         this.ID="";
-        this.Nombre="";
-        this.Apellido="";
+        this.Nombres="";
+        this.Apellidos="";
         this.FechaNacimiento= new Date();
         this.NroDocumento="";
         this.Direccion="";

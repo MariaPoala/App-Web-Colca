@@ -24,7 +24,7 @@ export default function AxModalEliminar({ setOpen, setTipoEdicion, formData, isS
                                     </Dialog.Title>
                                     <div className="mt-2">
                                         <p className="text-lg text-gray-500">
-                                            {`Estas seguro que quieres eliminar al ${nombreModal}: ${formData.Nombre}`}
+                                            {`Estas seguro que quieres eliminar al ${nombreModal}: ${formData}`}
                                         </p>
                                     </div>
                                 </div>

@@ -54,7 +54,7 @@ const navigation = [
     {
         name: 'Documento', href: '', icon: DocumentTextIcon, current: false,
         children: [
-            { name: 'Reporte De Empleados', href: '/rol', icon: DocumentReportIcon },
+            { name: 'Documento', href: '/documento', icon: DocumentReportIcon },
             { name: 'Reporte De Ciudadanos', href: '#', icon: DocumentReportIcon, current: false },
             { name: 'Reporte De Documentos', href: '#', icon: DocumentReportIcon, current: false },
         ],

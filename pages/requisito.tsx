@@ -53,7 +53,7 @@ export default function AxPageEmpleado() {
                                 {/*CABECERA */}
                                 <div className="flex-shrink-0">
                                     <div className="px-6 pt-2 pb-2 ">
-                                        <h2 className="text-lg font-medium text-gray-900">Lista de Grupos</h2>
+                                        <h2 className="text-lg font-medium text-gray-900">Lista de Requisitos</h2>
                                         <div className="mt-2 flex space-x-4">
                                             <div className="flex-1 min-w-0">
                                                 <div className="relative rounded-md shadow-sm overflow-y-auto">
