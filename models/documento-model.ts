@@ -8,7 +8,8 @@ class DocumentoModel {
     Costo: number;
     IDGrupo: string;
     IDTipoDocumento: string;
-    IDDocumentoConsideraciones: string[];
+    IDsConsideracion: string[];
+    IDsRequisito: string[];
 
     constructor() {
         this.ID = "";
@@ -20,7 +21,8 @@ class DocumentoModel {
         this.Costo = 0;
         this.IDGrupo ="";
         this.IDTipoDocumento = "";
-        this.IDDocumentoConsideraciones = [];
+        this.IDsConsideracion = [];
+        this.IDsRequisito = [];
     }
 }
 export default DocumentoModel

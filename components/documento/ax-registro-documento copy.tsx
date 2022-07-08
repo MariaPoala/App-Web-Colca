@@ -4,40 +4,36 @@ import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { Dialog, Transition } from "@headlessui/react";
 import { AxBtnCancelar, AxBtnEditar, AxInput, AxBtnEliminar, AxSelect, AxSubmit, AxModalEliminar, AxSelectMultiple } from 'components/ax-form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
-import DocumentoModel from 'models/documento-model'
-import ConsideracionDocumentoModel from 'models/consideracion-documento-model'
+import RegistroDocumentoModel from 'models/registro-documento-model'
 import { ChevronLeftIcon } from "@heroicons/react/outline";
-import { PlusSmIcon as PlusSmIconSolid } from '@heroicons/react/solid'
 
 export const getServerSideProps = withPageAuthRequired();
-const fetcherGrupo = (url: string): Promise<any> =>
+const fetcherEmpleado = (url: string): Promise<any> =>
     fetch(url, { method: "GET" }).then(r => r.json());
 
-const fetcherTipoDocumento = (url: string): Promise<any> =>
+const fetcherCiudadano = (url: string): Promise<any> =>
     fetch(url, { method: "GET" }).then(r => r.json());
 
-const fetcherRequisito = (url: string): Promise<any> =>
+const fetcherDocumento = (url: string): Promise<any> =>
     fetch(url, { method: "GET" }).then(r => r.json());
 
-const fetcherConsideracion = (url: string): Promise<any> =>
-    fetch(url, { method: "GET" }).then(r => r.json());
 
-const formReducer = (state: DocumentoModel, event: any): DocumentoModel => {
+
+const formReducer = (state: RegistroDocumentoModel, event: any): RegistroDocumentoModel => {
     if (event.FORM_DATA) {
         return { ...event.FORM_DATA }
     }
     if (event.FORM_ADD) {
-        return new DocumentoModel()
+        return new RegistroDocumentoModel()
     }
     return { ...state, [event.name]: event.value }
 }
 
-export default function AxDocumento({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
-    const { data: listaGrupo } = useSWRImmutable('/api/grupo/edicion', fetcherGrupo);
-    const { data: listaTipoDocumento } = useSWRImmutable('/api/tipo-documento/edicion', fetcherTipoDocumento);
-    const { data: listaRequisito } = useSWRImmutable('/api/requisito/edicion', fetcherRequisito);
-    const { data: listaConsideracion } = useSWRImmutable('/api/consideracion/edicion', fetcherConsideracion);
-    const [formData, setFormData] = useReducer(formReducer, new DocumentoModel());
+export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
+    const { data: listaEmpleado } = useSWRImmutable('/api/empleado/edicion', fetcherEmpleado);
+    const { data: listaCiudadano} = useSWRImmutable('/api/ciudadano/edicion', fetcherCiudadano);
+    const { data: listaDocumento } = useSWRImmutable('/api/documento/edicion', fetcherDocumento);
+    const [formData, setFormData] = useReducer(formReducer, new RegistroDocumentoModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
@@ -52,8 +48,8 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion }: TypeFormula
         }
         else {
             const fetchData = async () => {
-                const response = await fetch(`/api/documento/${ID}`);
-                const data: DocumentoModel = await response.json();
+                const response = await fetch(`/api/registro-documento/${ID}`);
+                const data: RegistroDocumentoModel = await response.json();
                 setFormData({ FORM_DATA: data });
             }
             fetchData().catch(console.error);
@@ -63,55 +59,54 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion }: TypeFormula
 
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
-        if (event.target.name == "IDsConsideracion") {
-            const indexAnterior = formData.IDsConsideracion.indexOf(event.target.value);
-            if (indexAnterior != -1) formData.IDsConsideracion.splice(indexAnterior, 1);
-            else formData.IDsConsideracion.push(event.target.value);
-            setFormData({
-                name: event.target.name,
-                value: [...formData.IDsConsideracion]
-            })
-        }
-        else if (event.target.name == "IDsRequisito") {
-            const indexAnterior = formData.IDsRequisito.indexOf(event.target.value);
-            if (indexAnterior != -1) formData.IDsRequisito.splice(indexAnterior, 1);
-            else formData.IDsRequisito.push(event.target.value);
-            setFormData({
-                name: event.target.name,
-                value: [...formData.IDsRequisito]
-            })
-        }
-        else if (event.target.name == "Nombre") {
-            setFormData({
-                name: "Nombre",
-                value: event.target.value
-            })
-            setFormData({
-                name: "Codigo",             
-                value: formData.Nombre.substring(0,3) + "-" + fecha.getFullYear()
-            })
+        // if (event.target.name == "IDsConsideracion") {
+        //     const indexAnterior = formData.IDsConsideracion.indexOf(event.target.value);
+        //     if (indexAnterior != -1) formData.IDsConsideracion.splice(indexAnterior, 1);
+        //     else formData.IDsConsideracion.push(event.target.value);
+        //     setFormData({
+        //         name: event.target.name,
+        //         value: [...formData.IDsConsideracion]
+        //     })
+        // }
+        // else if (event.target.name == "IDsRequisito") {
+        //     const indexAnterior = formData.IDsRequisito.indexOf(event.target.value);
+        //     if (indexAnterior != -1) formData.IDsRequisito.splice(indexAnterior, 1);
+        //     else formData.IDsRequisito.push(event.target.value);
+        //     setFormData({
+        //         name: event.target.name,
+        //         value: [...formData.IDsRequisito]
+        //     })
+        // }
+        // else if (event.target.name == "Nombre") {
+        //     setFormData({
+        //         name: "Nombre",
+        //         value: event.target.value
+        //     })
+        //     setFormData({
+        //         name: "Codigo",             
+        //         value: formData.Nombre.substring(0,3) + "-" + fecha.getFullYear()
+        //     })
 
 
-        }
-        else {
+        // }
+        // else {
             setFormData({
                 name: event.target.name,
                 value: isCheckbox ? event.target.checked : event.target.value,
-            })
-        }
+           })
+        // }
     }
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         setIsSubmitting(true);
         const dataEnvio = JSON.stringify(formData);
-        const response = await fetch('/api/documento/edicion', {
+        const response = await fetch('/api/registro-documento/edicion', {
             body: dataEnvio,
             headers: { 'Content-Type': 'application/json', },
             method: tipoEdicion == EnumTipoEdicion.EDITAR ? "PUT" : tipoEdicion == EnumTipoEdicion.ELIMINAR ? "DELETE" : "POST"
         })
-
-        const result: DocumentoModel = await response.json()
+        const result: RegistroDocumentoModel = await response.json()
         if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.ID);
         setIsSubmitting(false);
         setOpen(false);
@@ -127,7 +122,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion }: TypeFormula
                     onClick={() => { setEstadoEdicion(EnumEstadoEdicion.CANCELADO); }}
                     className="hover:bg-indigo-200 rounded-sm p-2 inline-flex items-center space-x-3 text-sm font-medium text-gray-900">
                     <ChevronLeftIcon className="-ml-2 h-5 w-5 text-indigo-700" aria-hidden="true" />
-                    <span>Lista de Documentos</span>
+                    <span>Lista de Documentos Registrados</span>
                 </button>
             </nav>
             <div className={isLoading ? "animate-pulse" : "" + " flex h-full flex-col  bg-white shadow-xl"}>
@@ -138,9 +133,9 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion }: TypeFormula
                         <div className="-mt-8 flex items-end px-6">
                             {/*CABECERA*/}
                             <div className="ml-6 flex-1">
-                                <div className="-mt-2">
+                                {/* <div className="-mt-2">
                                     <h3 className="font-bold text-white text-2xl">{formData.Nombre ? formData.Nombre : "..."}</h3>
-                                </div>
+                                </div> */}
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="w-0 flex-1 pt-2">
                                     <div className="mt-2 flex">
@@ -149,7 +144,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion }: TypeFormula
                                     </div>
                                     <Transition.Root show={open} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.Nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"documento"}> </AxModalEliminar>
+                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.Nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"registrado de documento"}> </AxModalEliminar>
                                         </Dialog>
                                     </Transition.Root>
                                 </div>
@@ -166,42 +161,34 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion }: TypeFormula
                                             <h3 className="text-lg leading-6 font-medium text-gray-900">Información Personal </h3>
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
-                                            <div className="md:col-span-3">
-                                                <AxInput name="Codigo" label="Código" value={formData.Codigo} handleChange={handleChange} disabled={true} />
-                                            </div>
-                                            <div className="md:col-span-3">
+                                            {/* <div className="md:col-span-3">
                                                 <AxInput name="Nombre" label="Nombre" value={formData.Nombre} handleChange={handleChange} />
+                                            </div> */}
+                                            <div className="md:col-span-3">
+                                                <AxInput name="NroDocumento" label="NroDocumento" value={formData.NroDocumento} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="Descripcion" label="Descripción" value={formData.Descripcion} handleChange={handleChange} type="text" />
+                                                <AxInput name="Observacion" label="Observacion" value={formData.Observacion} handleChange={handleChange} type="text" />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="TiempoEntrega" label="Tiempo Entrega" value={formData.TiempoEntrega} handleChange={handleChange} type="number" />
+                                                <AxInput name="URLArchivo" label="URLArchivo" value={formData.URLArchivo} handleChange={handleChange} type="text" />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="Costo" label="Costo" value={formData.Costo} handleChange={handleChange} placeholder="0.00" />
-                                            </div>
-                                            <div className="md:col-span-3">
-                                                <AxSelect name="IDGrupo" value={formData.IDGrupo} label="Grupo" handleChange={handleChange}>
-                                                    {listaGrupo && listaGrupo.map((grupo: any) => <option key={grupo.ID} value={"/grupo/" + grupo.ID}>{grupo.Nombre}</option>)}
+                                                <AxSelect name="IDEmpleado" value={formData.IDEmpleado} label="Empleado" handleChange={handleChange}>
+                                                    {listaEmpleado && listaEmpleado.map((empleado: any) => <option key={empleado.ID} value={"/empleado/" + empleado.ID}>{empleado.Nombres}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxSelect name="IDTipoDocumento" value={formData.IDTipoDocumento} label="Tipo Documento" handleChange={handleChange}>
-                                                    {listaTipoDocumento && listaTipoDocumento.map((tipodoc: any) => <option key={tipodoc.ID} value={"/tipo-documento/" + tipodoc.ID}>{tipodoc.Nombre}</option>)}
+                                                <AxSelect name="IDCiudadano" value={formData.IDCiudadano} label="Ciudadano" handleChange={handleChange}>
+                                                    {listaCiudadano && listaCiudadano.map((ciudadano: any) => <option key={ciudadano.ID} value={"/ciudadano/" + ciudadano.ID}>{ciudadano.Nombres}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3" />
                                             <div className="md:col-span-3">
-                                                <AxSelectMultiple name="IDsConsideracion" value={formData.IDsConsideracion} label="Consideraciones" handleChange={handleChange}>
-                                                    {listaConsideracion && listaConsideracion.map((consideracion: any) => <option key={consideracion.ID} value={"/consideracion/" + consideracion.ID}>{consideracion.Nombre}</option>)}
-                                                </AxSelectMultiple>
-                                            </div>
-                                            <div className="md:col-span-3">
-                                                <AxSelectMultiple name="IDsRequisito" value={formData.IDsRequisito} label="Requisitos" handleChange={handleChange}>
-                                                    {listaRequisito && listaRequisito.map((requisito: any) => <option key={requisito.ID} value={"/requisito/" + requisito.ID}>{requisito.Nombre}</option>)}
-                                                </AxSelectMultiple>
-                                            </div>
+                                                <AxSelect name="IDDocumento" value={formData.IDDocumento} label="Documento" handleChange={handleChange}>
+                                                    {listaDocumento && listaDocumento.map((documento: any) => <option key={documento.ID} value={"/documento/" + documento.ID}>{documento.Nombre}</option>)}
+                                                </AxSelect>
+                                            </div>                                            
                                         </div>
                                     </div>
                                 </fieldset>

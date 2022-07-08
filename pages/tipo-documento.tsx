@@ -9,7 +9,7 @@ import Tipo_DocumentoModel from 'models/tipo-documento-model'
 
 export const getServerSideProps = withPageAuthRequired();
 
-export default function AxPageEmpleado() {
+export default function AxPageTipoDOcumento() {
     const [IDTipoDocumento, setIDTipoDocumento] = useState("$NULL")
     const [listaTipoDocumento, setListaTipoDocumento] = useState<Tipo_DocumentoModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)

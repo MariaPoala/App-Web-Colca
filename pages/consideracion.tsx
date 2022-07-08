@@ -9,7 +9,7 @@ import ConsideracionModel from 'models/consideraciones-model'
 
 export const getServerSideProps = withPageAuthRequired();
 
-export default function AxPageEmpleado() {
+export default function AxPageConsideracion() {
     const [IDConsideracion, setIDConsideracion] = useState("$NULL")
     const [listaConsideracion, setListaConsideracion] = useState<ConsideracionModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)

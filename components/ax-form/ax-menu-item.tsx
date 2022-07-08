@@ -2,8 +2,12 @@ import {
     CogIcon, FingerPrintIcon, DocumentReportIcon, XIcon,
     HomeIcon, UserIcon, UserGroupIcon, DocumentDuplicateIcon, OfficeBuildingIcon,
     CloudUploadIcon, DocumentTextIcon, DuplicateIcon, DatabaseIcon, CloudIcon,
-    UsersIcon, BadgeCheckIcon, IdentificationIcon, LibraryIcon, ClipboardCheckIcon, ClipboardListIcon   
+    UsersIcon, BadgeCheckIcon, IdentificationIcon, LibraryIcon, ClipboardCheckIcon, ClipboardListIcon,
+    DesktopComputerIcon, PaperClipIcon
 } from '@heroicons/react/outline'
+// const fetcherGrupo = (url: string): Promise<any> =>
+//     fetch(url, { method: "GET" }).then(r => r.json());
+// const { data: listaGrupo } = useSWRImmutable('/api/grupo/edicion', fetcherGrupo);
 
 const navigation = [
     { name: 'Inicio', href: '/', icon: HomeIcon, current: true },
@@ -32,9 +36,24 @@ const navigation = [
         ],
     },
     {
+        name: 'Documento', href: '', icon: DocumentTextIcon, current: false,
+        children: [
+            { name: 'Documento', href: '/documento', icon: DocumentReportIcon }
+        ],
+    },
+    {
         name: 'Digitalización', href: '', icon: CloudIcon, current: false,
         children: [
-            { name: 'Registro de Documento', href: '/registrodocumento', icon: CloudUploadIcon, current: false },
+            { name: 'Registro de Documento', href: '/registro-documento', icon: CloudUploadIcon, current: false },
+            { name: 'Prueba doc', href: '/pruebadoc', icon: CloudUploadIcon, current: false },
+        ],
+    },
+    {
+        name: 'Tramites', href: '', icon: DesktopComputerIcon, current: false,
+       
+        children: [
+            
+            { name: 'Registro de Documento', href: '/registro-documento', icon: PaperClipIcon, current: false },
         ],
     },
     {
@@ -51,18 +70,14 @@ const navigation = [
             { name: 'Reporte De Documentos', href: '#', icon: DocumentReportIcon, current: false },
         ],
     },
-    {
-        name: 'Documento', href: '', icon: DocumentTextIcon, current: false,
-        children: [
-            { name: 'Documento', href: '/documento', icon: DocumentReportIcon },
-            { name: 'Reporte De Ciudadanos', href: '#', icon: DocumentReportIcon, current: false },
-            { name: 'Reporte De Documentos', href: '#', icon: DocumentReportIcon, current: false },
-        ],
-    },
 ]
 
 const secondaryNavigation = [
     { name: 'Tu Perfil', href: '/miperfil', icon: CogIcon },
 ]
 
-export{navigation, secondaryNavigation}
+export { navigation, secondaryNavigation }
+
+function useSWRImmutable(arg0: string, fetcherEmpleado: (url: string) => Promise<any>): { data: any; } {
+    throw new Error('Function not implemented.');
+}

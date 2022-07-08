@@ -9,7 +9,7 @@ import GrupoModel from 'models/grupo-model'
 
 export const getServerSideProps = withPageAuthRequired();
 
-export default function AxPageEmpleado() {
+export default function AxPageGrupo() {
     const [IDGrupo, setIDGrupo] = useState("$NULL")
     const [listaGrupo, setListaGrupo] = useState<GrupoModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)

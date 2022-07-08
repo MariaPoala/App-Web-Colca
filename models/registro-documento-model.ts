@@ -1,22 +1,30 @@
 class Registro_DocumentoModel {
-    ID: string;
-    Nombre: string;
-    Descripcion: string;
+    ID: string;   
     NroDocumento: string;
-    Archivo: string;
+    Observacion: string;
+    URLArchivo: string;
     IDEmpleado: string;
     IDCiudadano: string;
     IDDocumento: string;
+    FecRegistro: Date;
+    FecEdicion: Date;
+    FecDocumento: Date;
+    FecAnulacion: Date;
+    Motivo: string;
 
     constructor(){
         this.ID="";
-        this.Nombre="";
-        this.Descripcion="";
+        this.Observacion="";
         this.NroDocumento="";
-        this.Archivo="";
+        this.URLArchivo="";
         this.IDEmpleado="";
         this.IDCiudadano="";
         this.IDDocumento="";
+        this.FecRegistro= new Date();
+        this.FecEdicion=new Date();
+        this.FecDocumento=new Date();
+        this.FecAnulacion=new Date();
+        this.Motivo="";
     }
 }
 export default Registro_DocumentoModel

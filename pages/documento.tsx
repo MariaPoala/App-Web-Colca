@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PhoneIcon } from '@heroicons/react/solid'
+import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PhoneIcon, PlusIcon } from '@heroicons/react/solid'
 import AxInicio from 'components/ax-inicio'
 import AxDocumento from 'components/documento/ax-documento'
 import { EnumEstadoEdicion } from 'lib/edicion'
@@ -15,8 +15,8 @@ export default function AxPageDocumento() {
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
     const [isLoading, setIsLoading] = useState(true);
     const [textoFiltro, setTextoFiltro] = useState('')
-
-    useEffect(() => {
+ 
+    useEffect(() => {   
         if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
         setIsLoading(true)
         const fetchData = async () => {
@@ -33,7 +33,7 @@ export default function AxPageDocumento() {
     const listaFiltro = ((textoFiltro == "" ? listaDocumento : listaDocumento.filter(documento =>
         (documento.Nombre.toUpperCase().includes(textoFiltro.toUpperCase()))
     )))
-    console.log(listaFiltro)
+   
     return (
         <>
             <Head><title>Documento</title></Head>
@@ -44,7 +44,7 @@ export default function AxPageDocumento() {
                         <div className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "block" : "hidden sm:block") + " flex-1 inset-y-0 pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
                             {IDDocumento == "$NULL"
                                 ? <AxInicio nombre={"Documento"}></AxInicio>
-                                : <AxDocumento ID={IDDocumento} setID={setIdDocumento} setEstadoEdicion={setEstadoEdicion}></AxDocumento>
+                                : <AxDocumento ID={IDDocumento} setID={setIdDocumento} setEstadoEdicion={setEstadoEdicion} ></AxDocumento>
                             }
                         </div>
                         {/*LISTA DE Documento*/}
@@ -90,7 +90,7 @@ export default function AxPageDocumento() {
                                                     }}
                                                     type="button" className="bg-indigo-200 p-1 rounded-full text-indigo-500 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:text-indigo-600">
                                                     <span className="sr-only">Agregar Documento</span>
-                                                    <UserAddIcon className="h-6 w-6 border-solid " aria-hidden="true" />
+                                                    <PlusIcon className="h-6 w-6 border-solid " aria-hidden="true" />
                                                 </button>
                                             </div>
                                         </div>

@@ -1,58 +1,59 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PhoneIcon } from '@heroicons/react/solid'
+import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PhoneIcon, PlusIcon } from '@heroicons/react/solid'
 import AxInicio from 'components/ax-inicio'
-import AxCiudadano from 'components/entidades/ax-ciudadano'
+import AxRegistroDocumento from 'components/documento/ax-registro-documento'
 import { EnumEstadoEdicion } from 'lib/edicion'
-import CiudadanoModel from 'models/ciudadano-model'
+import RegistroDocumentoModel from 'models/registro-documento-model'
 
 export const getServerSideProps = withPageAuthRequired();
 
-export default function AxPageCiudadano() {
-    const [IDCiudadano, setIDCiudadano] = useState("$NULL")
-    const [listaCiudadano, setListaEmpleado] = useState<CiudadanoModel[]>([]);
+export default function AxPageDocumento() {
+    const [IDDocumento, setIdDocumento] = useState("$NULL")
+    const [listaRegistroDocumento, setListaRegistroDocumento] = useState<RegistroDocumentoModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
     const [isLoading, setIsLoading] = useState(true);
     const [textoFiltro, setTextoFiltro] = useState('')
-
-    useEffect(() => {
+ 
+    useEffect(() => {   
         if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
         setIsLoading(true)
         const fetchData = async () => {
-            const response = await fetch(`/api/ciudadano/edicion`, {
+            const response = await fetch(`/api/registro-documento/edicion`, {
                 method: "GET"
             })
-            const result: CiudadanoModel[] = await response.json()
-            setListaEmpleado(result);
+            const result: RegistroDocumentoModel[] = await response.json()
+            setListaRegistroDocumento(result);
             setIsLoading(false)
         }
         fetchData().catch(console.error);
     }, [estadoEdicion])
 
-    const listaFiltro = ((textoFiltro == "" ? listaCiudadano : listaCiudadano.filter(ciudadano =>
-        (ciudadano.Nombres.toUpperCase().includes(textoFiltro.toUpperCase()) || ciudadano.Apellidos.toUpperCase().includes(textoFiltro.toUpperCase())) 
+    const listaFiltro = ((textoFiltro == "" ? listaRegistroDocumento : listaRegistroDocumento.filter(registrodocumento =>
+        (registrodocumento.Nombre.toUpperCase().includes(textoFiltro.toUpperCase()))
     )))
+   
     return (
         <>
-            <Head><title>Ciudadano</title></Head>
+            <Head><title>Registro de Documento</title></Head>
             <div className={isLoading ? "animate-pulse" : "" + " h-full flex flex-col"}>
                 <div className="min-h-0 flex-1 flex overflow-hidden ">
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
-                        {/*DETALLE DEL Ciudadano*/}
+                        {/*DETALLE DEL Documento*/}
                         <div className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "block" : "hidden sm:block") + " flex-1 inset-y-0 pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
-                            {IDCiudadano == "$NULL"
-                                ? <AxInicio nombre={"Ciudadano"}></AxInicio>
-                                : <AxCiudadano ID={IDCiudadano} setID={setIDCiudadano} setEstadoEdicion={setEstadoEdicion}></AxCiudadano>
+                            {IDDocumento == "$NULL"
+                                ? <AxInicio nombre={"Registro de Documento"}></AxInicio>
+                                : <AxRegistroDocumento ID={IDDocumento} setID={setIdDocumento} setEstadoEdicion={setEstadoEdicion} ></AxRegistroDocumento>
                             }
                         </div>
-                        {/*LISTA DE CIudadano*/}
+                        {/*LISTA DE Documento*/}
                         <aside className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "invisible sm:visible" : "visible") + " fixed mt-16 w-full inset-y-0 sm:w-72 md:w-80 lg:w-80"}>
                             <div className="h-full relative flex flex-col border-r border-gray-200 bg-gray-100">
                                 {/*CABECERA */}
                                 <div className="flex-shrink-0">
                                     <div className="px-6 pt-2 pb-2 ">
-                                        <h2 className="text-lg font-medium text-gray-900">Lista de Ciudadano</h2>
+                                        <h2 className="text-lg font-medium text-gray-900">Lista de Documento Registrados</h2>
                                         <div className="mt-2 flex space-x-4">
                                             <div className="flex-1 min-w-0">
                                                 <div className="relative rounded-md shadow-sm overflow-y-auto">
@@ -72,7 +73,7 @@ export default function AxPageCiudadano() {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>                                            
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="border-t border-b border-gray-200 bg-gray-100 px-6 py-2 text-sm font-medium text-gray-500">
@@ -84,41 +85,37 @@ export default function AxPageCiudadano() {
                                             <div>
                                                 <button onClick=
                                                     {() => {
-                                                        setIDCiudadano("$ADD");
+                                                        setIdDocumento("$ADD");
                                                         setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
                                                     }}
                                                     type="button" className="bg-indigo-200 p-1 rounded-full text-indigo-500 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:text-indigo-600">
-                                                    <span className="sr-only">Agregar Ciudadano</span>
-                                                    <UserAddIcon className="h-6 w-6 border-solid " aria-hidden="true" />
+                                                    <span className="sr-only">Agregar Documento a Registrar</span>
+                                                    <PlusIcon className="h-6 w-6 border-solid " aria-hidden="true" />
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                {/*Ciudadanos*/}
+                                {/*Documentos*/}
                                 <nav aria-label="Message list" className="min-h-0 flex-1 overflow-y-auto">
                                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
                                         <ul role="list" className="divide-y divide-gray-200">
                                             {listaFiltro && listaFiltro.map(item => {
                                                 return <li key={item.ID}>
                                                     <a onClick={() => {
-                                                        setIDCiudadano(item.ID);
+                                                        setIdDocumento(item.ID);
                                                         setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
                                                     }}
-                                                        className={(item.ID == IDCiudadano ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
+                                                        className={(item.ID == IDDocumento ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
                                                         <div className="flex px-4 py-4 sm:px-6">
-                                                            <div className="min-w-0 flex-1 flex">                                                              
+                                                            <div className="min-w-0 flex-1 flex">
                                                                 <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
                                                                     <div>
-                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.Nombres + ' ' + item.Apellidos}</p>
+                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.Nombre}</p>
                                                                         <p className="mt-2 flex text-sm text-gray-500">
-                                                                            <MailIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                                            <span className="truncate">{item.Email}</span>
+                                                                            <span className="truncate">{item.Descripcion}</span>
                                                                         </p>
-                                                                        <p className="mt-2 flex text-sm text-gray-500">
-                                                                            <PhoneIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                                            <span className="truncate">{item.Celular}</span>
-                                                                        </p>
+
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -134,7 +131,7 @@ export default function AxPageCiudadano() {
                                         {textoFiltro !== '' && listaFiltro.length === 0 && (
                                             <div className="py-14 px-4 text-center sm:px-14">
                                                 <UsersIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
-                                                <p className="mt-4 text-sm text-gray-900">No se encontraron ciudadanos usando ese término de búsqueda.</p>
+                                                <p className="mt-4 text-sm text-gray-900">No se encontraron Documentos Registrados usando ese término de búsqueda.</p>
                                             </div>
                                         )}
                                     </div>

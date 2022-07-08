@@ -9,7 +9,7 @@ import DistritoModel from 'models/distrito-model'
 
 export const getServerSideProps = withPageAuthRequired();
 
-export default function AxPageEmpleado() {
+export default function AxPageDistrito() {
     const [IDDistrito, setIDDistrito] = useState("$NULL")
     const [listaDistrito, setListaEdicion] = useState<DistritoModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)

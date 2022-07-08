@@ -10,7 +10,7 @@ import RequisitoModel from 'models/requisito-model'
 
 export const getServerSideProps = withPageAuthRequired();
 
-export default function AxPageEmpleado() {
+export default function AxPageRequisito() {
     const [IDRequisito, setIdRequisito] = useState("$NULL")
     const [listaRequisito, setListaRequisito] = useState<RequisitoModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
