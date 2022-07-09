@@ -21,7 +21,7 @@ class Registro_DocumentoModel {
         this.IDCiudadano="";
         this.IDDocumento="";
         this.FecRegistro= new Date();
-        this.FecEdicion=new Date();
+        this.FecEdicion=new Date(Date.now());
         this.FecDocumento=new Date();
         this.FecAnulacion=new Date();
         this.Motivo="";

@@ -6,6 +6,7 @@ type TypeFormularioProps = {
     ID: string
     setID: TypeSetID,
     setEstadoEdicion: TypeSetEstadoEdicion
+
 }
 
 export type {TypeFormularioProps};

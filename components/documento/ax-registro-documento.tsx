@@ -1,146 +1,259 @@
-import React, { Fragment, useState, useEffect } from 'react'
-import Head from 'next/head'
+import { Fragment, useEffect, useReducer, useState, useRef } from "react";
+import useSWRImmutable from "swr/immutable"
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PhoneIcon, PlusIcon } from '@heroicons/react/solid'
-import AxInicio from 'components/ax-inicio'
-import AxRegistroDocumento from 'components/documento/ax-registro-documento'
-import { EnumEstadoEdicion } from 'lib/edicion'
+import { Dialog, Transition } from "@headlessui/react";
+import * as uuid from 'uuid'
+import { AxBtnCancelar, AxBtnEditar, AxInput, AxBtnEliminar, AxSelect, AxSubmit, AxModalEliminar, AxSelectMultiple } from 'components/ax-form'
+import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
 import RegistroDocumentoModel from 'models/registro-documento-model'
+import { ChevronLeftIcon, XIcon } from "@heroicons/react/outline";
+import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
+import db from "lib/firebase-config";
+db.app
 
 export const getServerSideProps = withPageAuthRequired();
+const fetcherEmpleado = (url: string): Promise<any> =>
+    fetch(url, { method: "GET" }).then(r => r.json());
 
-export default function AxPageDocumento() {
-    const [IDDocumento, setIdDocumento] = useState("$NULL")
-    const [listaRegistroDocumento, setListaRegistroDocumento] = useState<RegistroDocumentoModel[]>([]);
-    const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
+const fetcherCiudadano = (url: string): Promise<any> =>
+    fetch(url, { method: "GET" }).then(r => r.json());
+
+const fetcherDocumento = (url: string): Promise<any> =>
+    fetch(url, { method: "GET" }).then(r => r.json());
+
+
+
+const formReducer = (state: RegistroDocumentoModel, event: any): RegistroDocumentoModel => {
+    if (event.FORM_DATA) {
+        return { ...event.FORM_DATA }
+    }
+    if (event.FORM_ADD) {
+        return new RegistroDocumentoModel()
+    }
+    return { ...state, [event.name]: event.value }
+}
+
+export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
+    const { data: listaEmpleado } = useSWRImmutable('/api/empleado/edicion', fetcherEmpleado);
+    const { data: listaCiudadano } = useSWRImmutable('/api/ciudadano/edicion', fetcherCiudadano);
+    const { data: listaDocumento } = useSWRImmutable('/api/documento/edicion', fetcherDocumento);
+    const [formData, setFormData] = useReducer(formReducer, new RegistroDocumentoModel());
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    const [textoFiltro, setTextoFiltro] = useState('')
- 
-    useEffect(() => {   
-        if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
-        setIsLoading(true)
-        const fetchData = async () => {
-            const response = await fetch(`/api/registro-documento/edicion`, {
-                method: "GET"
-            })
-            const result: RegistroDocumentoModel[] = await response.json()
-            setListaRegistroDocumento(result);
-            setIsLoading(false)
-        }
-        fetchData().catch(console.error);
-    }, [estadoEdicion])
+    const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
+    const [open, setOpen] = useState(false)
+    const [imagenupload, setImagen] = useState(null);
+    const storage = getStorage();
+    const [listaimage, setListaimage] = useState<Array<any>>([]);
 
-    const listaFiltro = ((textoFiltro == "" ? listaRegistroDocumento : listaRegistroDocumento.filter(registrodocumento =>
-        (registrodocumento.Nombre.toUpperCase().includes(textoFiltro.toUpperCase()))
-    )))
-   
+
+    useEffect(() => {
+        setIsLoading(true)
+
+        setTipoEdicion(ID == "$ADD" ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
+        if (ID == "$ADD") {
+            setFormData({ FORM_ADD: true })
+        }
+        else {
+            const fetchData = async () => {
+                const response = await fetch(`/api/registro-documento/${ID}`);
+                const data: RegistroDocumentoModel = await response.json();
+                setFormData({ FORM_DATA: data });
+            }
+            fetchData().catch(console.error);
+        }
+        setIsLoading(false)
+    }, [ID])
+    const changeImagen = (e: any) => {
+        setImagen(e.target.files[0]);
+
+    }
+    const uploadimage = () => {
+        if (imagenupload == null) return;
+        const imageRef = ref(storage, `archivodocumento/${setImagen.name + uuid.v4()}`)
+        uploadBytes(imageRef, imagenupload).then((snapshot) => {
+            alert('Uploaded a blob or file!');
+            getDownloadURL(snapshot.ref).then((url) => {
+                setListaimage((prev) => [...prev, url]);
+                console.log(url)
+                formData.URLArchivo = (url)
+            })
+        });
+        return;
+    }
+    const handleChange = (event: any) => {
+        const isCheckbox = event.target.type === 'checkbox';
+        // if (event.target.name == "IDsConsideracion") {
+        //     const indexAnterior = formData.IDsConsideracion.indexOf(event.target.value);
+        //     if (indexAnterior != -1) formData.IDsConsideracion.splice(indexAnterior, 1);
+        //     else formData.IDsConsideracion.push(event.target.value);
+        //     setFormData({
+        //         name: event.target.name,
+        //         value: [...formData.IDsConsideracion]
+        //     })
+        // }
+        // else if (event.target.name == "IDsRequisito") {
+        //     const indexAnterior = formData.IDsRequisito.indexOf(event.target.value);
+        //     if (indexAnterior != -1) formData.IDsRequisito.splice(indexAnterior, 1);
+        //     else formData.IDsRequisito.push(event.target.value);
+        //     setFormData({
+        //         name: event.target.name,
+        //         value: [...formData.IDsRequisito]
+        //     })
+        // }
+        // else if (event.target.name == "Nombre") {
+        //     setFormData({
+        //         name: "Nombre",
+        //         value: event.target.value
+        //     })
+        //     setFormData({
+        //         name: "Codigo",             
+        //         value: formData.Nombre.substring(0,3) + "-" + fecha.getFullYear()
+        //     })
+
+
+        // }
+        // else {
+        setFormData({
+            name: event.target.name,
+            value: isCheckbox ? event.target.checked : event.target.value,
+        })
+        // }
+    }
+
+    const handleSubmit = async (event: any) => {
+        event.preventDefault();
+        setIsSubmitting(true);
+        const dataEnvio = JSON.stringify(formData);
+        const response = await fetch('/api/registro-documento/edicion', {
+            body: dataEnvio,
+            headers: { 'Content-Type': 'application/json', },
+            method: tipoEdicion == EnumTipoEdicion.EDITAR ? "PUT" : tipoEdicion == EnumTipoEdicion.ELIMINAR ? "DELETE" : "POST"
+        })
+        const result: RegistroDocumentoModel = await response.json()
+        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.ID);
+        setIsSubmitting(false);
+        setOpen(false);
+        if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID("$NULL");
+        setTipoEdicion(EnumTipoEdicion.VISUALIZAR)
+        setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
+    }
+
     return (
         <>
-            <Head><title>Registro de Documento</title></Head>
-            <div className={isLoading ? "animate-pulse" : "" + " h-full flex flex-col"}>
-                <div className="min-h-0 flex-1 flex overflow-hidden ">
-                    <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
-                        {/*DETALLE DEL Documento*/}
-                        <div className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "block" : "hidden sm:block") + " flex-1 inset-y-0 pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
-                            {IDDocumento == "$NULL"
-                                ? <AxInicio nombre={"Registro de Documento"}></AxInicio>
-                                : <AxRegistroDocumento ID={IDDocumento} setID={setIdDocumento} setEstadoEdicion={setEstadoEdicion} ></AxRegistroDocumento>
-                            }
+            <div className={isLoading ? "animate-pulse" : "" + " flex h-full flex-col  bg-white shadow-xl"}>
+                <div className="divide-y divide-gray-200">
+                    {/*PORTADA*/}
+
+                    <div className="h-3 bg-indigo-700 rounded-sm" />
+                    
+                    <div className="w-0 flex-1 pt-2">
+                        <div className="mt-2 flex">
+                            <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}  ></AxBtnEditar>
+                            <AxBtnEliminar tipoEdicion={tipoEdicion} EnumTipoEdicion setTipoEdicion={setTipoEdicion} setOpen={setOpen} > </AxBtnEliminar>
                         </div>
-                        {/*LISTA DE Documento*/}
-                        <aside className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "invisible sm:visible" : "visible") + " fixed mt-16 w-full inset-y-0 sm:w-72 md:w-80 lg:w-80"}>
-                            <div className="h-full relative flex flex-col border-r border-gray-200 bg-gray-100">
-                                {/*CABECERA */}
-                                <div className="flex-shrink-0">
-                                    <div className="px-6 pt-2 pb-2 ">
-                                        <h2 className="text-lg font-medium text-gray-900">Lista de Documento Registrados</h2>
-                                        <div className="mt-2 flex space-x-4">
-                                            <div className="flex-1 min-w-0">
-                                                <div className="relative rounded-md shadow-sm overflow-y-auto">
-                                                    <div className="flex-1 min-w-0">
-                                                        <div className="relative rounded-md shadow-sm">
-                                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                                <SearchIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                            </div>
-                                                            <input
-                                                                type="search"
-                                                                name="search"
-                                                                id="search"
-                                                                className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-indigo-300 rounded-md"
-                                                                placeholder="Buscar..."
-                                                                onChange={(event) => setTextoFiltro(event.target.value)}
-                                                            />
-                                                        </div>
-                                                    </div>
+                        <Transition.Root show={open} as={Fragment}>
+                            <Dialog as="div" className="relative z-10" onClose={setOpen}>
+                                <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.NroDocumento} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Grupo"}> </AxModalEliminar>
+                            </Dialog>
+                        </Transition.Root>
+                    </div>
+                    {/*FORMULARIO*/}
+                    <div className="px-0 py-0 m-2">
+                        <div className="p-4 md:p-2">
+                            <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit}>
+                                <fieldset disabled={tipoEdicion == EnumTipoEdicion.VISUALIZAR} className="space-y-8 divide-y divide-gray-200">
+                                    <div className="">
+                                        <div>
+                                            <h3 className="text-lg leading-6 font-medium text-gray-900">Información Personal </h3>
+                                        </div>
+                                        <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
+                                            {/* <div className="md:col-span-3">
+                                                <AxInput name="Nombre" label="Nombre" value={formData.Nombre} handleChange={handleChange} />
+                                            </div> */}
+                                            <div className="md:col-span-3">
+                                                <AxInput name="NroDocumento" label="NroDocumento" value={formData.NroDocumento} handleChange={handleChange} />
+                                            </div>
+                                            <div className="md:col-span-3">
+                                                <AxInput name="Observacion" label="Observacion" value={formData.Observacion} handleChange={handleChange} type="text" />
+                                            </div>
+                                            <div className="md:col-span-3">
+                                                <AxSelect name="IDEmpleado" value={formData.IDEmpleado} label="Empleado" handleChange={handleChange}>
+                                                    {listaEmpleado && listaEmpleado.map((empleado: any) => <option key={empleado.ID} value={"/empleado/" + empleado.ID}>{empleado.Nombres}</option>)}
+                                                </AxSelect>
+                                            </div>
+                                            <div className="md:col-span-3">
+                                                <AxSelect name="IDCiudadano" value={formData.IDCiudadano} label="Ciudadano" handleChange={handleChange}>
+                                                    {listaCiudadano && listaCiudadano.map((ciudadano: any) => <option key={ciudadano.ID} value={"/ciudadano/" + ciudadano.ID}>{ciudadano.Nombres}</option>)}
+                                                </AxSelect>
+                                            </div>
+                                            <div className="md:col-span-3">
+                                                <AxSelect name="IDDocumento" value={formData.IDDocumento} label="Documento" handleChange={handleChange}>
+                                                    {listaDocumento && listaDocumento.map((documento: any) => <option key={documento.ID} value={"/documento/" + documento.ID}>{documento.Nombre}</option>)}
+                                                </AxSelect>
+                                            </div>
+                                            <div className="md:col-span-3">
+                                                <AxInput name="FecRegistro" label="Fecha Registro" value={formData.FecRegistro} handleChange={handleChange} type="date" />
+                                            </div>
+                                            <div className="md:col-span-3">
+                                                <AxInput name="FecEdicion" label="Fecha Edición" value={formData.FecEdicion} handleChange={handleChange} type="date" />
+                                            </div>
+                                            <div className="md:col-span-3">
+                                                <AxInput name="FecDocumento" label="Fecha Documento" value={formData.FecDocumento} handleChange={handleChange} type="date" />
+                                            </div>
+                                            <div className="md:col-span-3">
+                                                <AxInput name="FecAnulacion" label="Fecha Anulación" value={formData.FecAnulacion} handleChange={handleChange} type="date" />
+                                            </div>
+                                            <div className="md:col-span-3">
+                                                <AxInput name="Motivo" label="Motivo" value={formData.Motivo} handleChange={handleChange} type="text" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                                    <label htmlFor="cover-photo" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                        Adjuntar formato de Ejemplo
+                                    </label>
+
+                                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                                        <div className="max-w-lg flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                            <div className="space-y-1 text-center">
+                                                <img className="mx-auto h-12 w-12 text-gray-400" src="/upload-file.svg" alt="Easywire logo" />
+                                                <div className="flex   text-sm text-center text-gray-600">
+                                                    <label
+                                                        htmlFor="UrlImgEjemplo"
+                                                        className="relative ml-7 cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
+                                                    >
+
+                                                        <input className="bg-indigo-200" type="file" name="image" onChange={changeImagen} />
+                                                    </label>
+                                                </div>
+                                                <p className="text-xs text-gray-500">Word, Pdf, Img hasta 10MB</p>
+                                                <button type="button" className="bg-indigo-300 border-2 rounded-md text-white" onClick={uploadimage} > GUARDAR IMAGEN </button>
+                                                <div className="visibility: hidden">
+                                                    <AxInput name="URLArchivo" label="Archivo" value={formData.URLArchivo ? formData.URLArchivo : ""} handleChange={handleChange} />
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
-                                    <div className="border-t border-b border-gray-200 bg-gray-100 px-6 py-2 text-sm font-medium text-gray-500">
-                                        <div className="flex items-center space-x-4">
-                                            <div className='flex-1'>
-                                                <p className="text-sm font-medium text-gray-500">{
-                                                    listaFiltro && listaFiltro.length || 0} Registros</p>
-                                            </div>
-                                            <div>
-                                                <button onClick=
-                                                    {() => {
-                                                        setIdDocumento("$ADD");
-                                                        setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
-                                                    }}
-                                                    type="button" className="bg-indigo-200 p-1 rounded-full text-indigo-500 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:text-indigo-600">
-                                                    <span className="sr-only">Agregar Documento a Registrar</span>
-                                                    <PlusIcon className="h-6 w-6 border-solid " aria-hidden="true" />
-                                                </button>
-                                            </div>
-                                        </div>
+
+
+
+                                </div>
+                                {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">
+                                    <div className="flex justify-end">
+                                        <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID}></AxBtnCancelar>
+                                        <AxSubmit loading={isSubmitting} />
                                     </div>
                                 </div>
-                                {/*Documentos*/}
-                                <nav aria-label="Message list" className="min-h-0 flex-1 overflow-y-auto">
-                                    <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                                        <ul role="list" className="divide-y divide-gray-200">
-                                            {listaFiltro && listaFiltro.map(item => {
-                                                return <li key={item.ID}>
-                                                    <a onClick={() => {
-                                                        setIdDocumento(item.ID);
-                                                        setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
-                                                    }}
-                                                        className={(item.ID == IDDocumento ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
-                                                        <div className="flex px-4 py-4 sm:px-6">
-                                                            <div className="min-w-0 flex-1 flex">
-                                                                <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
-                                                                    <div>
-                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.Nombre}</p>
-                                                                        <p className="mt-2 flex text-sm text-gray-500">
-                                                                            <span className="truncate">{item.Descripcion}</span>
-                                                                        </p>
+                                }
+                            </form >
+                        </div >
+                    </div>
+                </div>
+            </div>
 
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div>
-                                                                <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                            })
-                                            }
-                                        </ul>
-                                        {textoFiltro !== '' && listaFiltro.length === 0 && (
-                                            <div className="py-14 px-4 text-center sm:px-14">
-                                                <UsersIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
-                                                <p className="mt-4 text-sm text-gray-900">No se encontraron Documentos Registrados usando ese término de búsqueda.</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                </nav>
-                            </div>
-                        </aside>
-                    </main>
-                </div >
-            </div >
         </>
     )
 }
