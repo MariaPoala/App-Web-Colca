@@ -23,6 +23,8 @@ export default function Example() {
   const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
   const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
   const [isLoading, setIsLoading] = useState(true);
+  const [grupo, setGrupo] = useState("");
+  const [texto, setTexto] = useState("");
 
 
   useEffect(() => {
@@ -45,6 +47,13 @@ export default function Example() {
         id: id
       }
     });
+  const handleChange = (event: any) => {
+    const isCheckbox = event.target.type === 'checkbox';
+
+    if (event.target.name == "NroDocumento") {
+      setTexto(event.target.value)
+    }
+  }
 
   return (
     <>
@@ -69,12 +78,12 @@ export default function Example() {
 
                 <div className="mt-2 grid px-16 grid-cols-1   gap-y-6 gap-x-4 md:grid-cols-6">
                   <div className="md:col-span-1">
-                    <AxSelect name="IDGrupo" value="" filtro={true} label="Ciudadanos" >
+                    <AxSelect name="ciudadano" value="" filtro={true} label="Ciudadanos" >
                       {listaCiudadano && listaCiudadano.map((ciudadano: any) => <option key={ciudadano.ID} value={"/grupo/" + ciudadano.ID}>{ciudadano.Nombres}</option>)}
                     </AxSelect>
                   </div>
                   <div className="md:col-span-1">
-                    <AxInput name="Fecha" label="Fecha de Registro" type="text" filtro={true} />
+                    <AxInput name="NroDocumento" label="Nro Documento" handleChange={handleChange} type="text" filtro={true} />
                   </div>
                   <div className="md:col-span-1">
                     <AxInput name="Fecha" label="Fecha de Registro" type="date" filtro={true} />
@@ -102,7 +111,12 @@ export default function Example() {
               {/* Card */}
               {(listaDoc && listaDoc.map((item: any) =>
               (resultado.map(s => s.id == "/documento/" + item.ID &&
-                < div key={item.ID} className="bg-white overflow-hidden shadow rounded-lg" >
+
+                < ul key={item.ID} className="bg-white overflow-hidden shadow rounded-lg hover:bg-indigo-700"
+                  onClick={() => {
+                    setGrupo(item.ID);
+                    setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
+                  }}>
 
                   <div className="p-2 bg-indigo-100">
                     <div className="flex items-center">
@@ -121,7 +135,7 @@ export default function Example() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </ul>
               )))
               )
               }
@@ -250,57 +264,59 @@ export default function Example() {
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {listaRegistroDocumento && listaRegistroDocumento.map((item) => (
-                        <tr key={item.ID} className="bg-white">
+                        // ("/documento/" + grupo == item.IDDocumento ||  texto==item.NroDocumento &&
+                        ("/documento/" + grupo == item.IDDocumento  &&
+                          <tr key={item.ID} className="bg-white">
 
-                          <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-900">
-                            <input
-                              onClick={() => {
-                                setIdRegistroDocumento(item.ID);
-                                setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
-                              }}
-                              id="comments"
-                              aria-describedby="comments-description"
-                              name="comments"
-                              type="checkbox"
-                              className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                            />
-                          </td>
-                          <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
-                            {item.NroDocumento}
-                          </td>
-                          <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
-                            {item.Observacion}
-                          </td>
-                          <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
-                            {item.URLArchivo}
-                          </td>
-                          <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
-                            {item.IDEmpleado}
-                          </td>
+                            <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-900">
+                              <input
+                                onClick={() => {
+                                  setIdRegistroDocumento(item.ID);
+                                  setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
+                                }}
+                                id="comments"
+                                aria-describedby="comments-description"
+                                name="comments"
+                                type="checkbox"
+                                className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                              />
+                            </td>
+                            <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
+                              {item.NroDocumento}
+                            </td>
+                            <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
+                              {item.Observacion}
+                            </td>
+                            <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
+                              {item.URLArchivo}
+                            </td>
+                            <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
+                              {item.IDEmpleado}
+                            </td>
 
-                          <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
-                            {item.IDCiudadano}
-                          </td>
-                          <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
-                            {item.IDDocumento}
-                          </td>
-                          <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
-                            {item.FecRegistro}
-                          </td>
-                          <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
-                            {item.FecEdicion}
-                          </td>
-                          <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
-                            {item.FecDocumento}
-                          </td>
-                          <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
-                            {item.FecAnulacion}
-                          </td>
-                          <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
-                            {item.Motivo}
-                          </td>
-                        </tr>
-                      ))}
+                            <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
+                              {item.IDCiudadano}
+                            </td>
+                            <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
+                              {item.IDDocumento}
+                            </td>
+                            <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
+                              {item.FecRegistro}
+                            </td>
+                            <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
+                              {item.FecEdicion}
+                            </td>
+                            <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
+                              {item.FecDocumento}
+                            </td>
+                            <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
+                              {item.FecAnulacion}
+                            </td>
+                            <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-500">
+                              {item.Motivo}
+                            </td>
+                          </tr>
+                        )))}
                     </tbody>
                   </table>
                   {/* Pagination */}
@@ -312,7 +328,7 @@ export default function Example() {
                 >
                   <div className="hidden sm:block">
                     <p className="text-sm text-gray-700">
-                      Registros <span className="font-medium">1</span> a <span className="font-medium">10</span> de{' '}
+                      Registros <span className="font-medium">1</span> a <span className="font-medium">2</span> de{' '}
                       <span className="font-medium">{listaRegistroDocumento.length}</span> resultados
                     </p>
                   </div>
