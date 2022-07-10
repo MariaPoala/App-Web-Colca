@@ -68,12 +68,7 @@ export default function Example() {
                     aria-hidden="true"
                   />
                   Filtrar Por:
-                  <div
-                    className='flex h-10 w-10 flex-none items-center justify-center rounded-lg hover:bg-indigo-700 bg-indigo-500'
-
-                  >
-                    <FilterIcon className="h-6 w-6 text-white" aria-hidden="true" />
-                  </div>
+                  
                 </dd>
 
                 <div className="mt-2 grid px-16 grid-cols-1   gap-y-6 gap-x-4 md:grid-cols-6">
@@ -84,23 +79,32 @@ export default function Example() {
                   </div>
                   <div className="md:col-span-1">
                     <AxInput name="NroDocumento" label="Nro Documento" handleChange={handleChange} type="text" filtro={true} />
-                  </div>
-                  <div className="md:col-span-1">
-                    <AxInput name="Fecha" label="Fecha de Registro" type="date" filtro={true} />
-                  </div>
-                  <div className="md:col-span-1">
-                    <AxInput name="Fecha" label="Fecha de Edicion" value="" type="date" filtro={true} />
-                  </div>
+                  </div>                  
                   <div className="md:col-span-1">
                     <AxInput name="Fecha" label="Fecha de Documento" value="" filtro={true} type="date" />
                   </div>
-                  <div className="md:col-span-1">
-                    <AxInput name="Fecha" label="Fecha de Anulación" value="" filtro={true} type="date" />
+                  <div className="md:col-span-2">
                   </div>
+                  <div className="md:col-span-1">
+                   <button type="button"
+                onClick=
+                {() => {
+                  setIdRegistroDocumento(IDRegistroDocumento);
+                  setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
+                  setabrir(true);
+                }}
+                className="ml-3 h-8 mt-0 w-20 bottom-0 right-0  inline-flex items-center px-3 py-2 border 
+                                            border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+                                            disabled:bg-blue-300"
+              >
+                Filtrar
+              </button>
+                </div>
                 </div>
                 {/* Profile */}
 
               </div>
+             
             </div>
           </div>
         </div>
@@ -265,7 +269,7 @@ export default function Example() {
                     <tbody className="bg-white divide-y divide-gray-200">
                       {listaRegistroDocumento && listaRegistroDocumento.map((item) => (
                         // ("/documento/" + grupo == item.IDDocumento ||  texto==item.NroDocumento &&
-                        ("/documento/" + grupo == item.IDDocumento  &&
+                        ("/documento/" + grupo == item.IDDocumento  && 
                           <tr key={item.ID} className="bg-white">
 
                             <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-900">

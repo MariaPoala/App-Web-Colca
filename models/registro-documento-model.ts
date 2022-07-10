@@ -6,10 +6,10 @@ class Registro_DocumentoModel {
     IDEmpleado: string;
     IDCiudadano: string;
     IDDocumento: string;
-    FecRegistro: Date;
-    FecEdicion: Date;
-    FecDocumento: Date;
-    FecAnulacion: Date;
+    FecRegistro: string;
+    FecEdicion: string;
+    FecDocumento: string;
+    FecAnulacion: string;
     Motivo: string;
 
     constructor(){
@@ -20,10 +20,10 @@ class Registro_DocumentoModel {
         this.IDEmpleado="";
         this.IDCiudadano="";
         this.IDDocumento="";
-        this.FecRegistro= new Date();
-        this.FecEdicion=new Date(Date.now());
-        this.FecDocumento=new Date();
-        this.FecAnulacion=new Date();
+        this.FecRegistro= "";
+        this.FecEdicion="";
+        this.FecDocumento="";
+        this.FecAnulacion="";
         this.Motivo="";
     }
 }
