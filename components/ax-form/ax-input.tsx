@@ -1,4 +1,4 @@
-export default function AxInput({ name, value, label, handleChange, type, filtro, placeholder, disabled }: any) {
+export default function AxInput({ name, value, label, handleChange, type, filtro, placeholder, disabled, onChange }: any) {
     return (
         <>
             <label htmlFor={name} className="block text-sm font-medium text-gray-700">
