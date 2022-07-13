@@ -1,12 +1,14 @@
 
 import { Fragment, useEffect, useRef, useState } from 'react'
-import RegistroDocumentoModel from 'models/registro-documento-model'
 import useSWRImmutable from "swr/immutable"
-import { AxInput, AxSelect, AxBtnEditar } from 'components/ax-form';
 import { CheckCircleIcon, DocumentAddIcon, FilterIcon, PlusIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
+import { AxInput, AxSelectFiltro, AxBtnEditar } from 'components/ax-form';
 import AxRegistroDocumento from 'components/documento/ax-registro-documento'
 import { EnumEstadoEdicion, EnumTipoEdicion, TypeFormularioProps } from 'lib/edicion';
+import RegistroDocumentoModel from 'models/registro-documento-model'
+import DocumentoModel from 'models/documento-model'
+
 const fetcherDoc = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
 const fetcherCiudadano = (url: string): Promise<any> =>
@@ -27,8 +29,14 @@ const campos = [
   { name: 'Motivo' }
 ]
 
+type TypeFiltro = {
+  NroDocumento: string,
+  Ciudadano: string,
+  Fecha: string,
+  Documento: string[]
+}
 export default function Example() {
-  const { data: listaDoc } = useSWRImmutable('/api/documento/edicion', fetcherDoc);
+  const { data: listaDoc } = useSWRImmutable<DocumentoModel[]>('/api/documento/edicion', fetcherDoc);
   const { data: listaCiudadano } = useSWRImmutable('/api/ciudadano/edicion', fetcherCiudadano);
   const [IDRegistroDocumento, setIdRegistroDocumento] = useState("$NULL")
   const [listaRegistroDocumento, setListaRegistroDocumento] = useState<RegistroDocumentoModel[]>([]);
@@ -36,14 +44,8 @@ export default function Example() {
   const cancelButtonRef = useRef(null)
   const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
   const [isLoading, setIsLoading] = useState(true);
-  const [clic, setClic] = useState(false);
-  const [grupo, setGrupo] = useState("");
-  const [textoNroDoc, setTextoNroDoc] = useState("");
-  const [textoCiudadano, setTextoCiudadano] = useState("");
-  const [textoFecha, setTextoFecha] = useState("");
-
-
-
+  const [filtro, setFiltro] = useState<TypeFiltro>({ NroDocumento: "", Ciudadano: "", Fecha: "", Documento: [] });
+  const [listaFiltro, setListaFiltro] = useState<RegistroDocumentoModel[]>([]);
 
   useEffect(() => {
     if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
@@ -67,26 +69,31 @@ export default function Example() {
     });
 
   const handleChange = (event: any) => {
-    if (event.target.name == "NroDocumento") {
-      setTextoNroDoc(event.target.value)
+    if (event.target.name == "FiltroGrupo") {
+      const indexAnterior = filtro.Documento.indexOf(event.target.value);
+      if (indexAnterior != -1) filtro.Documento.splice(indexAnterior, 1);
+      else filtro.Documento.push(event.target.value);
+      setFiltro({ ...filtro });
     }
-    else if (event.target.name == "ciudadano") {
-      setTextoCiudadano(event.target.value)
-    }
-    else if (event.target.name == "Fecha") {
-      setTextoFecha(event.target.value)
+    else {
+      setFiltro({ ...filtro, [event.target.name]: event.target.value });
     }
   }
 
-  const listaFiltro = (listaRegistroDocumento && listaRegistroDocumento.filter(doc => (doc.IDDocumento == "/documento/" + grupo
-    && (clic == false ? listaRegistroDocumento : (textoNroDoc == "" || textoFecha == "" ? listaRegistroDocumento : (doc.NroDocumento.toUpperCase().includes(textoNroDoc.toUpperCase())) &&
-      (doc.FecDocumento.toUpperCase().includes(textoFecha.toUpperCase())))
-    ))))
+  function FnFiltrarLista() {
+    let filtrado = listaRegistroDocumento.filter(doc =>
+      (filtro.Documento.indexOf(doc.IDDocumento) != -1) &&
+      (filtro.Ciudadano ? doc.IDCiudadano == filtro.Ciudadano : true) &&
+      (filtro.NroDocumento ? doc.NroDocumento == filtro.NroDocumento : true) &&
+      (filtro.Fecha ? doc.FecDocumento == filtro.Fecha : true)
+    )
+    setListaFiltro(filtrado);
+  }
 
   return (
     <>
       <main className="flex-1 pb-8">
-        <div className="bg-white shadow">
+        <div className={(isLoading ? "animate-pulse" : "") + " bg-white shadow"}>
           <div className=" sm:px-4 lg:max-w-6xl ">
             <div className="py-2 lg:border-t lg:border-gray-200">
               <div className="flex-1 min-w-0">
@@ -99,9 +106,9 @@ export default function Example() {
                 </dd>
                 <div className="mt-2 grid px-16 grid-cols-1   gap-y-6 gap-x-4 md:grid-cols-6">
                   <div className="md:col-span-2">
-                    <AxSelect name="ciudadano" value="" filtro={true} label="Ciudadanos" handleChange={handleChange}>
-                      {listaCiudadano && listaCiudadano.map((ciudadano: any) => <option key={ciudadano.ID} value={"/grupo/" + ciudadano.ID}>{ciudadano.Nombres}</option>)}
-                    </AxSelect>
+                    <AxSelectFiltro name="Ciudadano" value={filtro.Ciudadano} filtro={true} label="Ciudadanos" handleChange={handleChange}>
+                      {listaCiudadano && listaCiudadano.map((ciudadano: any) => <option key={ciudadano.ID} value={"/ciudadano/" + ciudadano.ID}>{ciudadano.Nombres}</option>)}
+                    </AxSelectFiltro>
                   </div>
                   <div className="md:col-span-1">
                     <AxInput name="NroDocumento" handleChange={handleChange} label="Nro Documento" type="text" filtro={true} />
@@ -111,8 +118,7 @@ export default function Example() {
                   </div>
                   <div className="md:col-span-1">
                     <button type="button"
-                      onClick=
-                      {() => { setClic(true), listaFiltro }}
+                      onClick={FnFiltrarLista}
                       className="ml-3 h-8 mt-0 w-20 bottom-0 right-0  inline-flex items-center px-3 py-2 border 
                                             border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
                                             disabled:bg-blue-300"
@@ -132,17 +138,16 @@ export default function Example() {
               {/* Card */}
               {(listaDoc && listaDoc.map((item: any) =>
               (resultado.map(s => s.id == "/documento/" + item.ID &&
-
                 < ul key={item.ID} className="bg-white overflow-hidden shadow rounded-lg hover:bg-indigo-700"
                   onClick={() => {
-                    setGrupo(item.ID);
-                    setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
+                    handleChange({ target: { name: "FiltroGrupo", value: "/documento/" + item.ID } });
+                    FnFiltrarLista();
                   }}>
 
-                  <div className="p-2 bg-indigo-100">
+                  <div className={(filtro.Documento.indexOf("/documento/" + item.ID) != -1 ? "bg-indigo-600" : "bg-indigo-400") + " p-2 bg-indigo-100"}>
                     <div className="flex items-center">
                       <div
-                        className="flex-shrink-0 flex items-center justify-center text-white  font-medium rounded-l-md text-lg font-serif bg-indigo-500 h-14"
+                        className="flex-shrink-0 flex items-center justify-center text-white  font-medium rounded-l-md text-lg font-serif  h-14"
                       >
                         {item.Codigo}
                       </div>
@@ -205,7 +210,7 @@ export default function Example() {
             <div className="mx-auto px-14 sm:px-16 lg:px-16">
               <div className="flex flex-col mt-2">
                 <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg">
-                  {grupo == "" ?
+                  {filtro.Documento.length == 0 ?
                     <dd className="mt-10 gap-2 p-10 flex items-center text-sm text-gray-500 font-medium sm:mr-6 sm:mt-0 capitalize">
                       <ExclamationCircleIcon
                         className="flex-shrink-0 mr-0 h-5 w-5 text-orange-500"
@@ -282,7 +287,7 @@ export default function Example() {
                           </tr>
                         )))}
                       </tbody>
-                    </table>}                  
+                    </table>}
                 </div>
                 {/* Pagination */}
                 <nav
