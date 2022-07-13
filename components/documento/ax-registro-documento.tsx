@@ -11,6 +11,7 @@ import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/
 import db from "lib/firebase-config";
 db.app
 
+
 export const getServerSideProps = withPageAuthRequired();
 const fetcherEmpleado = (url: string): Promise<any> =>
     fetch(url, { method: "GET" }).then(r => r.json());
@@ -33,18 +34,19 @@ const formReducer = (state: RegistroDocumentoModel, event: any): RegistroDocumen
     return { ...state, [event.name]: event.value }
 }
 
-export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
+export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, setTipoEdicion, tipoEdicion }: TypeFormularioProps ) {
     const { data: listaEmpleado } = useSWRImmutable('/api/empleado/edicion', fetcherEmpleado);
     const { data: listaCiudadano } = useSWRImmutable('/api/ciudadano/edicion', fetcherCiudadano);
     const { data: listaDocumento } = useSWRImmutable('/api/documento/edicion', fetcherDocumento);
     const [formData, setFormData] = useReducer(formReducer, new RegistroDocumentoModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
     const [open, setOpen] = useState(false)
     const [imagenupload, setImagen] = useState(null);
     const storage = getStorage();
     const [listaimage, setListaimage] = useState<Array<any>>([]);
+
+    console.log(setTipoEdicion)
 
 
     useEffect(() => {
@@ -83,42 +85,10 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion }: Typ
     }
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
-        // if (event.target.name == "IDsConsideracion") {
-        //     const indexAnterior = formData.IDsConsideracion.indexOf(event.target.value);
-        //     if (indexAnterior != -1) formData.IDsConsideracion.splice(indexAnterior, 1);
-        //     else formData.IDsConsideracion.push(event.target.value);
-        //     setFormData({
-        //         name: event.target.name,
-        //         value: [...formData.IDsConsideracion]
-        //     })
-        // }
-        // else if (event.target.name == "IDsRequisito") {
-        //     const indexAnterior = formData.IDsRequisito.indexOf(event.target.value);
-        //     if (indexAnterior != -1) formData.IDsRequisito.splice(indexAnterior, 1);
-        //     else formData.IDsRequisito.push(event.target.value);
-        //     setFormData({
-        //         name: event.target.name,
-        //         value: [...formData.IDsRequisito]
-        //     })
-        // }
-        // else if (event.target.name == "Nombre") {
-        //     setFormData({
-        //         name: "Nombre",
-        //         value: event.target.value
-        //     })
-        //     setFormData({
-        //         name: "Codigo",             
-        //         value: formData.Nombre.substring(0,3) + "-" + fecha.getFullYear()
-        //     })
-
-
-        // }
-        // else {
         setFormData({
             name: event.target.name,
             value: isCheckbox ? event.target.checked : event.target.value,
         })
-        // }
     }
 
     const handleSubmit = async (event: any) => {
@@ -146,18 +116,7 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion }: Typ
                     {/*PORTADA*/}
 
                     <div className="h-3 bg-indigo-700 rounded-sm" />
-                    
-                    <div className="w-0 flex-1 pt-2">
-                        <div className="mt-2 flex">
-                            <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}  ></AxBtnEditar>
-                            <AxBtnEliminar tipoEdicion={tipoEdicion} EnumTipoEdicion setTipoEdicion={setTipoEdicion} setOpen={setOpen} > </AxBtnEliminar>
-                        </div>
-                        <Transition.Root show={open} as={Fragment}>
-                            <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                                <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.NroDocumento} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Grupo"}> </AxModalEliminar>
-                            </Dialog>
-                        </Transition.Root>
-                    </div>
+
                     {/*FORMULARIO*/}
                     <div className="px-0 py-0 m-2">
                         <div className="p-4 md:p-2">

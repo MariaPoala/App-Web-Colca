@@ -3,7 +3,7 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
 import { CheckCircleIcon, DocumentAddIcon, FilterIcon, PlusIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
-import { AxInput, AxSelectFiltro, AxBtnEditar } from 'components/ax-form';
+import { AxInput, AxSelectFiltro, AxBtnEditar, AxBtnEliminar, AxModalEliminar } from 'components/ax-form';
 import AxRegistroDocumento from 'components/documento/ax-registro-documento'
 import { EnumEstadoEdicion, EnumTipoEdicion, TypeFormularioProps } from 'lib/edicion';
 import RegistroDocumentoModel from 'models/registro-documento-model'
@@ -46,9 +46,13 @@ export default function Example() {
   const [isLoading, setIsLoading] = useState(true);
   const [filtro, setFiltro] = useState<TypeFiltro>({ NroDocumento: "", Ciudadano: "", Fecha: "", Documento: [] });
   const [listaFiltro, setListaFiltro] = useState<RegistroDocumentoModel[]>([]);
+  const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
+    if(estadoEdicion == EnumEstadoEdicion.EDITANDO){setabrir(true)} 
     if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
+   
     setIsLoading(true)
     const fetchData = async () => {
       const response = await fetch(`/api/registro-documento/edicion`, {
@@ -89,7 +93,8 @@ export default function Example() {
     )
     setListaFiltro(filtrado);
   }
-
+console.log(tipoEdicion)
+console.log(estadoEdicion)
   return (
     <>
       <main className="flex-1 pb-8">
@@ -145,7 +150,7 @@ export default function Example() {
                   }}>
 
                   <div className={(filtro.Documento.indexOf("/documento/" + item.ID) != -1 ? "bg-indigo-600" : "bg-indigo-400") + " p-2 bg-indigo-100"}>
-                    <div className="flex items-center">                      
+                    <div className="flex items-center">
                       <div className="ml-2 w-10 flex-1">
                         <dl>
                           <dt className="text-lg font-medium text-white truncate">{item.Nombre}</dt>
@@ -184,7 +189,8 @@ export default function Example() {
                 <DocumentAddIcon className="h-4 w-4 mr-1 text-white" aria-hidden="true" />
                 Administrar
               </button>
-
+              <AxBtnEditar  tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}  ></AxBtnEditar>
+              {/* {tipoEdicion==EnumTipoEdicion.EDITAR && setabrir(true)} */}
               <button type="button"
                 onClick=
                 {() => {
@@ -360,7 +366,7 @@ export default function Example() {
                       </div>
                     </div>
                   </div>
-                  <AxRegistroDocumento ID={IDRegistroDocumento} setID={setIdRegistroDocumento} setEstadoEdicion={setEstadoEdicion} ></AxRegistroDocumento>
+                  <AxRegistroDocumento ID={IDRegistroDocumento} setID={setIdRegistroDocumento} setEstadoEdicion={setEstadoEdicion}  setTipoEdicion={setTipoEdicion} tipoEdicion={tipoEdicion}></AxRegistroDocumento>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
