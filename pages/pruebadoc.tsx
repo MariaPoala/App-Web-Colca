@@ -134,28 +134,23 @@ export default function Example() {
         <div className="mt-4">
           <div className="max-w-6xl mx-16 px-2 sm:px-2 ">
             <h2 className="text-lg leading-6 font-medium text-gray-900">Documentos</h2>
-            <div className="mt-2 grid  gap-5 grid-cols-1 sm:grid-cols-2  md:grid-cols-2  lg:grid-cols-3">
+            <div className="mt-2 grid  gap-5 grid-cols-1 sm:grid-cols-2  md:grid-cols-3  lg:grid-cols-4">
               {/* Card */}
               {(listaDoc && listaDoc.map((item: any) =>
               (resultado.map(s => s.id == "/documento/" + item.ID &&
-                < ul key={item.ID} className="bg-white overflow-hidden shadow rounded-lg hover:bg-indigo-700"
+                < ul key={item.ID} className="bg-indigo-400 overflow-hidden shadow rounded-lg hover:bg-indigo-700"
                   onClick={() => {
                     handleChange({ target: { name: "FiltroGrupo", value: "/documento/" + item.ID } });
                     FnFiltrarLista();
                   }}>
 
                   <div className={(filtro.Documento.indexOf("/documento/" + item.ID) != -1 ? "bg-indigo-600" : "bg-indigo-400") + " p-2 bg-indigo-100"}>
-                    <div className="flex items-center">
-                      <div
-                        className="flex-shrink-0 flex items-center justify-center text-white  font-medium rounded-l-md text-lg font-serif  h-14"
-                      >
-                        {item.Codigo}
-                      </div>
+                    <div className="flex items-center">                      
                       <div className="ml-2 w-10 flex-1">
                         <dl>
-                          <dt className="text-sm font-medium text-gray-500 truncate">{item.Nombre}</dt>
+                          <dt className="text-lg font-medium text-white truncate">{item.Nombre}</dt>
                           <dd>
-                            <div className="text-lg font-medium text-gray-900">{item.Descripcion}</div>
+                            <div className="text-sm font-medium text-indigo-100">{item.Descripcion}</div>
                           </dd>
                         </dl>
                       </div>
