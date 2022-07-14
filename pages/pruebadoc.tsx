@@ -3,7 +3,7 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
 import { CheckCircleIcon, DocumentAddIcon, FilterIcon, PlusIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
-import { AxInput, AxSelectFiltro, AxBtnEditar, AxBtnEliminar, AxModalEliminar } from 'components/ax-form';
+import { AxInput, AxSelectFiltro, AxBtnEditar, AxBtnEliminar, AxBtnAgregar } from 'components/ax-form';
 import AxRegistroDocumento from 'components/documento/ax-registro-documento'
 import { EnumEstadoEdicion, EnumTipoEdicion, TypeFormularioProps } from 'lib/edicion';
 import RegistroDocumentoModel from 'models/registro-documento-model'
@@ -135,7 +135,7 @@ export default function Example() {
         <div className="mt-4">
           <div className="max-w-6xl mx-16 px-2 sm:px-2 ">
             <h2 className="text-lg leading-6 font-medium text-gray-900">Documentos</h2>
-            <div className="mt-2 grid  gap-5 grid-cols-1 sm:grid-cols-2  md:grid-cols-3  lg:grid-cols-4">
+            <div className="mt-2 grid  gap-5 grid-cols-1 sm:grid-cols-2  md:grid-cols-3  lg:grid-cols-5">
               {/* Card */}
               {(listaDoc && listaDoc.map((item: any) =>
               (resultado.map(s => s.id == "/documento/" + item.ID &&
@@ -149,10 +149,10 @@ export default function Example() {
                     <div className="flex items-center">
                       <div className="ml-2 w-10 flex-1">
                         <dl>
-                          <dt className="text-lg font-medium text-white truncate">{item.Nombre}</dt>
-                          <dd>
+                          <dt className="text-sm font-medium text-white truncate uppercase">{item.Nombre}</dt>
+                          {/* <dd>
                             <div className="text-sm font-medium text-indigo-100">{item.Descripcion}</div>
-                          </dd>
+                          </dd> */}
                         </dl>
                       </div>
                     </div>
@@ -186,20 +186,7 @@ export default function Example() {
               </button>
               <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}></AxBtnEditar>
               {/* {tipoEdicion==EnumTipoEdicion.EDITAR && setabrir(true)} */}
-              <button type="button"
-                onClick=
-                {() => {
-                  setIdRegistroDocumento("$ADD");
-                  setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
-                  setTipoEdicion(EnumTipoEdicion.AGREGAR);
-                }}
-                className="ml-3    inline-flex items-center px-3 py-2 border 
-                                            border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
-                                            disabled:bg-blue-300"
-              >
-                <DocumentAddIcon className="h-4 w-4 mr-1 text-white" aria-hidden="true" />
-                Agregar
-              </button>
+              <AxBtnAgregar setEstadoEdicion={setEstadoEdicion} setIdRegistroDocumento={setIdRegistroDocumento} setTipoEdicion={setTipoEdicion}></AxBtnAgregar>
             </div>
           </div>
           <div className="hidden sm:block">

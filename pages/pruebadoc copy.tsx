@@ -3,7 +3,7 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
 import { CheckCircleIcon, DocumentAddIcon, FilterIcon, PlusIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
-import { AxInput, AxSelectFiltro, AxBtnEditar } from 'components/ax-form';
+import { AxInput, AxSelectFiltro, AxBtnEditar, AxBtnEliminar, AxModalEliminar } from 'components/ax-form';
 import AxRegistroDocumento from 'components/documento/ax-registro-documento'
 import { EnumEstadoEdicion, EnumTipoEdicion, TypeFormularioProps } from 'lib/edicion';
 import RegistroDocumentoModel from 'models/registro-documento-model'
@@ -40,12 +40,12 @@ export default function Example() {
   const { data: listaCiudadano } = useSWRImmutable('/api/ciudadano/edicion', fetcherCiudadano);
   const [IDRegistroDocumento, setIdRegistroDocumento] = useState("$NULL")
   const [listaRegistroDocumento, setListaRegistroDocumento] = useState<RegistroDocumentoModel[]>([]);
-  const [abrir, setabrir] = useState(false)
-  const cancelButtonRef = useRef(null)
   const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
   const [isLoading, setIsLoading] = useState(true);
   const [filtro, setFiltro] = useState<TypeFiltro>({ NroDocumento: "", Ciudadano: "", Fecha: "", Documento: [] });
   const [listaFiltro, setListaFiltro] = useState<RegistroDocumentoModel[]>([]);
+  const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
+  const [esModalOpen, setEsModalOpen] = useState(false)
 
   useEffect(() => {
     if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
@@ -56,6 +56,7 @@ export default function Example() {
       })
       const result: RegistroDocumentoModel[] = await response.json()
       setListaRegistroDocumento(result);
+      FnFiltrarLista(result);
       setIsLoading(false)
     }
     fetchData().catch(console.error);
@@ -80,8 +81,8 @@ export default function Example() {
     }
   }
 
-  function FnFiltrarLista() {
-    let filtrado = listaRegistroDocumento.filter(doc =>
+  function FnFiltrarLista(lista?: RegistroDocumentoModel[]) {
+    let filtrado = (lista || listaRegistroDocumento).filter(doc =>
       (filtro.Documento.indexOf(doc.IDDocumento) != -1) &&
       (filtro.Ciudadano ? doc.IDCiudadano == filtro.Ciudadano : true) &&
       (filtro.NroDocumento ? doc.NroDocumento == filtro.NroDocumento : true) &&
@@ -118,7 +119,7 @@ export default function Example() {
                   </div>
                   <div className="md:col-span-1">
                     <button type="button"
-                      onClick={FnFiltrarLista}
+                      onClick={() => FnFiltrarLista()}
                       className="ml-3 h-8 mt-0 w-20 bottom-0 right-0  inline-flex items-center px-3 py-2 border 
                                             border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
                                             disabled:bg-blue-300"
@@ -134,7 +135,7 @@ export default function Example() {
         <div className="mt-4">
           <div className="max-w-6xl mx-16 px-2 sm:px-2 ">
             <h2 className="text-lg leading-6 font-medium text-gray-900">Documentos</h2>
-            <div className="mt-2 grid  gap-5 grid-cols-1 sm:grid-cols-2  md:grid-cols-3  lg:grid-cols-4">
+            <div className="mt-2 grid  gap-5 grid-cols-1 sm:grid-cols-2  md:grid-cols-3  lg:grid-cols-5">
               {/* Card */}
               {(listaDoc && listaDoc.map((item: any) =>
               (resultado.map(s => s.id == "/documento/" + item.ID &&
@@ -145,13 +146,13 @@ export default function Example() {
                   }}>
 
                   <div className={(filtro.Documento.indexOf("/documento/" + item.ID) != -1 ? "bg-indigo-600" : "bg-indigo-400") + " p-2 bg-indigo-100"}>
-                    <div className="flex items-center">                      
+                    <div className="flex items-center">
                       <div className="ml-2 w-10 flex-1">
                         <dl>
-                          <dt className="text-lg font-medium text-white truncate">{item.Nombre}</dt>
-                          <dd>
+                          <dt className="text-sm font-medium text-white truncate uppercase">{item.Nombre}</dt>
+                          {/* <dd>
                             <div className="text-sm font-medium text-indigo-100">{item.Descripcion}</div>
-                          </dd>
+                          </dd> */}
                         </dl>
                       </div>
                     </div>
@@ -175,7 +176,6 @@ export default function Example() {
                 {() => {
                   setIdRegistroDocumento(IDRegistroDocumento);
                   setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
-                  { IDRegistroDocumento != "$NULL" && setabrir(true) }
                 }}
                 className="ml-3    inline-flex items-center px-3 py-2 border 
                                             border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
@@ -184,13 +184,14 @@ export default function Example() {
                 <DocumentAddIcon className="h-4 w-4 mr-1 text-white" aria-hidden="true" />
                 Administrar
               </button>
-
+              <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}></AxBtnEditar>
+              {/* {tipoEdicion==EnumTipoEdicion.EDITAR && setabrir(true)} */}
               <button type="button"
                 onClick=
                 {() => {
                   setIdRegistroDocumento("$ADD");
                   setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
-                  setabrir(true);
+                  setTipoEdicion(EnumTipoEdicion.AGREGAR);
                 }}
                 className="ml-3    inline-flex items-center px-3 py-2 border 
                                             border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
@@ -230,14 +231,15 @@ export default function Example() {
                       <tbody className="bg-white divide-y divide-gray-200">
                         {(listaFiltro && listaFiltro.map((item) => (
 
-                          <tr key={item.ID} className="bg-white">
+                          <tr key={item.ID} className={item.ID == IDRegistroDocumento ? "bg-indigo-100" : "bg-white"}>
 
                             <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-900">
                               <input
-                                onClick={() => {
-                                  setIdRegistroDocumento(item.ID);
-                                  setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
+                                onChange={(event) => {
+                                  if (!event.target.checked) setIdRegistroDocumento("$NULL");
+                                  else setIdRegistroDocumento(item.ID);
                                 }}
+                                checked={item.ID == IDRegistroDocumento}
                                 id="comments"
                                 aria-describedby="comments-description"
                                 name="comments"
@@ -316,9 +318,9 @@ export default function Example() {
         </div>
       </main >
 
-      <Transition.Root show={abrir} as={Fragment}>
+      <Transition.Root show={estadoEdicion == EnumEstadoEdicion.EDITANDO} as={Fragment}>
 
-        <Dialog as="div" className="relative z-10 " initialFocus={cancelButtonRef} onClose={setabrir}>
+        <Dialog as="div" className="relative z-10 " onClose={setEsModalOpen}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -347,12 +349,12 @@ export default function Example() {
                 <Dialog.Panel className="relative bg-white  rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:p-6 ">
                   <div className="px-4 sm:px-6">
                     <div className="flex items-start justify-between">
-                      <Dialog.Title className="text-lg font-medium text-gray-900"> Documento</Dialog.Title>
+                      <Dialog.Title className="text-lg font-medium text-gray-900"> Registro de Documento [{tipoEdicion}]</Dialog.Title>
                       <div className="ml-3 flex h-7 items-center">
                         <button
                           type="button"
                           className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                          onClick={() => setabrir(false)}
+                          onClick={() => setEstadoEdicion(EnumEstadoEdicion.CANCELADO)}
                         >
                           <span className="sr-only">Close panel</span>
                           <XIcon className="h-6 w-6" aria-hidden="true" />
@@ -360,7 +362,7 @@ export default function Example() {
                       </div>
                     </div>
                   </div>
-                  <AxRegistroDocumento ID={IDRegistroDocumento} setID={setIdRegistroDocumento} setEstadoEdicion={setEstadoEdicion} ></AxRegistroDocumento>
+                  <AxRegistroDocumento ID={IDRegistroDocumento} setID={setIdRegistroDocumento} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxRegistroDocumento>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
