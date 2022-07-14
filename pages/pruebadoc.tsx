@@ -40,19 +40,15 @@ export default function Example() {
   const { data: listaCiudadano } = useSWRImmutable('/api/ciudadano/edicion', fetcherCiudadano);
   const [IDRegistroDocumento, setIdRegistroDocumento] = useState("$NULL")
   const [listaRegistroDocumento, setListaRegistroDocumento] = useState<RegistroDocumentoModel[]>([]);
-  const [abrir, setabrir] = useState(false)
-  const cancelButtonRef = useRef(null)
   const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
   const [isLoading, setIsLoading] = useState(true);
   const [filtro, setFiltro] = useState<TypeFiltro>({ NroDocumento: "", Ciudadano: "", Fecha: "", Documento: [] });
   const [listaFiltro, setListaFiltro] = useState<RegistroDocumentoModel[]>([]);
   const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
-  const [open, setOpen] = useState(false)
-  console.log(tipoEdicion)
+  const [esModalOpen, setEsModalOpen] = useState(false)
+
   useEffect(() => {
-    if(estadoEdicion == EnumEstadoEdicion.EDITANDO){setabrir(true), setTipoEdicion(EnumTipoEdicion.EDITAR)} 
     if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
-   
     setIsLoading(true)
     const fetchData = async () => {
       const response = await fetch(`/api/registro-documento/edicion`, {
@@ -60,6 +56,7 @@ export default function Example() {
       })
       const result: RegistroDocumentoModel[] = await response.json()
       setListaRegistroDocumento(result);
+      FnFiltrarLista(result);
       setIsLoading(false)
     }
     fetchData().catch(console.error);
@@ -84,8 +81,8 @@ export default function Example() {
     }
   }
 
-  function FnFiltrarLista() {
-    let filtrado = listaRegistroDocumento.filter(doc =>
+  function FnFiltrarLista(lista?: RegistroDocumentoModel[]) {
+    let filtrado = (lista || listaRegistroDocumento).filter(doc =>
       (filtro.Documento.indexOf(doc.IDDocumento) != -1) &&
       (filtro.Ciudadano ? doc.IDCiudadano == filtro.Ciudadano : true) &&
       (filtro.NroDocumento ? doc.NroDocumento == filtro.NroDocumento : true) &&
@@ -93,8 +90,7 @@ export default function Example() {
     )
     setListaFiltro(filtrado);
   }
-// console.log(estadoEdicion)
-// console.log(tipoEdicion)
+
   return (
     <>
       <main className="flex-1 pb-8">
@@ -123,7 +119,7 @@ export default function Example() {
                   </div>
                   <div className="md:col-span-1">
                     <button type="button"
-                      onClick={FnFiltrarLista}
+                      onClick={() => FnFiltrarLista()}
                       className="ml-3 h-8 mt-0 w-20 bottom-0 right-0  inline-flex items-center px-3 py-2 border 
                                             border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
                                             disabled:bg-blue-300"
@@ -180,7 +176,6 @@ export default function Example() {
                 {() => {
                   setIdRegistroDocumento(IDRegistroDocumento);
                   setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
-                  { IDRegistroDocumento != "$NULL" && setabrir(true) }
                 }}
                 className="ml-3    inline-flex items-center px-3 py-2 border 
                                             border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
@@ -189,14 +184,14 @@ export default function Example() {
                 <DocumentAddIcon className="h-4 w-4 mr-1 text-white" aria-hidden="true" />
                 Administrar
               </button>
-              <AxBtnEditar  tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}  ></AxBtnEditar>
+              <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}></AxBtnEditar>
               {/* {tipoEdicion==EnumTipoEdicion.EDITAR && setabrir(true)} */}
               <button type="button"
                 onClick=
                 {() => {
                   setIdRegistroDocumento("$ADD");
                   setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
-                  setabrir(true);
+                  setTipoEdicion(EnumTipoEdicion.AGREGAR);
                 }}
                 className="ml-3    inline-flex items-center px-3 py-2 border 
                                             border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
@@ -236,14 +231,15 @@ export default function Example() {
                       <tbody className="bg-white divide-y divide-gray-200">
                         {(listaFiltro && listaFiltro.map((item) => (
 
-                          <tr key={item.ID} className="bg-white">
+                          <tr key={item.ID} className={item.ID == IDRegistroDocumento ? "bg-indigo-100" : "bg-white"}>
 
                             <td className="px-6 py-3 text-center whitespace-nowrap text-sm text-gray-900">
                               <input
-                                onClick={() => {
-                                  setIdRegistroDocumento(item.ID);
-                                  setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
+                                onChange={(event) => {
+                                  if (!event.target.checked) setIdRegistroDocumento("$NULL");
+                                  else setIdRegistroDocumento(item.ID);
                                 }}
+                                checked={item.ID == IDRegistroDocumento}
                                 id="comments"
                                 aria-describedby="comments-description"
                                 name="comments"
@@ -322,9 +318,9 @@ export default function Example() {
         </div>
       </main >
 
-      <Transition.Root show={abrir} as={Fragment}>
+      <Transition.Root show={estadoEdicion == EnumEstadoEdicion.EDITANDO} as={Fragment}>
 
-        <Dialog as="div" className="relative z-10 " initialFocus={cancelButtonRef} onClose={setabrir}>
+        <Dialog as="div" className="relative z-10 " onClose={setEsModalOpen}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -353,12 +349,12 @@ export default function Example() {
                 <Dialog.Panel className="relative bg-white  rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:p-6 ">
                   <div className="px-4 sm:px-6">
                     <div className="flex items-start justify-between">
-                      <Dialog.Title className="text-lg font-medium text-gray-900"> Documento</Dialog.Title>
+                      <Dialog.Title className="text-lg font-medium text-gray-900"> Registro de Documento [{tipoEdicion}]</Dialog.Title>
                       <div className="ml-3 flex h-7 items-center">
                         <button
                           type="button"
                           className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                          onClick={() => setabrir(false)}
+                          onClick={() => setEstadoEdicion(EnumEstadoEdicion.CANCELADO)}
                         >
                           <span className="sr-only">Close panel</span>
                           <XIcon className="h-6 w-6" aria-hidden="true" />
@@ -366,7 +362,7 @@ export default function Example() {
                       </div>
                     </div>
                   </div>
-                  <AxRegistroDocumento ID={IDRegistroDocumento} setID={setIdRegistroDocumento} setEstadoEdicion={setEstadoEdicion}  setTipoEdicion={setTipoEdicion} tipoEdicion={tipoEdicion}></AxRegistroDocumento>
+                  <AxRegistroDocumento ID={IDRegistroDocumento} setID={setIdRegistroDocumento} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxRegistroDocumento>
                 </Dialog.Panel>
               </Transition.Child>
             </div>

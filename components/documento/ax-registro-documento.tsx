@@ -34,7 +34,7 @@ const formReducer = (state: RegistroDocumentoModel, event: any): RegistroDocumen
     return { ...state, [event.name]: event.value }
 }
 
-export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, setTipoEdicion, tipoEdicion }: TypeFormularioProps) {
+export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, tipoEdicion }: TypeFormularioProps) {
     const { data: listaEmpleado } = useSWRImmutable('/api/empleado/edicion', fetcherEmpleado);
     const { data: listaCiudadano } = useSWRImmutable('/api/ciudadano/edicion', fetcherCiudadano);
     const { data: listaDocumento } = useSWRImmutable('/api/documento/edicion', fetcherDocumento);
@@ -46,13 +46,8 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, setTi
     const storage = getStorage();
     const [listaimage, setListaimage] = useState<Array<any>>([]);
 
-    // console.log(tipoEdicion)
-
-
     useEffect(() => {
         setIsLoading(true)
-
-        setTipoEdicion(ID == "$ADD" ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
         if (ID == "$ADD") {
             setFormData({ FORM_ADD: true })
         }
@@ -66,6 +61,7 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, setTi
         }
         setIsLoading(false)
     }, [ID])
+
     const changeImagen = (e: any) => {
         setImagen(e.target.files[0]);
 
@@ -83,6 +79,7 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, setTi
         });
         return;
     }
+
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
         setFormData({
@@ -105,7 +102,6 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, setTi
         setIsSubmitting(false);
         setOpen(false);
         if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID("$NULL");
-        setTipoEdicion(EnumTipoEdicion.VISUALIZAR)
         setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
     }
 
@@ -114,8 +110,7 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, setTi
             <div className={isLoading ? "animate-pulse" : "" + " flex h-full flex-col  bg-white shadow-xl"}>
                 <div className="divide-y divide-gray-200">
                     {/*PORTADA*/}
-
-                    <div className="h-3 bg-indigo-700 rounded-sm" />
+                    <div className="h-1 mt-1 bg-indigo-700 rounded-sm" />
 
                     {/*FORMULARIO*/}
                     <div className="px-0 py-0 m-2">
@@ -183,7 +178,6 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, setTi
                                                         htmlFor="UrlImgEjemplo"
                                                         className="relative ml-7 cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
                                                     >
-
                                                         <input className="bg-indigo-200" type="file" name="image" onChange={changeImagen} />
                                                     </label>
                                                 </div>
@@ -194,15 +188,11 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, setTi
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
-
-
-
                                 </div>
                                 {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">
                                     <div className="flex justify-end">
-                                        <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID}></AxBtnCancelar>
+                                        <AxBtnCancelar setEstadoEdicion={setEstadoEdicion}></AxBtnCancelar>
                                         <AxSubmit loading={isSubmitting} />
                                     </div>
                                 </div>
@@ -212,7 +202,6 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, setTi
                     </div>
                 </div>
             </div>
-
         </>
     )
 }

@@ -9,7 +9,6 @@ type TypeFormularioProps = {
     setID: TypeSetID,   
     setEstadoEdicion: TypeSetEstadoEdicion,
     tipoEdicion: EnumTipoEdicion
-    setTipoEdicion: TypeSetTipoEdicion,
 }
 
 export type {TypeFormularioProps};
