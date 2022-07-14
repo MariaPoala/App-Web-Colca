@@ -1,12 +1,11 @@
 import { EnumTipoEdicion, EnumEstadoEdicion } from 'lib/edicion'
-import { useState } from 'react';
 export default function AxBtnEditar({ tipoEdicion, setTipoEdicion, setEstadoEdicion }: any) {
-    const [open, setopen] = useState(false)
+   console.log(tipoEdicion)
     return <button type="button" 
         onClick={() => {
             setTipoEdicion(EnumTipoEdicion.EDITAR);
             setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
-            
+           
         }}
         className="ml-3 inline-flex items-center px-3 py-2 border 
                                             border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500

@@ -48,9 +48,9 @@ export default function Example() {
   const [listaFiltro, setListaFiltro] = useState<RegistroDocumentoModel[]>([]);
   const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
   const [open, setOpen] = useState(false)
-
+  console.log(tipoEdicion)
   useEffect(() => {
-    if(estadoEdicion == EnumEstadoEdicion.EDITANDO){setabrir(true)} 
+    if(estadoEdicion == EnumEstadoEdicion.EDITANDO){setabrir(true), setTipoEdicion(EnumTipoEdicion.EDITAR)} 
     if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
    
     setIsLoading(true)
@@ -93,8 +93,8 @@ export default function Example() {
     )
     setListaFiltro(filtrado);
   }
-console.log(tipoEdicion)
-console.log(estadoEdicion)
+// console.log(estadoEdicion)
+// console.log(tipoEdicion)
   return (
     <>
       <main className="flex-1 pb-8">

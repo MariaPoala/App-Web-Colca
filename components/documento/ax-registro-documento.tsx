@@ -34,7 +34,7 @@ const formReducer = (state: RegistroDocumentoModel, event: any): RegistroDocumen
     return { ...state, [event.name]: event.value }
 }
 
-export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, setTipoEdicion, tipoEdicion }: TypeFormularioProps ) {
+export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, setTipoEdicion, tipoEdicion }: TypeFormularioProps) {
     const { data: listaEmpleado } = useSWRImmutable('/api/empleado/edicion', fetcherEmpleado);
     const { data: listaCiudadano } = useSWRImmutable('/api/ciudadano/edicion', fetcherCiudadano);
     const { data: listaDocumento } = useSWRImmutable('/api/documento/edicion', fetcherDocumento);
@@ -46,7 +46,7 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, setTi
     const storage = getStorage();
     const [listaimage, setListaimage] = useState<Array<any>>([]);
 
-    console.log(setTipoEdicion)
+    // console.log(tipoEdicion)
 
 
     useEffect(() => {
