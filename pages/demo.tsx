@@ -48,22 +48,25 @@ export default function Example() {
   const [esModalOpen, setEsModalOpen] = useState(false)
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(2);
+  const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 1 })
 
   useEffect(() => {
     if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
     setIsLoading(true)
     const fetchData = async () => {
-      const response = await fetch(`/api/registro-documento/edicion`, {
+      const response = await fetch(`/api/registro-documento/demoapi?inicio=${paginacion.inicio}&cantidad=${paginacion.cantidad}`, {
         method: "GET"
       })
       const result: RegistroDocumentoModel[] = await response.json()
-      setListaRegistroDocumento(result);
-      FnFiltrarLista(result);
+      setListaRegistroDocumento([...listaRegistroDocumento, ...result]);
       setIsLoading(false)
-      
     }
     fetchData().catch(console.error);
-  }, [estadoEdicion, page])
+  }, [estadoEdicion, paginacion])
+
+  useEffect(() => {
+    FnFiltrarLista();
+  }, [listaRegistroDocumento])
 
   const resultado = Array.from(new Set(listaRegistroDocumento.map(s => s.IDDocumento)))
     .map(id => {
@@ -84,8 +87,8 @@ export default function Example() {
     }
   }
 
-  function FnFiltrarLista(lista?: RegistroDocumentoModel[]) {
-    let filtrado = (lista || listaRegistroDocumento).filter(doc =>
+  function FnFiltrarLista() {
+    let filtrado = listaRegistroDocumento.filter(doc =>
       (filtro.Documento.indexOf(doc.IDDocumento) != -1) &&
       (filtro.Ciudadano ? doc.IDCiudadano == filtro.Ciudadano : true) &&
       (filtro.NroDocumento ? doc.NroDocumento == filtro.NroDocumento : true) &&
@@ -93,6 +96,10 @@ export default function Example() {
     )
     setListaFiltro(filtrado);
     setTotalPages(totalPages);
+  }
+
+  function FnLoadMas() {
+    setPaginacion({ inicio: (paginacion.inicio + 1) * paginacion.cantidad, cantidad: 1 });
   }
 
   const handlePrevPage = (prevPage: number) => {
@@ -103,7 +110,7 @@ export default function Example() {
     console.log(nextPage)
     setPage((nextPage) => nextPage + 1);
   };
- 
+
   return (
     <>
       <main className="flex-1 pb-8">
@@ -138,6 +145,14 @@ export default function Example() {
                                             disabled:bg-blue-300"
                     >
                       Filtrar
+                    </button>
+                    <button type="button"
+                      onClick={() => FnLoadMas()}
+                      className="ml-3 h-8 mt-0 w-20 bottom-0 right-0  inline-flex items-center px-3 py-2 border 
+                                            border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+                                            disabled:bg-blue-300"
+                    >
+                      Cargas Mas
                     </button>
                   </div>
                 </div>

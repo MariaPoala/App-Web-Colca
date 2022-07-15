@@ -1,28 +1,29 @@
 import db from "lib/firebase-config";
-import { doc, setDoc, updateDoc, collection, addDoc, getDocs, deleteDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc, collection, addDoc, getDocs, deleteDoc, query, orderBy, startAfter, limit } from "firebase/firestore";
+import { NextApiRequest } from "next";
+
+interface Params {
+    inicio: number
+    cantidad: number
+}
 
 export default async function handler(req: any, res: any) {
     // console.log(doc.length)
     try {
         if (req.method == "VistaEmpleado") {
-           
+
         }
         else if (req.method == "GET") {
-            const querySnapshot = await getDocs(collection(db, "RegistroDocumento"));
+            const { inicio, cantidad } = (req.query);
+            const consulta = query(
+                collection(db, "RegistroDocumento"),
+                orderBy("Orden"),
+                startAfter(parseInt(inicio)),
+                limit(parseInt(cantidad)));
+            const result = await getDocs(consulta)
             let data: any = []
-            querySnapshot.forEach(doc => data.push(doc.data()));
-            // res.status(200).json(data)
-            // let empleado: any = []
-            // let id: string = ""
-            // let nombre: string = ""
-            // const listEmpleado = await getDocs(collection(db, "Empleado"));
-            // listEmpleado.forEach(i => empleado.push(i.data()));
-            // empleado.forEach((d: any) =>
-            //     nombre = d.Nombres
-            // )
-            // console.log(data, nombre)
+            result.forEach(doc => data.push(doc.data()));
             res.status(200).json(data)
-            // console.log(id)
         }
         else if (req.method === 'POST') {
             const docRef = await addDoc(collection(db, "RegistroDocumento"), req.body);

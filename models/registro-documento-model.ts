@@ -1,5 +1,5 @@
 class Registro_DocumentoModel {
-    ID: string;   
+    ID: string;
     NroDocumento: string;
     Observacion: string;
     URLArchivo: string;
@@ -12,19 +12,19 @@ class Registro_DocumentoModel {
     FecAnulacion: string;
     Motivo: string;
 
-    constructor(){
-        this.ID="";
-        this.Observacion="";
-        this.NroDocumento="";
-        this.URLArchivo="";
-        this.IDEmpleado="";
-        this.IDCiudadano="";
-        this.IDDocumento="";
-        this.FecRegistro= "";
-        this.FecEdicion="";
-        this.FecDocumento="";
-        this.FecAnulacion="";
-        this.Motivo="";
+    constructor() {
+        this.ID = "";
+        this.Observacion = "";
+        this.NroDocumento = "";
+        this.URLArchivo = "";
+        this.IDEmpleado = "";
+        this.IDCiudadano = "";
+        this.IDDocumento = "";
+        this.FecRegistro = "";
+        this.FecEdicion = "";
+        this.FecDocumento = "";
+        this.FecAnulacion = "";
+        this.Motivo = "";
     }
 }
 export default Registro_DocumentoModel
