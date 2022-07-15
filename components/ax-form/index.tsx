@@ -11,11 +11,13 @@ import AxBtnModalCancelar from 'components/ax-form/modal/ax-btn-modal-cancelar'
 import AxBtnCancelar from 'components/ax-form/ax-btn-cancelar'
 import AxModalEliminar from 'components/ax-form/modal/ax-modal-eliminar'
 import AxBtnAgregar from 'components/ax-form/ax-btn-agregar'
+import AxPagination from 'components/ax-form/ax-pagination'
 
 export {
     AxCheck, AxRadio,
     AxInput,
     AxSelect, AxSelectFiltro, AxSelectMultiple,
     AxSubmit, AxBtnSubmitEliminar, AxBtnEliminar, AxBtnEditar,
-    AxBtnModalCancelar, AxBtnCancelar, AxModalEliminar, AxBtnAgregar
+    AxBtnModalCancelar, AxBtnCancelar, AxModalEliminar, AxBtnAgregar,
+    AxPagination
 }

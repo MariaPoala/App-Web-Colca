@@ -3,7 +3,7 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
 import { CheckCircleIcon, DocumentAddIcon, FilterIcon, PlusIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
-import { AxInput, AxSelectFiltro, AxBtnEditar, AxBtnEliminar, AxBtnAgregar } from 'components/ax-form';
+import { AxInput, AxSelectFiltro, AxBtnEditar, AxBtnEliminar, AxModalEliminar } from 'components/ax-form';
 import AxRegistroDocumento from 'components/documento/ax-registro-documento'
 import { EnumEstadoEdicion, EnumTipoEdicion, TypeFormularioProps } from 'lib/edicion';
 import RegistroDocumentoModel from 'models/registro-documento-model'
@@ -186,7 +186,20 @@ export default function Example() {
               </button>
               <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}></AxBtnEditar>
               {/* {tipoEdicion==EnumTipoEdicion.EDITAR && setabrir(true)} */}
-              <AxBtnAgregar setEstadoEdicion={setEstadoEdicion} setIdRegistroDocumento={setIdRegistroDocumento} setTipoEdicion={setTipoEdicion}></AxBtnAgregar>
+              <button type="button"
+                onClick=
+                {() => {
+                  setIdRegistroDocumento("$ADD");
+                  setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
+                  setTipoEdicion(EnumTipoEdicion.AGREGAR);
+                }}
+                className="ml-3    inline-flex items-center px-3 py-2 border 
+                                            border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+                                            disabled:bg-blue-300"
+              >
+                <DocumentAddIcon className="h-4 w-4 mr-1 text-white" aria-hidden="true" />
+                Agregar
+              </button>
             </div>
           </div>
           <div className="hidden sm:block">
