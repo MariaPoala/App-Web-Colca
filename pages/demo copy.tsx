@@ -1,7 +1,7 @@
 
 import { Fragment, useEffect, useRef, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
-import { CheckCircleIcon, DocumentAddIcon, RefreshIcon, BanIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
+import { CheckCircleIcon, DocumentAddIcon, FilterIcon, PlusIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
 import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar } from 'components/ax-form';
 import AxRegistroDocumento from 'components/documento/ax-registro-documento'
@@ -48,7 +48,7 @@ export default function Example() {
   const [esModalOpen, setEsModalOpen] = useState(false)
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(2);
-  const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 3 })
+  const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 1 })
 
   useEffect(() => {
     if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
@@ -99,7 +99,7 @@ export default function Example() {
   }
 
   function FnLoadMas() {
-    setPaginacion({ inicio: (paginacion.inicio + 2) * paginacion.cantidad, cantidad: 2 });
+    setPaginacion({ inicio: (paginacion.inicio + 1) * paginacion.cantidad, cantidad: 1 });
   }
 
   const handlePrevPage = (prevPage: number) => {
@@ -116,7 +116,7 @@ export default function Example() {
       <main className="flex-1 pb-8">
         <div className={(isLoading ? "animate-pulse" : "") + " bg-white shadow"}>
           <div className=" sm:px-4 lg:max-w-6xl ">
-            <div className="py-2  lg:border-t lg:border-gray-200">
+            <div className="py-2 lg:border-t lg:border-gray-200">
               <div className="flex-1 min-w-0">
                 <dd className="mt-3 gap-2 flex items-center text-sm text-gray-500 font-medium sm:mr-6 sm:mt-0 capitalize">
                   <CheckCircleIcon
@@ -125,7 +125,7 @@ export default function Example() {
                   />
                   Filtrar Por:
                 </dd>
-                <div className="mt-2 grid ml-14 grid-cols-1   gap-y-6 gap-x-4 md:grid-cols-6">
+                <div className="mt-2 grid px-16 grid-cols-1   gap-y-6 gap-x-4 md:grid-cols-6">
                   <div className="md:col-span-2">
                     <AxSelectFiltro name="Ciudadano" value={filtro.Ciudadano} filtro={true} label="Ciudadanos" handleChange={handleChange}>
                       {listaCiudadano && listaCiudadano.map((ciudadano: any) => <option key={ciudadano.ID} value={"/ciudadano/" + ciudadano.ID}>{ciudadano.Nombres}</option>)}
@@ -134,10 +134,10 @@ export default function Example() {
                   <div className="md:col-span-1">
                     <AxInput name="NroDocumento" handleChange={handleChange} label="Nro Documento" type="text" filtro={true} />
                   </div>
-                  <div className="md:col-span-1">
-                    <AxInput name="Fecha" label="Fec Documento" handleChange={handleChange} filtro={true} type="date" />
-                  </div>
                   <div className="md:col-span-2">
+                    <AxInput name="Fecha" label="Fecha de Documento" handleChange={handleChange} filtro={true} type="date" />
+                  </div>
+                  <div className="md:col-span-1">
                     <button type="button"
                       onClick={() => FnFiltrarLista()}
                       className="ml-3 h-8 mt-0 w-20 bottom-0 right-0  inline-flex items-center px-3 py-2 border 
@@ -145,17 +145,14 @@ export default function Example() {
                                             disabled:bg-blue-300"
                     >
                       Filtrar
-                      <RefreshIcon className='h-5 w-5 text-transparent'></RefreshIcon>
                     </button>
                     <button type="button"
                       onClick={() => FnLoadMas()}
-                      className="ml-3 bg-green-500 mr-2 h-8 mt-0 w-32 bottom-0 right-0  inline-flex items-center px-3 py-2 border 
-                                            border-green-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white  hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
-                                            disabled:bg-green-300"
+                      className="ml-3 h-8 mt-0 w-20 bottom-0 right-0  inline-flex items-center px-3 py-2 border 
+                                            border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+                                            disabled:bg-blue-300"
                     >
                       Cargas Mas
-                      <RefreshIcon className='h-4 w-4 mr-1'></RefreshIcon>
-                      
                     </button>
                   </div>
                 </div>
@@ -209,11 +206,11 @@ export default function Example() {
                   setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
                 }}
                 className="ml-3    inline-flex items-center px-3 py-2 border 
-                                            border-red-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500
-                                            disabled:bg-red-300"
+                                            border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+                                            disabled:bg-blue-300"
               >
-                <BanIcon className="h-4 w-4 mr-1 text-white" aria-hidden="true" />
-                Anular
+                <DocumentAddIcon className="h-4 w-4 mr-1 text-white" aria-hidden="true" />
+                Administrar
               </button>
               <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}></AxBtnEditar>
               {/* {tipoEdicion==EnumTipoEdicion.EDITAR && setabrir(true)} */}
@@ -304,6 +301,38 @@ export default function Example() {
                       </tbody>
                     </table>}
                 </div>
+                {/* Pagination */}
+                <AxPagination totalPages={totalPages}
+                  currentPage={page}
+                  handlePrevPage={handlePrevPage}
+                  handleNextPage={handleNextPage} ></AxPagination>
+                {/* <nav
+                  className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6"
+                  aria-label="Pagination"
+                >
+                  <div className="hidden sm:block">
+                    <p className="text-sm text-gray-700">
+                      Registros <span className="font-medium">1</span> a <span className="font-medium">2</span> de{' '}
+                      <span className="font-medium">{listaRegistroDocumento.length}</span> resultados
+                      <span className="font-medium">{page}</span> current
+                      <span className="font-medium">{totalPages}</span> total pagina
+                    </p>
+                  </div>
+                  <div className="flex-1 flex justify-between sm:justify-end">
+                    <a
+                      href="#"
+                      className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                    >
+                      Anterior
+                    </a>
+                    <a
+                      href="#"
+                      className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                    >
+                      Siguiente
+                    </a>
+                  </div>
+                </nav> */}
               </div>
             </div>
           </div>

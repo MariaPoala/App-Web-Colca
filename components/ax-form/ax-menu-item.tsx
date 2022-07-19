@@ -46,6 +46,7 @@ const navigation = [
         children: [
             { name: 'Registro de Documento', href: '/registro-documento', icon: CloudUploadIcon, current: false },
             { name: 'Prueba doc', href: '/pruebadoc', icon: CloudUploadIcon, current: false },
+            { name: 'Demo', href: '/demo', icon: CloudUploadIcon, current: false },
         ],
     },
     {

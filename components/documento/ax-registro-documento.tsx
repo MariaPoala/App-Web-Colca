@@ -1,12 +1,10 @@
 import { Fragment, useEffect, useReducer, useState, useRef } from "react";
 import useSWRImmutable from "swr/immutable"
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { Dialog, Transition } from "@headlessui/react";
 import * as uuid from 'uuid'
 import { AxBtnCancelar, AxBtnEditar, AxInput, AxBtnEliminar, AxSelect, AxSubmit, AxModalEliminar, AxSelectMultiple } from 'components/ax-form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
 import RegistroDocumentoModel from 'models/registro-documento-model'
-import { ChevronLeftIcon, XIcon } from "@heroicons/react/outline";
 import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
 import db from "lib/firebase-config";
 db.app
