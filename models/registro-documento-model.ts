@@ -9,6 +9,7 @@ class Registro_DocumentoModel {
     FecRegistro: string;
     FecEdicion: string;
     FecDocumento: string;
+    EsAnulado: boolean;
     FecAnulacion: string;
     Motivo: string;
 
@@ -23,6 +24,7 @@ class Registro_DocumentoModel {
         this.FecRegistro = "";
         this.FecEdicion = "";
         this.FecDocumento = "";
+        this.EsAnulado = false;
         this.FecAnulacion = "";
         this.Motivo = "";
     }

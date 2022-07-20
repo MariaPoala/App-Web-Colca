@@ -1,62 +1,77 @@
-function paginate(
-  totalItems: number,
-  currentPage: number = 1,
-  pageSize: number = 10,
-  maxPages: number = 10
-) {
-  // calculate total pages
-  let totalPages = Math.ceil(totalItems / pageSize);
-
-  // ensure current page isn't out of range
-  if (currentPage < 1) {
-      currentPage = 1;
-  } else if (currentPage > totalPages) {
-      currentPage = totalPages;
+/* This example requires Tailwind CSS v2.0+ */
+const people = [
+    { name: 'Lindsay Walton aasdasdasdasdasdasdasd', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },{ name: 'Lindsay Walton', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },{ name: 'Lindsay Walton', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },{ name: 'Lindsay Walton', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },{ name: 'Lindsay Walton', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    { name: 'Lindsay Walton ', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
+    // More people...
+  ]
+  
+  export default function Example() {
+    return (
+      <div className="px-4 sm:px-6 lg:px-8">
+        <div className="mt-8 flex flex-col">
+          <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+              <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                <table className="flex flex-col w-full h-[calc(100vh-4rem)] divide-gray-300">
+                  <thead className="bg-gray-50">
+                    <tr className="table table-fixed w-full">
+                      <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                        Name
+                      </th>
+                      <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                        Title
+                      </th>
+                      <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                        Email
+                      </th>
+                      <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                        Role
+                      </th>
+                      <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                        <span className="sr-only">Edit</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="flex-1 divide-y block overflow-x-auto overflow-y-auto divide-gray-200 bg-white ">
+                    {people.map((person) => (
+                      <tr key={person.email} className="table table-fixed w-full">
+                        <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                          {person.name}
+                        </td>
+                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.title}</td>
+                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.email}</td>
+                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.role}</td>
+                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                          <a href="#" className="text-indigo-600 hover:text-indigo-900">
+                            Edit<span className="sr-only">, {person.name}</span>
+                          </a>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
-
-  let startPage: number, endPage: number;
-  if (totalPages <= maxPages) {
-      // total pages less than max so show all pages
-      startPage = 1;
-      endPage = totalPages;
-  } else {
-      // total pages more than max so calculate start and end pages
-      let maxPagesBeforeCurrentPage = Math.floor(maxPages / 2);
-      let maxPagesAfterCurrentPage = Math.ceil(maxPages / 2) - 1;
-      if (currentPage <= maxPagesBeforeCurrentPage) {
-          // current page near the start
-          startPage = 1;
-          endPage = maxPages;
-      } else if (currentPage + maxPagesAfterCurrentPage >= totalPages) {
-          // current page near the end
-          startPage = totalPages - maxPages + 1;
-          endPage = totalPages;
-      } else {
-          // current page somewhere in the middle
-          startPage = currentPage - maxPagesBeforeCurrentPage;
-          endPage = currentPage + maxPagesAfterCurrentPage;
-      }
-  }
-
-  // calculate start and end item indexes
-  let startIndex = (currentPage - 1) * pageSize;
-  let endIndex = Math.min(startIndex + pageSize - 1, totalItems - 1);
-
-  // create an array of pages to ng-repeat in the pager control
-  let pages = Array.from(Array((endPage + 1) - startPage).keys()).map(i => startPage + i);
-
-  // return object with all pager properties required by the view
-  return {
-      totalItems: totalItems,
-      currentPage: currentPage,
-      pageSize: pageSize,
-      totalPages: totalPages,
-      startPage: startPage,
-      endPage: endPage,
-      startIndex: startIndex,
-      endIndex: endIndex,
-      pages: pages
-  };
-}
-
-export default paginate;
+  
