@@ -1,7 +1,7 @@
 
 import { Fragment, useEffect, useRef, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
-import { CheckCircleIcon, DocumentAddIcon, RefreshIcon, BanIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
+import { CheckCircleIcon, BadgeCheckIcon, RefreshIcon, BanIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
 import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar } from 'components/ax-form';
 import AxRegistroDocumento from 'components/documento/ax-registro-documento'
@@ -136,7 +136,8 @@ export default function Example() {
                       <RefreshIcon className='h-5 w-5 text-transparent'></RefreshIcon>
                     </button>
                     <button type="button"
-                      onClick={() => FnLoadMas()}
+                      onClick={() => FnLoadMas()
+                      }
                       className="ml-3 bg-green-500 mr-2 h-8 mt-0 w-32 bottom-0 right-0  inline-flex items-center px-3 py-2 border 
                                             border-green-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white  hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
                                             disabled:bg-green-300"
@@ -190,26 +191,13 @@ export default function Example() {
               </p>
             </div>
             <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none ">
-              <button type="button"
-                onClick=
-                {() => {
-                  setIdRegistroDocumento(IDRegistroDocumento);
-                  setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
-                }}
-                className="ml-3    inline-flex items-center px-3 py-2 border 
-                                            border-red-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500
-                                            disabled:bg-red-300"
-              >
-                <BanIcon className="h-4 w-4 mr-1 text-white" aria-hidden="true" />
-                Anular
-              </button>
               <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}></AxBtnEditar>
               {/* {tipoEdicion==EnumTipoEdicion.EDITAR && setabrir(true)} */}
               <AxBtnAgregar setEstadoEdicion={setEstadoEdicion} setIdRegistroDocumento={setIdRegistroDocumento} setTipoEdicion={setTipoEdicion}></AxBtnAgregar>
             </div>
           </div>
           <div className="hidden sm:block">
-            <div className="mx-auto px-14 sm:px-16 lg:px-16">
+            <div className="mx-auto px-14 sm:px-16 lg:px-8">
               <div className="flex flex-col mt-2">
                 <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg ">
                   {filtro.Documento.length == 0 ?
@@ -271,7 +259,11 @@ export default function Example() {
                               {item.FecRegistro}
                             </td>
                             <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.EsAnulado}
+                              {item.EsAnulado == true ?
+                             
+                                <BanIcon className='h-6 w-6    text-red-400'></BanIcon> :
+                                <BadgeCheckIcon className='h-6 w-6  text-green-400 '></BadgeCheckIcon>
+                              }
                             </td>
                           </tr>
                         )))}

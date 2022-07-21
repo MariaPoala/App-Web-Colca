@@ -12,8 +12,10 @@ class Registro_DocumentoModel {
     EsAnulado: boolean;
     FecAnulacion: string;
     Motivo: string;
-
+    
+    
     constructor() {
+        let today = new Date()
         this.ID = "";
         this.Observacion = "";
         this.NroDocumento = "";
@@ -21,11 +23,11 @@ class Registro_DocumentoModel {
         this.IDEmpleado = "";
         this.IDCiudadano = "";
         this.IDDocumento = "";
-        this.FecRegistro = "";
-        this.FecEdicion = "";
+        this.FecRegistro = today.toISOString().split('T')[0];
+        this.FecEdicion = today.toISOString().split('T')[0];
         this.FecDocumento = "";
         this.EsAnulado = false;
-        this.FecAnulacion = "";
+        this.FecAnulacion = today.toISOString().split('T')[0];
         this.Motivo = "";
     }
 }
