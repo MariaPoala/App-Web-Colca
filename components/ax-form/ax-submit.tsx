@@ -1,5 +1,5 @@
 
-export default function AxSubmit({ loading }: any) {
+export default function AxSubmit({ loading }: { loading: boolean }) {
     return <button type="submit"
         className="
         ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white 
