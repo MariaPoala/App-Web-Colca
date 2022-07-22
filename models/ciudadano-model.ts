@@ -1,26 +1,28 @@
 class CiudadanoModel {
-    ID: string;
-    Nombres: string;
-    Apellidos: string;
-    FechaNacimiento: Date;
-    NroDocumento: string;
-    Direccion: string;
-    Celular: string;
-    Email: string;
-    TipoPersona: string;
-    IDDistrito: string;
+    id: string;
+    fecha_creacion?: string;
+    fecha_edicion?: string;
+    nombres: string;
+    apellidos: string;
+    fecha_nacimiento: Date;
+    nro_documento: string;
+    direccion: string;
+    celular: string;
+    email: string;
+    tipo_persona: string;
+    id_distrito: string;
 
     constructor(){
-        this.ID="";
-        this.Nombres="";
-        this.Apellidos="";
-        this.FechaNacimiento= new Date();
-        this.NroDocumento="";
-        this.Direccion="";
-        this.Celular="";
-        this.Email="";
-        this.TipoPersona="";
-        this.IDDistrito="";
+        this.id="";
+        this.nombres="";
+        this.apellidos="";
+        this.fecha_nacimiento= new Date();
+        this.nro_documento="";
+        this.direccion="";
+        this.celular="";
+        this.email="";
+        this.tipo_persona="";
+        this.id_distrito="";
     }
 }
 export default CiudadanoModel

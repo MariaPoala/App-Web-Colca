@@ -1,24 +1,24 @@
 import { useEffect, useReducer, useState, Fragment } from "react";
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { Dialog, Transition } from "@headlessui/react";
-import { ChevronLeftIcon } from "@heroicons/react/outline"
 import { AxInput, AxModalEliminar, AxSubmit, AxBtnEliminar, AxBtnEditar, AxBtnCancelar } from 'components/ax-form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
-import DistritoModel from 'models/distrito_model'
+import RolModel from 'models/rol_model'
+import { ChevronLeftIcon} from "@heroicons/react/outline"
 export const getServerSideProps = withPageAuthRequired();
 
-const formReducer = (state: DistritoModel, event: any): DistritoModel => {
+const formReducer = (state: RolModel, event: any): RolModel => {
     if (event.FORM_DATA) {
         return { ...event.FORM_DATA }
     }
     if (event.FORM_ADD) {
-        return new DistritoModel()
+        return new RolModel()
     }
     return { ...state, [event.name]: event.value }
 }
 
-export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
-    const [formData, setFormData] = useReducer(formReducer, new DistritoModel());
+export default function AxRol({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
+    const [formData, setFormData] = useReducer(formReducer, new RolModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
@@ -32,8 +32,8 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
         }
         else {
             const fetchData = async () => {
-                const response = await fetch(`/api/distrito/${ID}`);
-                const data: DistritoModel = await response.json();
+                const response = await fetch(`/api/rol/${ID}`);
+                const data: RolModel = await response.json();
                 setFormData({ FORM_DATA: data });
             }
             fetchData().catch(console.error);
@@ -48,23 +48,23 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
             value: isCheckbox ? event.target.checked : event.target.value,
         });
     }
+
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         setIsSubmitting(true);
         const dataEnvio = JSON.stringify(formData);
-        const response = await fetch('/api/distrito/edicion', {
+        const response = await fetch('/api/rol/edicion', {
             body: dataEnvio,
             headers: { 'Content-Type': 'application/json', },
             method: tipoEdicion == EnumTipoEdicion.EDITAR ? "PUT" : tipoEdicion == EnumTipoEdicion.ELIMINAR ? "DELETE" : "POST"
         })
 
-        const result: DistritoModel = await response.json()
-        console.log(result);
+        const result: RolModel = await response.json()
         if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.id);
-        if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
         setIsSubmitting(false);
         setOpen(false);
-        setTipoEdicion(EnumTipoEdicion.VISUALIZAR);
+        if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
+        setTipoEdicion(EnumTipoEdicion.VISUALIZAR)
         setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
     }
     return (
@@ -74,7 +74,7 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
                     onClick={() => { setEstadoEdicion(EnumEstadoEdicion.CANCELADO); }}
                     className="hover:bg-indigo-200 rounded-sm p-2 inline-flex items-center space-x-3 text-sm font-medium text-gray-900">
                     <ChevronLeftIcon className="-ml-2 h-5 w-5 text-indigo-700" aria-hidden="true" />
-                    <span>Lista de Distritos</span>
+                    <span>Lista de Roles</span>
                 </button>
             </nav>
             <div className={isLoading ? "animate-pulse" : "" + " flex h-full flex-col  bg-white shadow-xl"}>
@@ -93,11 +93,11 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
                                 <div className="w-0 flex-1 pt-2">
                                     <div className="mt-2 flex">
                                         <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}  ></AxBtnEditar>
-                                        <AxBtnEliminar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setOpen={setOpen} > </AxBtnEliminar>
+                                        <AxBtnEliminar tipoEdicion={tipoEdicion} EnumTipoEdicion setTipoEdicion={setTipoEdicion} setOpen={setOpen} > </AxBtnEliminar>
                                     </div>
                                     <Transition.Root show={open} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Distrito"}> </AxModalEliminar>
+                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Rol"}> </AxModalEliminar>
                                         </Dialog>
                                     </Transition.Root>
                                 </div>
@@ -114,21 +114,21 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
                                             <h3 className="text-lg leading-6 font-medium text-gray-900">Datos </h3>
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
+                                            <div className="md:col-span-2">
+                                                <AxInput name="Nombre" label="Nombre" value={formData.nombre} handleChange={handleChange} />
+                                            </div>
+                                            <div className="hidden md:flex md:col-span-4" />
                                             <div className="md:col-span-3">
-                                                <AxInput name="nombre" label="Nombre" value={formData.nombre} handleChange={handleChange} />
+                                                <AxInput name="Descripcion" label="Descripcion" value={formData.descripcion} handleChange={handleChange} />
                                             </div>
-                                            <div className="md:col-span-3">
-                                                <AxInput name="codigo_postal" label="Codigo Postal" value={formData.codigo_postal} handleChange={handleChange} />
-                                            </div>
-                                            <div className="md:col-span-4">
-                                                <AxInput name="descripcion" label="Descripcion" value={formData.descripcion} handleChange={handleChange} />
-                                            </div>
+                                           
                                         </div>
+
                                     </div>
                                 </fieldset>
                                 {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">
                                     <div className="flex justify-end">
-                                        <AxBtnCancelar setID={setID} setTipoEdicion={setTipoEdicion} tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion}></AxBtnCancelar>
+                                        <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID}></AxBtnCancelar>
                                         <AxSubmit loading={isSubmitting} />
                                     </div>
                                 </div>

@@ -1,28 +1,30 @@
 class DocumentoModel {
-    ID: string;
-    Nombre: string;
-    Codigo: string;
-    Descripcion: string;
-    NroDocumento: string;
-    TiempoEntrega: number;
-    Costo: number;
-    IDGrupo: string;
-    IDTipoDocumento: string;
-    IDsConsideracion: string[];
-    IDsRequisito: string[];
+    id: string;
+    nombre: string;
+    codigo: string;
+    descripcion: string;
+    nro_documento: string;
+    tiempo_entrega: number;
+    costo: number;
+    id_grupo: string;
+    id_tipoDocumento: string;
+    id_consideracion: string[];
+    id_requisito: string[];
+    fecha_creacion?: string;
+    fecha_edicion?: string;
 
     constructor() {
-        this.ID = "";
-        this.Nombre = "";
-        this.Codigo = "";
-        this.Descripcion = "";
-        this.NroDocumento = "";
-        this.TiempoEntrega = 0;
-        this.Costo = 0;
-        this.IDGrupo ="";
-        this.IDTipoDocumento = "";
-        this.IDsConsideracion = [];
-        this.IDsRequisito = [];
+        this.id = "";
+        this.nombre = "";
+        this.codigo = "";
+        this.descripcion = "";
+        this.nro_documento = "";
+        this.tiempo_entrega = 0;
+        this.costo = 0;
+        this.id_grupo ="";
+        this.id_tipoDocumento = "";
+        this.id_consideracion = [];
+        this.id_requisito = [];
     }
 }
 export default DocumentoModel

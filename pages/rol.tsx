@@ -1,17 +1,17 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { SearchIcon, ChevronRightIcon, UsersIcon, PlusIcon } from '@heroicons/react/solid'
+import { SearchIcon, ChevronRightIcon, UsersIcon, PlusIcon, MailIcon, PaperClipIcon } from '@heroicons/react/solid'
 import AxInicio from 'components/ax-inicio'
 import AxRol from 'components/administracion/ax-rol'
 import { EnumEstadoEdicion } from 'lib/edicion'
-import RolModel from 'models/rol-model'
+import RolModel from 'models/rol_model'
 
 export const getServerSideProps = withPageAuthRequired();
 
-export default function AxPageRol() {
-    const [IDRol, setIDRol] = useState("$NULL")
-    const [listaRol, setListaRol] = useState<RolModel[]>([]);
+export default function AxPageDistrito() {
+    const [ID, setID] = useState(-1)
+    const [lista, setLista] = useState<RolModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
     const [isLoading, setIsLoading] = useState(true);
     const [textoFiltro, setTextoFiltro] = useState('')
@@ -24,15 +24,16 @@ export default function AxPageRol() {
                 method: "GET"
             })
             const result: RolModel[] = await response.json()
-            setListaRol(result);
+            setLista(result);
             setIsLoading(false)
         }
         fetchData().catch(console.error);
     }, [estadoEdicion])
 
-    const listaFiltro = (textoFiltro == "" ? listaRol : listaRol.filter(item =>
-        item.Nombre.toUpperCase().includes(textoFiltro.toUpperCase())
+    const listaFiltro = (textoFiltro == "" ? lista : lista.filter(item =>
+        item.nombre.toUpperCase().includes(textoFiltro.toUpperCase())
     ))
+
     return (
         <>
             <Head><title>Rol</title></Head>
@@ -41,9 +42,9 @@ export default function AxPageRol() {
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
                         {/*DETALLE DEL Rol*/}
                         <div className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "block" : "hidden sm:block") + " flex-1 inset-y-0 pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
-                            {IDRol == "$NULL"
+                            {ID == -1
                                 ? <AxInicio nombre={"Rol"}></AxInicio>
-                                : <AxRol ID={IDRol} setID={setIDRol} setEstadoEdicion={setEstadoEdicion}></AxRol>
+                                : <AxRol ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion}></AxRol>
                             }
                         </div>
                         {/*LISTA DE Rol*/}
@@ -63,8 +64,6 @@ export default function AxPageRol() {
                                                             </div>
                                                             <input
                                                                 type="search"
-                                                                name="search"
-                                                                id="search"
                                                                 className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-indigo-300 rounded-md"
                                                                 placeholder="Buscar..."
                                                                 onChange={(event) => setTextoFiltro(event.target.value)}
@@ -78,13 +77,12 @@ export default function AxPageRol() {
                                     <div className="border-t border-b border-gray-200 bg-gray-100 px-6 py-2 text-sm font-medium text-gray-500">
                                         <div className="flex items-center space-x-4">
                                             <div className='flex-1'>
-                                                <p className="text-sm font-medium text-gray-500">{
-                                                    listaFiltro && listaFiltro.length || 0} Registros</p>
+                                                <p className="text-sm font-medium text-gray-500">{listaFiltro && listaFiltro.length || 0} Registros</p>
                                             </div>
                                             <div>
                                                 <button onClick=
                                                     {() => {
-                                                        setIDRol("$ADD");
+                                                        setID(0);
                                                         setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
                                                     }}
                                                     type="button" className="bg-indigo-200 p-1 rounded-full text-indigo-500 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:text-indigo-600">
@@ -95,24 +93,24 @@ export default function AxPageRol() {
                                         </div>
                                     </div>
                                 </div>
-                                {/*Rol*/}
+                                {/*rol*/}
                                 <nav aria-label="Message list" className="min-h-0 flex-1 overflow-y-auto">
                                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
                                         <ul role="list" className="divide-y divide-gray-200">
                                             {listaFiltro && listaFiltro.map(item => {
-                                                return <li key={item.ID}>
+                                                return <li key={item.id}>
                                                     <a onClick={() => {
-                                                        setIDRol(item.ID);
+                                                        setID(item.id);
                                                         setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
                                                     }}
-                                                        className={(item.ID == IDRol ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
+                                                        className={(item.id == ID ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
                                                         <div className="flex px-4 py-4 sm:px-6">
                                                             <div className="min-w-0 flex-1 flex">
                                                                 <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
                                                                     <div>
-                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.Nombre}</p>
+                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.nombre}</p>
                                                                         <p className="mt-2 flex text-sm text-gray-500">
-                                                                            <span className="truncate">{item.Descripcion}</span>
+                                                                            <span className="truncate">{item.descripcion}</span>
                                                                         </p>
                                                                     </div>
                                                                 </div>

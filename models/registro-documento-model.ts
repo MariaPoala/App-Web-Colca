@@ -1,34 +1,35 @@
 class Registro_DocumentoModel {
-    ID: string;
-    NroDocumento: string;
-    Observacion: string;
-    URLArchivo: string;
-    IDEmpleado: string;
-    IDCiudadano: string;
-    IDDocumento: string;
-    FecRegistro: string;
-    FecEdicion: string;
-    FecDocumento: string;
-    EsAnulado: boolean;
-    FecAnulacion: string;
-    Motivo: string;
+    id: string;
+    numero_documento: string;
+    observacion: string;
+    url_archivo: string;
+    id_empleado: string;
+    id_ciudadano: string;
+    id_documento: string;
+    fecha_registro: string;
+    fecha_documento: string;
+    es_anulado: boolean;
+    fecha_anulacion: string;
+    motivo: string;
+    fecha_creacion?: string;
+    fecha_edicion?: string;
     
     
     constructor() {
         let today = new Date()
-        this.ID = "";
-        this.Observacion = "";
-        this.NroDocumento = "";
-        this.URLArchivo = "";
-        this.IDEmpleado = "";
-        this.IDCiudadano = "";
-        this.IDDocumento = "";
-        this.FecRegistro = today.toISOString().split('T')[0];
-        this.FecEdicion = today.toISOString().split('T')[0];
-        this.FecDocumento = "";
-        this.EsAnulado = false;
-        this.FecAnulacion = today.toISOString().split('T')[0];
-        this.Motivo = "";
+        this.id = "";
+        this.observacion = "";
+        this.numero_documento = "";
+        this.url_archivo = "";
+        this.id_empleado = "";
+        this.id_ciudadano = "";
+        this.id_documento = "";
+        this.fecha_registro = today.toISOString().split('T')[0];
+        this.fecha_edicion = today.toISOString().split('T')[0];
+        this.fecha_documento = "";
+        this.es_anulado = false;
+        this.fecha_anulacion = today.toISOString().split('T')[0];
+        this.motivo = "";
     }
 }
 export default Registro_DocumentoModel

@@ -1,35 +1,12 @@
-import db from "lib/firebase-config";
-import { doc, setDoc, updateDoc, collection, addDoc, getDocs, deleteDoc } from "firebase/firestore";
+import FnSaveData from "lib/database/save_data";
+import RolModel from "models/rol_model";
 
 export default async function handler(req: any, res: any) {
-    try {
-        if (req.method == "GET") {
-            const querySnapshot = await getDocs(collection(db, "Rol"));
-            let data: any = []
-            querySnapshot.forEach(doc => data.push(doc.data()));
-            res.status(200).json(data)
-        }
-        else if (req.method === 'POST') {
-            const docRef = await addDoc(collection(db, "Rol"), req.body);
-            const updateID = await updateDoc(docRef, {
-                ID: docRef.id
-            });
-            res.status(200).json({ ID: docRef.id, msg: "Registro exitoso" })
-        }
-        else if (req.method == "PUT") {
-            const docRef = doc(db, 'Rol', req.body.ID);
-            setDoc(docRef, req.body, { merge: true });
-            res.status(200).json("documento actualizado")
-        }
-        else if (req.method == "DELETE") {
-            const docRef = doc(db, 'Rol', req.body.ID);
-            deleteDoc(docRef)
-            res.status(200).json("documento eliminado")
-        }
-
-    } catch (e) {
-        console.log(e);
-        res.status(500).json({ error: e })
+    const { data, error } = await FnSaveData<RolModel>("rol", req.method, req.body);
+    if (error) {
+        res.status(401).json(error);
     }
-
+    else {
+        res.status(200).json(data);
+    }
 }

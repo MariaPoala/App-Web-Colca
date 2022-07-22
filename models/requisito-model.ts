@@ -1,14 +1,16 @@
 class Tipo_DocumentoModel {
-    ID: string;
-    Nombre: string;
-    Descripcion: string;
-    UrlImgEjemplo: string;
+    id: string;
+    nombre: string;
+    descripcion: string;
+    url_imagen: string;
+    fecha_creacion?: string;
+    fecha_edicion?: string;
 
     constructor() {
-        this.ID = "";
-        this.Nombre = "";
-        this.Descripcion = "";
-        this.UrlImgEjemplo = "";
+        this.id = "";
+        this.nombre = "";
+        this.descripcion = "";
+        this.url_imagen = "";
     }
 }
 

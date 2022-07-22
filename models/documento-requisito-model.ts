@@ -1,12 +1,14 @@
 class Documento_RequisitoModel {
-    ID: string;
-    IDDocumento: string;
-    IDRequisito: string;
+    id: string;
+    id_documento: string;
+    id_requisito: string;
+    fecha_creacion?: string;
+    fecha_edicion?: string;
 
     constructor(){
-        this.ID="";
-        this.IDDocumento="";
-        this.IDRequisito="";
+        this.id="";
+        this.id_documento="";
+        this.id_requisito="";
     }
 }
 export default Documento_RequisitoModel

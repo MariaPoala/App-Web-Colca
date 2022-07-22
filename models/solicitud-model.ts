@@ -1,26 +1,28 @@
 class SolicitudModel {
-    ID: string;
-    Asunto: string;
-    NroDocumento: string;
-    FechaInicio: Date;
-    FechaPlazo: Date;
-    Motivo: string;
-    IDEmpleado: string;
-    IDCiudadano: string;
-    IDArea: string;
-    IDDocumento: string;
+    id: string;
+    asunto: string;
+    numero_documento: string;
+    fecha_inicio: Date;
+    fecha_plazo: Date;
+    motivo: string;
+    id_empleado: string;
+    id_ciudadano: string;
+    id_area: string;
+    id_documento: string;
+    fecha_creacion?: string;
+    fecha_edicion?: string;
 
     constructor(){
-        this.ID="";
-        this.Asunto="";
-        this.NroDocumento="";
-        this.FechaInicio=new Date();
-        this.FechaPlazo=new Date();
-        this.Motivo="";
-        this.IDEmpleado="";
-        this.IDCiudadano="";
-        this.IDArea="";
-        this.IDDocumento="";
+        this.id="";
+        this.asunto="";
+        this.numero_documento="";
+        this.fecha_inicio=new Date();
+        this.fecha_plazo=new Date();
+        this.motivo="";
+        this.id_empleado="";
+        this.id_ciudadano="";
+        this.id_area="";
+        this.id_documento="";
     }
 }
 export default SolicitudModel
