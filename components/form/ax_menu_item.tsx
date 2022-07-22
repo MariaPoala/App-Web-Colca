@@ -14,39 +14,39 @@ const navigation = [
     {
         name: 'Seguridad', href: '', icon: FingerPrintIcon, current: false,
         children: [
-            { name: 'Roles', href: '/rol', icon: IdentificationIcon, current: false }
+            { name: 'Roles', href: '/administracion/rol', icon: IdentificationIcon, current: false }
         ],
     },
     {
         name: 'Entidades', href: '', icon: UserGroupIcon, current: false,
         children: [
-            { name: 'Distrito', href: '/distrito', icon: OfficeBuildingIcon, current: false },
-            { name: 'Empleado', href: '/empleado', icon: UserIcon, current: false },
-            { name: 'Ciudadano', href: '/ciudadano', icon: UsersIcon, current: false }
+            { name: 'Distrito', href: '/entidad/distrito', icon: OfficeBuildingIcon, current: false },
+            { name: 'Empleado', href: '/entidad/empleado', icon: UserIcon, current: false },
+            { name: 'Ciudadano', href: '/entidad/ciudadano', icon: UsersIcon, current: false }
         ],
     },
     {
         name: 'Configuración', href: '', icon: DatabaseIcon, current: false,
         children: [
-            { name: 'Grupo', href: '/grupo', icon: DuplicateIcon, current: false },
-            { name: 'Consideraciones', href: '/consideracion', icon: ClipboardListIcon, current: false },
-            { name: 'Tipo Documento', href: '/tipo-documento', icon: DocumentDuplicateIcon, current: false },
-            { name: 'Area', href: '/area', icon: LibraryIcon, current: false },
-            { name: 'Requisitos', href: '/requisito', icon: ClipboardCheckIcon, current: false }
+            { name: 'Grupo', href: '/administracion/grupo', icon: DuplicateIcon, current: false },
+            { name: 'Consideraciones', href: '/documento/consideracion', icon: ClipboardListIcon, current: false },
+            { name: 'Tipo Documento', href: '/documento/tipo-documento', icon: DocumentDuplicateIcon, current: false },
+            { name: 'Area', href: '/administracion/area', icon: LibraryIcon, current: false },
+            { name: 'Requisitos', href: '/documento/requisito', icon: ClipboardCheckIcon, current: false }
         ],
     },
     {
         name: 'Documento', href: '', icon: DocumentTextIcon, current: false,
         children: [
-            { name: 'Documento', href: '/documento', icon: DocumentReportIcon }
+            { name: 'Documento', href: '/documento/documento', icon: DocumentReportIcon }
         ],
     },
     {
         name: 'Digitalización', href: '', icon: CloudIcon, current: false,
         children: [
-            { name: 'Registro de Documento', href: '/registro-documento', icon: CloudUploadIcon, current: false },
-            { name: 'Prueba doc', href: '/pruebadoc', icon: CloudUploadIcon, current: false },
-            { name: 'Demo', href: '/demo', icon: CloudUploadIcon, current: false },
+            { name: 'Registro de Documento', href: '/documento/registro-documento', icon: CloudUploadIcon, current: false },
+            { name: 'Prueba doc', href: '/documento/pruebadoc', icon: CloudUploadIcon, current: false },
+            { name: 'Demo', href: '/documento/demo', icon: CloudUploadIcon, current: false },
         ],
     },
     {
@@ -54,13 +54,13 @@ const navigation = [
        
         children: [
             
-            { name: 'Registro de Documento', href: '/registro-documento', icon: PaperClipIcon, current: false },
+            { name: 'Registro de Documento', href: '/documento/registro-documento', icon: PaperClipIcon, current: false },
         ],
     },
     {
         name: 'Seguimiento', href: '', icon: BadgeCheckIcon, current: false,
         children: [
-            { name: 'seguimiento', href: '/segimiento', icon: BadgeCheckIcon, current: false },
+            { name: 'seguimiento', href: '/documento/segimiento', icon: BadgeCheckIcon, current: false },
         ],
     },
     {

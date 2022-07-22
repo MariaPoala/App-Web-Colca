@@ -1,9 +1,9 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { SearchIcon, ChevronRightIcon, UsersIcon, PlusIcon, MailIcon, PaperClipIcon } from '@heroicons/react/solid'
-import AxInicio from 'components/ax-inicio'
-import AxRol from 'components/administracion/ax-rol'
+import { SearchIcon, ChevronRightIcon, UsersIcon, PlusIcon } from '@heroicons/react/solid'
+import AxInicio from 'components/layout/ax_inicio'
+import AxRol from 'modulos/administracion/ax_rol'
 import { EnumEstadoEdicion } from 'lib/edicion'
 import RolModel from 'models/rol_model'
 
@@ -20,7 +20,7 @@ export default function AxPageDistrito() {
         if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
         setIsLoading(true)
         const fetchData = async () => {
-            const response = await fetch(`/api/rol/edicion`, {
+            const response = await fetch(`/api/administracion/rol`, {
                 method: "GET"
             })
             const result: RolModel[] = await response.json()

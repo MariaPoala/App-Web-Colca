@@ -1,6 +1,7 @@
 import { EnumTipoEdicion, } from 'lib/edicion'
-export default function AxBtnEliminar({ tipoEdicion, setTipoEdicion,setOpen }: any) {
-    return <button type="button" disabled={tipoEdicion == EnumTipoEdicion.EDITAR || tipoEdicion == EnumTipoEdicion.AGREGAR}
+export default function AxBtnEliminar({ tipoEdicion, setTipoEdicion, setOpen }: any) {
+    return <button type="button"
+        disabled={tipoEdicion == EnumTipoEdicion.EDITAR || tipoEdicion == EnumTipoEdicion.AGREGAR}
         onClick={() => { setTipoEdicion(EnumTipoEdicion.ELIMINAR), setOpen(true) }}
         className="ml-3 inline-flex items-center px-3 py-2 border 
     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500

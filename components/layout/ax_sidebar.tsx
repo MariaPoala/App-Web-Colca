@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import AxBodyNavegacion from './ax-form/ax-body-navegacion'
+import AxBodyNavegacion from 'components/form/ax_body_navegacion'
 import { XIcon } from '@heroicons/react/outline';
 
 interface IProps {

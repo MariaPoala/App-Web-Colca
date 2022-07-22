@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationIcon } from "@heroicons/react/outline";
 import { EnumTipoEdicion } from 'lib/edicion'
-import { AxBtnSubmitEliminar, AxBtnModalCancelar } from 'components/ax-form'
+import { AxBtnSubmitEliminar, AxBtnModalCancelar } from 'components/form'
 
 export default function AxModalEliminar({ setOpen, setTipoEdicion, formData, isSubmitting, handleSubmit, nombreModal }: any) {
     return <>

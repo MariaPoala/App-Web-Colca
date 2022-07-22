@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import AxHeader from 'components/ax-header'
-import AxSidebar from 'components/ax-sidebar'
+import AxHeader from 'components/layout/ax_header'
+import AxSidebar from 'components/layout/ax_sidebar'
 
 interface Props {
     children: React.ReactNode

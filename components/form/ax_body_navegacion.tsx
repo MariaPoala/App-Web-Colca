@@ -1,4 +1,4 @@
-import {navigation, secondaryNavigation} from './ax-menu-item'
+import {navigation, secondaryNavigation} from './ax_menu_item'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Dialog, Disclosure, Transition } from '@headlessui/react'

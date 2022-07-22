@@ -1,8 +1,4 @@
-import supabase from "lib/supabase-config";
-type TypeResultado = {
-    data: any;
-    error: any
-}
+import supabase from "lib/supabase_config";
 
 export default async function FnSaveData<T>(table: string, method: string, body: any): Promise<{ data: null | T | T[]; error: any }> {
     try {
