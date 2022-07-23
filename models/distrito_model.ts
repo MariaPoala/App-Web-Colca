@@ -3,14 +3,11 @@ class DistritoModel {
     fecha_creacion?: string;
     fecha_edicion?: string;
     nombre: string;
-    descripcion: string;
-    codigo_postal: string
+    descripcion?: string;
 
     constructor() {
         this.id = 0;
         this.nombre = "";
-        this.descripcion = "";
-        this.codigo_postal = "";
     }
 }
 export default DistritoModel

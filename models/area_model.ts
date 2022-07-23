@@ -5,9 +5,9 @@ class AreaModel {
     nombre: string;
     descripcion?: string;
 
-    constructor(){
-        this.id=0;
-        this.nombre="";
+    constructor() {
+        this.id = 0;
+        this.nombre = "";
     }
 }
 export default AreaModel

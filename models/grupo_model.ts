@@ -1,14 +1,13 @@
 class GrupoModel {
     id: number;
-    nombre: string;
-    descripcion: string;
     fecha_creacion?: string;
     fecha_edicion?: string;
+    nombre: string;
+    descripcion?: string;
 
-    constructor(){
-        this.id=0;
-        this.nombre="";
-        this.descripcion="";
+    constructor() {
+        this.id = 0;
+        this.nombre = "";
     }
 }
 export default GrupoModel

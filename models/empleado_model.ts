@@ -1,37 +1,35 @@
 class EmpleadoModel {
     id: number;
-    nombres: string;
-    apellidos: string;
-    fecha_nacimiento: Date;
-    numero_documento: string;
-    sexo: string;
-    direccion: string;
-    celular: string;
-    tipo_contrato: string;
-    email: string;
-    es_activo: boolean;
-    url_imagen: string;
-    id_area: string;
-    id_rol: string;
-    id_distrito: string;
     fecha_creacion?: string;
     fecha_edicion?: string;
+    nombre: string;
+    apellido: string;
+    numero_documento: string;
+    fecha_nacimiento: string;
+    sexo: string;
+    direccion: string;
+    celular?: string;
+    email?: string;
+    tipo_contrato: string;
+    estado: boolean;
+    url_imagen: string;
+    id_distrito: number;
+    id_area: number;
+    id_rol: number;
     constructor() {
         this.id = 0;
-        this.nombres = "";
-        this.apellidos = "";
-        this.fecha_nacimiento = new Date();
+        this.nombre = "";
+        this.apellido = "";
         this.numero_documento = "";
+        this.fecha_nacimiento = "";
         this.sexo = "MUJER";
         this.direccion = "";
-        this.celular = "";
         this.tipo_contrato = "Contrato3Meses";
-        this.email = "";
-        this.es_activo = true;
+        this.estado = true;
         this.url_imagen = "";
-        this.id_area = "";
-        this.id_rol = "";
-        this.id_distrito = "";
+        this.id_area = 0;
+        this.id_rol = 0;
+        this.id_distrito = 0;
     }
 }
 export default EmpleadoModel
