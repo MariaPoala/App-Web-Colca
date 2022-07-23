@@ -1,5 +1,5 @@
 class EmpleadoModel {
-    id: string;
+    id: number;
     nombres: string;
     apellidos: string;
     fecha_nacimiento: Date;
@@ -17,7 +17,7 @@ class EmpleadoModel {
     fecha_creacion?: string;
     fecha_edicion?: string;
     constructor() {
-        this.id = "";
+        this.id = 0;
         this.nombres = "";
         this.apellidos = "";
         this.fecha_nacimiento = new Date();

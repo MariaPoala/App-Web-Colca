@@ -3,11 +3,11 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
 import { CheckCircleIcon, BadgeCheckIcon, RefreshIcon, BanIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
-import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar } from 'components/ax-form';
-import AxRegistroDocumento from 'components/documento/ax-registro-documento'
+import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar } from 'components/form';
+import AxRegistroDocumento from 'modulos/documento/ax_registro_documento'
 import { EnumEstadoEdicion, EnumTipoEdicion, TypeFormularioProps } from 'lib/edicion';
-import RegistroDocumentoModel from 'models/registro-documento-model'
-import DocumentoModel from 'models/documento-model'
+import RegistroDocumentoModel from 'models/registro_documento_model'
+import DocumentoModel from 'models/documento_model'
 
 const fetcherDoc = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
@@ -32,9 +32,9 @@ type TypeFiltro = {
   Documento: string[]
 }
 export default function Example() {
-  const { data: listaDoc } = useSWRImmutable<DocumentoModel[]>('/api/documento/edicion', fetcherDoc);
-  const { data: listaCiudadano } = useSWRImmutable('/api/ciudadano/edicion', fetcherCiudadano);
-  const [IDRegistroDocumento, setIdRegistroDocumento] = useState("$NULL")
+  const { data: listaDoc } = useSWRImmutable<DocumentoModel[]>('/api/documento/documento', fetcherDoc);
+  const { data: listaCiudadano } = useSWRImmutable('/api/entidad/ciudadano', fetcherCiudadano);
+  const [IDRegistroDocumento, setIdRegistroDocumento] = useState(-1)
   const [listaRegistroDocumento, setListaRegistroDocumento] = useState<RegistroDocumentoModel[]>([]);
   const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
   const [isLoading, setIsLoading] = useState(true);
@@ -65,7 +65,7 @@ export default function Example() {
     FnFiltrarLista();
   }, [listaRegistroDocumento])
 
-  const resultado = Array.from(new Set(listaRegistroDocumento.map(s => s.IDDocumento)))
+  const resultado = Array.from(new Set(listaRegistroDocumento.map(s => s.id_documento)))
     .map(id => {
       return {
         id: id
@@ -86,10 +86,10 @@ export default function Example() {
 
   function FnFiltrarLista() {
     let filtrado = listaRegistroDocumento.filter(doc =>
-      (filtro.Documento.indexOf(doc.IDDocumento) != -1) &&
-      (filtro.Ciudadano ? doc.IDCiudadano == filtro.Ciudadano : true) &&
-      (filtro.NroDocumento ? doc.NroDocumento == filtro.NroDocumento : true) &&
-      (filtro.Fecha ? doc.FecDocumento == filtro.Fecha : true)
+      (filtro.Documento.indexOf(doc.id_documento) != -1) &&
+      (filtro.Ciudadano ? doc.id_ciudadano == filtro.Ciudadano : true) &&
+      (filtro.NroDocumento ? doc.numero_documento == filtro.NroDocumento : true) &&
+      (filtro.Fecha ? doc.fecha_documento == filtro.Fecha : true)
     )
     setListaFiltro(filtrado);
     setTotalPages(totalPages);
@@ -158,18 +158,18 @@ export default function Example() {
             <div className="mt-2 grid  gap-5 grid-cols-1 sm:grid-cols-2  md:grid-cols-3  lg:grid-cols-5">
               {/* Card */}
               {(listaDoc && listaDoc.map((item: any) =>
-              (resultado.map(s => s.id == "/documento/" + item.ID &&
-                < ul key={item.ID} className="bg-indigo-400 overflow-hidden shadow rounded-lg hover:bg-indigo-700"
+              (resultado.map(s => s.id == item.id &&
+                < ul key={item.id} className="bg-indigo-400 overflow-hidden shadow rounded-lg hover:bg-indigo-700"
                   onClick={() => {
-                    handleChange({ target: { name: "FiltroGrupo", value: "/documento/" + item.ID } });
+                    handleChange({ target: { name: "FiltroGrupo", value:  item.id } });
                     FnFiltrarLista();
                   }}>
 
-                  <div className={(filtro.Documento.indexOf("/documento/" + item.ID) != -1 ? "bg-indigo-600" : "bg-indigo-400") + " p-2 bg-indigo-100"}>
+                  <div className={(filtro.Documento.indexOf( item.id) != -1 ? "bg-indigo-600" : "bg-indigo-400") + " p-2 bg-indigo-100"}>
                     <div className="flex items-center">
                       <div className="ml-2 w-10 flex-1">
                         <dl>
-                          <dt className="text-sm font-medium text-white truncate uppercase">{item.Nombre}</dt>
+                          <dt className="text-sm font-medium text-white truncate uppercase">{item.nombres}</dt>
                           {/* <dd>
                             <div className="text-sm font-medium text-indigo-100">{item.Descripcion}</div>
                           </dd> */}
@@ -225,41 +225,41 @@ export default function Example() {
 
                       <tbody className="divide-x divide-y overflow-x-auto overflow-y-auto divide-gray-200 bg-white">
                         {(listaFiltro && listaFiltro.map((item) => (
-                          <tr key={item.ID} className={item.ID == IDRegistroDocumento ? "bg-indigo-100 table table-fixed w-full" : "bg-white table table-fixed w-full"}>
+                          <tr key={item.id} className={item.id == IDRegistroDocumento ? "bg-indigo-100 table table-fixed w-full" : "bg-white table table-fixed w-full"}>
                             <td className="w-16 text-center whitespace-nowrap px-3 py-3 text-sm text-gray-500">
                               <input
                                 onChange={(event) => {
-                                  if (!event.target.checked) setIdRegistroDocumento("$NULL");
-                                  else setIdRegistroDocumento(item.ID);
+                                  if (!event.target.checked) setIdRegistroDocumento(-1);
+                                  else setIdRegistroDocumento(item.id);
                                 }}
-                                checked={item.ID == IDRegistroDocumento}
+                                checked={item.id == IDRegistroDocumento}
                                 type="checkbox"
                                 className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                               />
                             </td>
                             <td className="px-1 py-3 whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.IDDocumento}
+                              {item.id_documento}
                             </td>
                             <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.NroDocumento}
+                              {item.numero_documento}
                             </td>
                             <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.FecDocumento}
+                              {item.fecha_documento}
                             </td>
                             <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.IDEmpleado}
+                              {item.id_empleado}
                             </td>
                             <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.IDCiudadano}
+                              {item.id_ciudadano}
                             </td>
                             <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.Observacion}
+                              {item.observacion}
                             </td>
                             <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.FecRegistro}
+                              {item.fecha_registro}
                             </td>
                             <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.EsAnulado == true ?
+                              {item.es_anulado == true ?
                              
                                 <BanIcon className='h-6 w-6    text-red-400'></BanIcon> :
                                 <BadgeCheckIcon className='h-6 w-6  text-green-400 '></BadgeCheckIcon>

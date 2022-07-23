@@ -2,15 +2,15 @@ import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PhoneIcon, PlusIcon } from '@heroicons/react/solid'
-import AxInicio from 'components/ax-inicio'
-import AxDocumento from 'components/documento/ax-documento'
+import AxInicio from 'components/layout/ax_inicio'
+import AxDocumento from 'modulos/documento/ax_documento'
 import { EnumEstadoEdicion } from 'lib/edicion'
-import DocumentoModel from 'models/documento-model'
+import DocumentoModel from 'models/documento_model'
 
 export const getServerSideProps = withPageAuthRequired();
 
 export default function AxPageDocumento() {
-    const [IDDocumento, setIdDocumento] = useState("$NULL")
+    const [IDDocumento, setIdDocumento] = useState(-1)
     const [listaDocumento, setListaDocumento] = useState<DocumentoModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
     const [isLoading, setIsLoading] = useState(true);
@@ -20,7 +20,7 @@ export default function AxPageDocumento() {
         if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
         setIsLoading(true)
         const fetchData = async () => {
-            const response = await fetch(`/api/documento/edicion`, {
+            const response = await fetch(`/api/documento/documento`, {
                 method: "GET"
             })
             const result: DocumentoModel[] = await response.json()
@@ -31,7 +31,7 @@ export default function AxPageDocumento() {
     }, [estadoEdicion])
 
     const listaFiltro = ((textoFiltro == "" ? listaDocumento : listaDocumento.filter(documento =>
-        (documento.Nombre.toUpperCase().includes(textoFiltro.toUpperCase()))
+        (documento.nombre.toUpperCase().includes(textoFiltro.toUpperCase()))
     )))
    
     return (
@@ -42,7 +42,7 @@ export default function AxPageDocumento() {
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
                         {/*DETALLE DEL Documento*/}
                         <div className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "block" : "hidden sm:block") + " flex-1 inset-y-0 pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
-                            {IDDocumento == "$NULL"
+                            {IDDocumento == -1
                                 ? <AxInicio nombre={"Documento"}></AxInicio>
                                 : <AxDocumento ID={IDDocumento} setID={setIdDocumento} setEstadoEdicion={setEstadoEdicion} ></AxDocumento>
                             }
@@ -85,7 +85,7 @@ export default function AxPageDocumento() {
                                             <div>
                                                 <button onClick=
                                                     {() => {
-                                                        setIdDocumento("$ADD");
+                                                        setIdDocumento(0);
                                                         setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
                                                     }}
                                                     type="button" className="bg-indigo-200 p-1 rounded-full text-indigo-500 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:text-indigo-600">
@@ -101,19 +101,19 @@ export default function AxPageDocumento() {
                                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
                                         <ul role="list" className="divide-y divide-gray-200">
                                             {listaFiltro && listaFiltro.map(item => {
-                                                return <li key={item.ID}>
+                                                return <li key={item.id}>
                                                     <a onClick={() => {
-                                                        setIdDocumento(item.ID);
+                                                        setIdDocumento(item.id);
                                                         setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
                                                     }}
-                                                        className={(item.ID == IDDocumento ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
+                                                        className={(item.id == IDDocumento ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
                                                         <div className="flex px-4 py-4 sm:px-6">
                                                             <div className="min-w-0 flex-1 flex">
                                                                 <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
                                                                     <div>
-                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.Nombre}</p>
+                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.nombre}</p>
                                                                         <p className="mt-2 flex text-sm text-gray-500">
-                                                                            <span className="truncate">{item.Descripcion}</span>
+                                                                            <span className="truncate">{item.descripcion}</span>
                                                                         </p>
 
                                                                     </div>

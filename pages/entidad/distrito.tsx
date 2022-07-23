@@ -2,8 +2,8 @@ import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { SearchIcon, ChevronRightIcon, UsersIcon, PlusIcon, MailIcon, PaperClipIcon } from '@heroicons/react/solid'
-import AxInicio from 'components/ax-inicio'
-import AxDistrito from 'components/entidades/ax-distrito'
+import AxInicio from 'components/layout/ax_inicio'
+import AxDistrito from 'modulos/entidad/ax_distrito'
 import { EnumEstadoEdicion } from 'lib/edicion'
 import DistritoModel from 'models/distrito_model'
 
@@ -20,7 +20,7 @@ export default function AxPageDistrito() {
         if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
         setIsLoading(true)
         const fetchData = async () => {
-            const response = await fetch(`/api/distrito/edicion`, {
+            const response = await fetch(`/api/entidad/distrito`, {
                 method: "GET"
             })
             const result: DistritoModel[] = await response.json()

@@ -1,14 +1,14 @@
 import { useEffect, useReducer, useState, Fragment } from "react";
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { Dialog, Disclosure, Transition } from "@headlessui/react";
-import { AxInput, AxModalEliminar, AxSubmit, AxBtnEliminar, AxBtnEditar, AxBtnCancelar } from 'components/ax-form'
+import { AxInput, AxModalEliminar, AxSubmit, AxBtnEliminar, AxBtnEditar, AxBtnCancelar } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
 import * as uuid from 'uuid'
 import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
-import RequisitoModel from 'models/requisito-model'
+import RequisitoModel from 'models/requisito_model'
 import { ChevronLeftIcon, FingerPrintIcon, HomeIcon, OfficeBuildingIcon, SortAscendingIcon } from "@heroicons/react/outline"
-import db from "lib/firebase-config";
-db.app
+// import db from "lib/firebase-config";
+// db.app
 export const getServerSideProps = withPageAuthRequired();
 
 const formReducer = (state: RequisitoModel, event: any): RequisitoModel => {
@@ -31,13 +31,13 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
 
     useEffect(() => {
         setIsLoading(true)
-        setTipoEdicion(ID == "$ADD" ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
-        if (ID == "$ADD") {
+        setTipoEdicion(ID == 0 ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
+        if (ID == 0) {
             setFormData({ FORM_ADD: true })
         }
         else {
             const fetchData = async () => {
-                const response = await fetch(`/api/requisito/${ID}`);
+                const response = await fetch(`/api/documento/requisito/${ID}`);
                 const data: RequisitoModel = await response.json();
                 setFormData({ FORM_DATA: data });
             }
@@ -58,17 +58,17 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
         event.preventDefault();
         setIsSubmitting(true);
         const dataEnvio = JSON.stringify(formData);
-        const response = await fetch('/api/requisito/edicion', {
+        const response = await fetch('/api/documento/requisito', {
             body: dataEnvio,
             headers: { 'Content-Type': 'application/json', },
             method: tipoEdicion == EnumTipoEdicion.EDITAR ? "PUT" : tipoEdicion == EnumTipoEdicion.ELIMINAR ? "DELETE" : "POST"
         })
 
         const result: RequisitoModel = await response.json()
-        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.ID);
+        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.id);
         setIsSubmitting(false);
         setOpen(false);
-        if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID("$NULL");
+        if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
         setTipoEdicion(EnumTipoEdicion.VISUALIZAR)
         setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
     }
@@ -91,7 +91,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
             getDownloadURL(snapshot.ref).then((url) => {
                 setListaimage((prev) => [...prev, url]);
                 console.log(url)
-                formData.UrlImgEjemplo=(url)
+                formData.url_imagen=(url)
             })
         });
         return;
@@ -128,7 +128,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                             {/*CABECERA*/}
                             <div className="ml-6 flex-1">
                                 <div className="-mt-2">
-                                    <h3 className="font-bold text-white text-2xl">{formData.Nombre ? formData.Nombre : "..."}  </h3>
+                                    <h3 className="font-bold text-white text-2xl">{formData.nombre ? formData.nombre : "..."}  </h3>
                                 </div>
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="w-0 flex-1 pt-2">
@@ -138,7 +138,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                     </div>
                                     <Transition.Root show={open} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.Nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Grupo"}> </AxModalEliminar>
+                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Grupo"}> </AxModalEliminar>
                                         </Dialog>
                                     </Transition.Root>
                                 </div>
@@ -156,11 +156,11 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
                                             <div className="md:col-span-2">
-                                                <AxInput name="Nombre" label="Nombre" value={formData.Nombre} handleChange={handleChange} />
+                                                <AxInput name="nombre" label="Nombre" value={formData.nombre} handleChange={handleChange} />
                                             </div>
                                             <div className="hidden md:flex md:col-span-4" />
                                             <div className="md:col-span-3">
-                                                <AxInput name="Descripcion" label="Descripcion" value={formData.Descripcion} handleChange={handleChange} />
+                                                <AxInput name="descripcion" label="Descripcion" value={formData.descripcion} handleChange={handleChange} />
                                             </div>
 
                                         </div>
@@ -188,7 +188,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                                 <p className="text-xs text-gray-500">Word, Pdf, Img hasta 10MB</p>
                                                 <button type="button" className="bg-indigo-300 border-2 rounded-md text-white" onClick={uploadimage} > GUARDAR IMAGEN </button>
                                                 <div className="visibility: hidden">
-                                                    <AxInput name="UrlImgEjemplo" label="Url Image" value={formData.UrlImgEjemplo ? formData.UrlImgEjemplo : ""} handleChange={handleChange} />
+                                                    <AxInput name="url_imagen" label="Url Image" value={formData.url_imagen ? formData.url_imagen : ""} handleChange={handleChange} />
                                                 </div>
                                             </div>
                                         </div>
@@ -201,9 +201,9 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                             role="list"
                                             className="space-y-12 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 lg:grid-cols-3 lg:gap-x-8"
                                         >
-                                            <li key={formData.ID}>
+                                            <li key={formData.id}>
                                                 <div className="space-y-4">
-                                                    <img className="object-cover shadow-lg rounded-lg" src={formData.UrlImgEjemplo} alt="" />
+                                                    <img className="object-cover shadow-lg rounded-lg" src={formData.url_imagen} alt="" />
 
                                                 </div>
                                             </li>

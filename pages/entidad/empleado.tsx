@@ -3,16 +3,16 @@ import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PlusIcon } from '@heroicons/react/solid'
 import { Menu, Transition, Dialog } from '@headlessui/react'
-import AxInicio from 'components/ax-inicio'
-import AxEmpleado from 'components/entidades/ax-empleado'
+import AxInicio from 'components/layout/ax_inicio'
+import AxEmpleado from 'modulos/entidad/ax_empleado'
 import { EnumEstadoEdicion } from 'lib/edicion'
-import EmpleadoModel from 'models/empleado-model'
+import EmpleadoModel from 'models/empleado_model'
 
 export const getServerSideProps = withPageAuthRequired();
 
 export default function AxPageEmpleado() {
-    const [IDEmpleado, setIDEmpleado] = useState("$NULL")
-    const [listaEmpleado, setListaEmpleado] = useState<EmpleadoModel[]>([]);
+    const [ID, setID] = useState(-1)
+    const [lista, setLista] = useState<EmpleadoModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
     const [isLoading, setIsLoading] = useState(true);
     const [tipoFiltro, setTipoFiltro] = useState("TODOS")
@@ -22,19 +22,19 @@ export default function AxPageEmpleado() {
         if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
         setIsLoading(true)
         const fetchData = async () => {
-            const response = await fetch(`/api/empleado/edicion`, {
+            const response = await fetch(`/api/entidad/empleado`, {
                 method: "GET"
             })
             const result: EmpleadoModel[] = await response.json()
-            setListaEmpleado(result);
+            setLista(result);
             setIsLoading(false)
         }
         fetchData().catch(console.error);
     }, [estadoEdicion])
 
-    const listaFiltro = ((textoFiltro == "" && tipoFiltro=="TODOS" ? listaEmpleado : listaEmpleado.filter(empleado =>
-        (empleado.Nombres.toUpperCase().includes(textoFiltro.toUpperCase()) || empleado.Apellidos.toUpperCase().includes(textoFiltro.toUpperCase())) &&
-        (tipoFiltro == "TODOS" || empleado.EsActivo == (tipoFiltro == "ACTIVO"))
+    const listaFiltro = ((textoFiltro == "" && tipoFiltro=="TODOS" ? lista : lista.filter(empleado =>
+        (empleado.nombres.toUpperCase().includes(textoFiltro.toUpperCase()) || empleado.apellidos.toUpperCase().includes(textoFiltro.toUpperCase())) &&
+        (tipoFiltro == "TODOS" || empleado.es_activo == (tipoFiltro == "ACTIVO"))
     )))
     return (
         <>
@@ -44,9 +44,9 @@ export default function AxPageEmpleado() {
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
                         {/*DETALLE DEL EMPLEADO*/}
                         <div className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "block" : "hidden sm:block") + " flex-1 inset-y-0 pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
-                            {IDEmpleado == "$NULL"
+                            {ID == -1
                                 ? <AxInicio nombre={"Empleado"}></AxInicio>
-                                : <AxEmpleado ID={IDEmpleado} setID={setIDEmpleado} setEstadoEdicion={setEstadoEdicion}></AxEmpleado>
+                                : <AxEmpleado ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion}></AxEmpleado>
                             }
                         </div>
                         {/*LISTA DE EMPLEADOS*/}
@@ -115,7 +115,7 @@ export default function AxPageEmpleado() {
                                             <div>
                                                 <button onClick=
                                                     {() => {
-                                                        setIDEmpleado("$ADD");
+                                                        setID(0);
                                                         setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
                                                     }}
                                                     type="button" className="bg-indigo-200 p-1 rounded-full text-indigo-500 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:text-indigo-600">
@@ -131,34 +131,34 @@ export default function AxPageEmpleado() {
                                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
                                         <ul role="list" className="divide-y divide-gray-200">
                                             {listaFiltro && listaFiltro.map(empleado => {
-                                                return <li key={empleado.ID}>
+                                                return <li key={empleado.id}>
                                                     <a onClick={() => {
-                                                        setIDEmpleado(empleado.ID);
+                                                        setID(empleado.id);
                                                         setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
                                                     }}
-                                                        className={(empleado.ID == IDEmpleado ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
+                                                        className={(empleado.id == ID ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
                                                         <div className="flex px-4 py-4 sm:px-6">
                                                             <div className="min-w-0 flex-1 flex">
                                                                 <div className="flex-shrink-0">
                                                                     {
-                                                                        empleado.URLImgPerfil
-                                                                            ? <img className="h-12 w-12 rounded-full" src={empleado.URLImgPerfil} alt="" >
+                                                                        empleado.url_imagen
+                                                                            ? <img className="h-12 w-12 rounded-full" src={empleado.url_imagen} alt="" >
                                                                                 <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white bg-green-400" />
                                                                             </img>
                                                                             : <span className="inline-block relative">
                                                                                 <svg className="bg-indigo-300 text-white h-12 w-12 rounded-full" viewBox="0 0 20 20" fill="currentColor">
                                                                                     <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                                                                                 </svg>
-                                                                                <span className={(empleado.EsActivo == true ? " bg-green-400 " : " bg-red-400 ") + " absolute bottom-0 right-0 block h-3.5 w-3.5 rounded-full ring-2 ring-white "} />
+                                                                                <span className={(empleado.es_activo == true ? " bg-green-400 " : " bg-red-400 ") + " absolute bottom-0 right-0 block h-3.5 w-3.5 rounded-full ring-2 ring-white "} />
                                                                             </span>
                                                                     }
                                                                 </div>
                                                                 <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
                                                                     <div>
-                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{empleado.Nombres + ' ' + empleado.Apellidos}</p>
+                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{empleado.nombres + ' ' + empleado.apellidos}</p>
                                                                         <p className="mt-2 flex text-sm text-gray-500">
                                                                             <MailIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                                            <span className="truncate">{empleado.Email}</span>
+                                                                            <span className="truncate">{empleado.email}</span>
                                                                         </p>
                                                                     </div>
                                                                 </div>

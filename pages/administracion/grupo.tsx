@@ -2,15 +2,15 @@ import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { SearchIcon, ChevronRightIcon, UsersIcon, PlusIcon } from '@heroicons/react/solid'
-import AxInicio from 'components/ax-inicio'
-import AxGrupo from 'components/administracion/ax-grupo'
+import AxInicio from 'components/layout/ax_inicio'
+import AxGrupo from 'modulos/administracion/ax_grupo'
 import { EnumEstadoEdicion } from 'lib/edicion'
-import GrupoModel from 'models/grupo-model'
+import GrupoModel from 'models/grupo_model'
 
 export const getServerSideProps = withPageAuthRequired();
 
 export default function AxPageGrupo() {
-    const [IDGrupo, setIDGrupo] = useState("$NULL")
+    const [ID, setID] = useState(-1)
     const [listaGrupo, setListaGrupo] = useState<GrupoModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
     const [isLoading, setIsLoading] = useState(true);
@@ -20,7 +20,7 @@ export default function AxPageGrupo() {
         if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
         setIsLoading(true)
         const fetchData = async () => {
-            const response = await fetch(`/api/grupo/edicion`, {
+            const response = await fetch(`/api/administracion/grupo`, {
                 method: "GET"
             })
             const result: GrupoModel[] = await response.json()
@@ -31,7 +31,7 @@ export default function AxPageGrupo() {
     }, [estadoEdicion])
 
     const listaFiltro = (textoFiltro == "" ? listaGrupo : listaGrupo.filter(item =>
-        item.Nombre.toUpperCase().includes(textoFiltro.toUpperCase())
+        item.nombre.toUpperCase().includes(textoFiltro.toUpperCase())
     ))
     return (
         <>
@@ -41,9 +41,9 @@ export default function AxPageGrupo() {
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
                         {/*DETALLE DEL GRUPO*/}
                         <div className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "block" : "hidden sm:block") + " flex-1 inset-y-0 pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
-                            {IDGrupo == "$NULL"
+                            {ID == -1
                                 ? <AxInicio nombre={"Grupo"}></AxInicio>
-                                : <AxGrupo ID={IDGrupo} setID={setIDGrupo} setEstadoEdicion={setEstadoEdicion}></AxGrupo>
+                                : <AxGrupo ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion}></AxGrupo>
                             }
                         </div>
                         {/*LISTA DE GRUPO*/}
@@ -84,7 +84,7 @@ export default function AxPageGrupo() {
                                             <div>
                                                 <button onClick=
                                                     {() => {
-                                                        setIDGrupo("$ADD");
+                                                        setID(0);
                                                         setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
                                                     }}
                                                     type="button" className="bg-indigo-200 p-1 rounded-full text-indigo-500 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:text-indigo-600">
@@ -100,19 +100,19 @@ export default function AxPageGrupo() {
                                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
                                         <ul role="list" className="divide-y divide-gray-200">
                                             {listaFiltro && listaFiltro.map(item => {
-                                                return <li key={item.ID}>
+                                                return <li key={item.id}>
                                                     <a onClick={() => {
-                                                        setIDGrupo(item.ID);
+                                                        setID(item.id);
                                                         setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
                                                     }}
-                                                        className={(item.ID == IDGrupo ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
+                                                        className={(item.id == ID ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
                                                         <div className="flex px-4 py-4 sm:px-6">
                                                             <div className="min-w-0 flex-1 flex">
                                                                 <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
                                                                     <div>
-                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.Nombre}</p>
+                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.nombre}</p>
                                                                         <p className="mt-2 flex text-sm text-gray-500">
-                                                                            <span className="truncate">{item.Descripcion}</span>
+                                                                            <span className="truncate">{item.descripcion}</span>
                                                                         </p>
                                                                     </div>
                                                                 </div>

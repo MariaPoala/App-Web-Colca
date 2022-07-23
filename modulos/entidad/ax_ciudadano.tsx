@@ -2,9 +2,9 @@ import { Fragment, useEffect, useReducer, useState } from "react";
 import useSWRImmutable from "swr/immutable"
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { Dialog, Transition } from "@headlessui/react";
-import { AxBtnCancelar, AxBtnEditar, AxCheck, AxInput, AxBtnEliminar, AxSelect, AxSubmit, AxModalEliminar } from 'components/ax-form'
+import { AxBtnCancelar, AxBtnEditar, AxCheck, AxInput, AxBtnEliminar, AxSelect, AxSubmit, AxModalEliminar } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
-import CiudadanoModel from 'models/ciudadano-model'
+import CiudadanoModel from 'models/ciudadano_model'
 import { ChevronLeftIcon } from "@heroicons/react/outline";
 
 export const getServerSideProps = withPageAuthRequired();
@@ -40,8 +40,8 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
 
     useEffect(() => {
         setIsLoading(true)
-        setTipoEdicion(ID == "$ADD" ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
-        if (ID == "$ADD") {
+        setTipoEdicion(ID == 0 ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
+        if (ID == 0) {
             setFormData({ FORM_ADD: true })
         }
         else {
@@ -74,10 +74,10 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
         })
 
         const result: CiudadanoModel = await response.json()
-        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.ID);
+        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.id);
         setIsSubmitting(false);
         setOpen(false);
-        if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID("$NULL");
+        if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
         setTipoEdicion(EnumTipoEdicion.VISUALIZAR)
         setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
     }
@@ -101,12 +101,12 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
                             {/*CABECERA*/}
                             <div className="ml-6 flex-1">
                                 <div className="-mt-2">
-                                    <h3 className="font-bold text-white text-2xl">{formData.Nombres ? formData.Nombres + " " + formData.Apellidos : "..."}</h3>
+                                    <h3 className="font-bold text-white text-2xl">{formData.nombres ? formData.nombres + " " + formData.apellidos : "..."}</h3>
                                 </div>
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="w-0 flex-1 pt-2">
                                     <div className="mt-2 flex">
-                                        <a href={`tel:${'+51' + formData.Celular}`}>
+                                        <a href={`tel:${'+51' + formData.celular}`}>
                                             <button type="button" disabled={tipoEdicion != EnumTipoEdicion.VISUALIZAR}
 
                                                 className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md 
@@ -119,7 +119,7 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
                                                 Llamar
                                             </button>
                                         </a>
-                                        <a href={`https://wa.me/51` + formData.Celular}>
+                                        <a href={`https://wa.me/51` + formData.celular}>
                                             <button type="button" disabled={tipoEdicion != EnumTipoEdicion.VISUALIZAR}
                                                 className="ml-3 inline-flex items-center px-3 py-2 border 
                                             border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
@@ -136,7 +136,7 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
                                     </div>
                                     <Transition.Root show={open} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.Nombres} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Ciudadano"}> </AxModalEliminar>
+                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.nombres} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Ciudadano"}> </AxModalEliminar>
                                         </Dialog>
                                     </Transition.Root>
                                 </div>
@@ -154,30 +154,30 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
                                             <div className="md:col-span-2">
-                                                <AxInput name="NroDocumento" label="DNI" value={formData.NroDocumento} handleChange={handleChange} />
+                                                <AxInput name="nro_documento" label="DNI" value={formData.nro_documento} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxSelect name="IDDistrito" value={formData.IDDistrito} label="Distrito" handleChange={handleChange}>
-                                                    {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.ID} value={"/distrito/" + distrito.ID}>{distrito.Nombre}</option>)}
+                                                <AxSelect name="id_distrito" value={formData.id_distrito} label="Distrito" handleChange={handleChange}>
+                                                    {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.id} value={distrito.id}>{distrito.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="Nombres" label="Nombres" value={formData.Nombres} handleChange={handleChange} />
+                                                <AxInput name="nombres" label="Nombres" value={formData.nombres} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="Apellidos" label="Apellidos" value={formData.Apellidos} handleChange={handleChange} />
+                                                <AxInput name="apellidos" label="Apellidos" value={formData.apellidos} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="FechaNacimiento" label="Fecha Nacimiento" value={formData.FechaNacimiento} handleChange={handleChange} type="date" />
+                                                <AxInput name="fecha_nacimiento" label="Fecha Nacimiento" value={formData.fecha_nacimiento} handleChange={handleChange} type="date" />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="Direccion" label="Dirección" value={formData.Direccion} handleChange={handleChange} />
+                                                <AxInput name="direccion" label="Dirección" value={formData.direccion} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-4">
-                                                <AxInput name="Email" label="Correo Electronico" value={formData.Email} handleChange={handleChange} />
+                                                <AxInput name="email" label="Correo Electronico" value={formData.email} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="Celular" label="Nro Celular" value={formData.Celular} handleChange={handleChange} />
+                                                <AxInput name="celular" label="Nro Celular" value={formData.celular} handleChange={handleChange} />
                                             </div>
                                             {/* <div className="md:col-span-2">
                                                 <AxInput name="Celular" label="Nro Celular" value={formData.Celular} handleChange={handleChange}  setIsSubmitting={setIsSubmitting}/>

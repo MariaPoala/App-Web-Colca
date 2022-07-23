@@ -2,15 +2,15 @@ import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PhoneIcon } from '@heroicons/react/solid'
-import AxInicio from 'components/ax-inicio'
-import AxCiudadano from 'components/entidades/ax-ciudadano'
+import AxInicio from 'components/layout/ax_inicio'
+import AxCiudadano from 'modulos/entidad/ax_ciudadano'
 import { EnumEstadoEdicion } from 'lib/edicion'
-import CiudadanoModel from 'models/ciudadano-model'
+import CiudadanoModel from 'models/ciudadano_model'
 
 export const getServerSideProps = withPageAuthRequired();
 
 export default function AxPageCiudadano() {
-    const [IDCiudadano, setIDCiudadano] = useState("$NULL")
+    const [IDCiudadano, setIDCiudadano] = useState(-1)
     const [listaCiudadano, setListaEmpleado] = useState<CiudadanoModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
     const [isLoading, setIsLoading] = useState(true);
@@ -31,7 +31,7 @@ export default function AxPageCiudadano() {
     }, [estadoEdicion])
 
     const listaFiltro = ((textoFiltro == "" ? listaCiudadano : listaCiudadano.filter(ciudadano =>
-        (ciudadano.Nombres.toUpperCase().includes(textoFiltro.toUpperCase()) || ciudadano.Apellidos.toUpperCase().includes(textoFiltro.toUpperCase())) 
+        (ciudadano.nombres.toUpperCase().includes(textoFiltro.toUpperCase()) || ciudadano.apellidos.toUpperCase().includes(textoFiltro.toUpperCase())) 
     )))
     return (
         <>
@@ -41,7 +41,7 @@ export default function AxPageCiudadano() {
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
                         {/*DETALLE DEL Ciudadano*/}
                         <div className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "block" : "hidden sm:block") + " flex-1 inset-y-0 pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
-                            {IDCiudadano == "$NULL"
+                            {IDCiudadano == -1
                                 ? <AxInicio nombre={"Ciudadano"}></AxInicio>
                                 : <AxCiudadano ID={IDCiudadano} setID={setIDCiudadano} setEstadoEdicion={setEstadoEdicion}></AxCiudadano>
                             }
@@ -84,7 +84,7 @@ export default function AxPageCiudadano() {
                                             <div>
                                                 <button onClick=
                                                     {() => {
-                                                        setIDCiudadano("$ADD");
+                                                        setIDCiudadano(0);
                                                         setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
                                                     }}
                                                     type="button" className="bg-indigo-200 p-1 rounded-full text-indigo-500 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:text-indigo-600">
@@ -100,24 +100,24 @@ export default function AxPageCiudadano() {
                                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
                                         <ul role="list" className="divide-y divide-gray-200">
                                             {listaFiltro && listaFiltro.map(item => {
-                                                return <li key={item.ID}>
+                                                return <li key={item.id}>
                                                     <a onClick={() => {
-                                                        setIDCiudadano(item.ID);
+                                                        setIDCiudadano(item.id);
                                                         setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
                                                     }}
-                                                        className={(item.ID == IDCiudadano ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
+                                                        className={(item.id == IDCiudadano ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
                                                         <div className="flex px-4 py-4 sm:px-6">
                                                             <div className="min-w-0 flex-1 flex">                                                              
                                                                 <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
                                                                     <div>
-                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.Nombres + ' ' + item.Apellidos}</p>
+                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.nombres + ' ' + item.apellidos}</p>
                                                                         <p className="mt-2 flex text-sm text-gray-500">
                                                                             <MailIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                                            <span className="truncate">{item.Email}</span>
+                                                                            <span className="truncate">{item.email}</span>
                                                                         </p>
                                                                         <p className="mt-2 flex text-sm text-gray-500">
                                                                             <PhoneIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                                            <span className="truncate">{item.Celular}</span>
+                                                                            <span className="truncate">{item.celular}</span>
                                                                         </p>
                                                                     </div>
                                                                 </div>

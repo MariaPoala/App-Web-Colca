@@ -1,11 +1,11 @@
 class DistritoModel {
-    ID: string;
+    ID: number;
     Nombre: string;
     Descripcion: string;
     CodigoPostal: string
 
     constructor(){
-        this.ID = "",
+        this.ID = 0,
         this.Nombre = "",
         this.Descripcion = "",
         this.CodigoPostal = ""

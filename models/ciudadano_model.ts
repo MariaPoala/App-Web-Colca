@@ -1,5 +1,5 @@
 class CiudadanoModel {
-    id: string;
+    id: number;
     fecha_creacion?: string;
     fecha_edicion?: string;
     nombres: string;
@@ -13,7 +13,7 @@ class CiudadanoModel {
     id_distrito: string;
 
     constructor(){
-        this.id="";
+        this.id=0;
         this.nombres="";
         this.apellidos="";
         this.fecha_nacimiento= new Date();

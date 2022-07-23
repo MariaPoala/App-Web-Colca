@@ -2,7 +2,7 @@ import { useEffect, useReducer, useState, Fragment } from "react";
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { Dialog, Transition } from "@headlessui/react";
 import { ChevronLeftIcon } from "@heroicons/react/outline"
-import { AxInput, AxModalEliminar, AxSubmit, AxBtnEliminar, AxBtnEditar, AxBtnCancelar } from 'components/ax-form'
+import { AxInput, AxModalEliminar, AxSubmit, AxBtnEliminar, AxBtnEditar, AxBtnCancelar } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
 import DistritoModel from 'models/distrito_model'
 export const getServerSideProps = withPageAuthRequired();
@@ -32,7 +32,7 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
         }
         else {
             const fetchData = async () => {
-                const response = await fetch(`/api/distrito/${ID}`);
+                const response = await fetch(`/api/entidad/distrito/${ID}`);
                 const data: DistritoModel = await response.json();
                 setFormData({ FORM_DATA: data });
             }
@@ -52,7 +52,7 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
         event.preventDefault();
         setIsSubmitting(true);
         const dataEnvio = JSON.stringify(formData);
-        const response = await fetch('/api/distrito/edicion', {
+        const response = await fetch('/api/entidad/distrito', {
             body: dataEnvio,
             headers: { 'Content-Type': 'application/json', },
             method: tipoEdicion == EnumTipoEdicion.EDITAR ? "PUT" : tipoEdicion == EnumTipoEdicion.ELIMINAR ? "DELETE" : "POST"

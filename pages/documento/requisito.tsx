@@ -2,17 +2,17 @@ import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PlusIcon } from '@heroicons/react/solid'
-import AxInicio from 'components/ax-inicio'
-import AxRequisito from 'components/documento/ax-requisito'
+import AxInicio from 'components/layout/ax_inicio'
+import AxRequisito from 'modulos/documento/ax_requisito'
 import { EnumEstadoEdicion } from 'lib/edicion'
-import RequisitoModel from 'models/requisito-model'
+import RequisitoModel from 'models/requisito_model'
 
 
 export const getServerSideProps = withPageAuthRequired();
 
 export default function AxPageRequisito() {
-    const [IDRequisito, setIdRequisito] = useState("$NULL")
-    const [listaRequisito, setListaRequisito] = useState<RequisitoModel[]>([]);
+    const [ID, setID] = useState(-1)
+    const [lista, setLista] = useState<RequisitoModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
     const [isLoading, setIsLoading] = useState(true);
     const [textoFiltro, setTextoFiltro] = useState('')
@@ -21,18 +21,18 @@ export default function AxPageRequisito() {
         if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
         setIsLoading(true)
         const fetchData = async () => {
-            const response = await fetch(`/api/requisito/edicion`, {
+            const response = await fetch(`/api/documento/requisito`, {
                 method: "GET"
             })
             const result: RequisitoModel[] = await response.json()
-            setListaRequisito(result);
+            setLista(result);
             setIsLoading(false)
         }
         fetchData().catch(console.error);
     }, [estadoEdicion])
 
-    const listaFiltro = (textoFiltro == "" ? listaRequisito : listaRequisito.filter(item =>
-        item.Nombre.toUpperCase().includes(textoFiltro.toUpperCase())
+    const listaFiltro = (textoFiltro == "" ? lista : lista.filter(item =>
+        item.nombre.toUpperCase().includes(textoFiltro.toUpperCase())
     ))
     return (
         <>
@@ -42,9 +42,9 @@ export default function AxPageRequisito() {
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
                         {/*DETALLE DEL Requisito*/}
                         <div className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "block" : "hidden sm:block") + " flex-1 inset-y-0 pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
-                            {IDRequisito == "$NULL"
+                            {ID == -1
                                 ? <AxInicio nombre={"Requisito"}></AxInicio>
-                                : <AxRequisito ID={IDRequisito} setID={setIdRequisito} setEstadoEdicion={setEstadoEdicion}></AxRequisito>
+                                : <AxRequisito ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion}></AxRequisito>
                             }
                         </div>
                         {/*LISTA DE Requisito*/}
@@ -85,7 +85,7 @@ export default function AxPageRequisito() {
                                             <div>
                                                 <button onClick=
                                                     {() => {
-                                                        setIdRequisito("$ADD");
+                                                        setID(0);
                                                         setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
                                                     }}
                                                     type="button" className="bg-indigo-200 p-1 rounded-full text-indigo-500 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:text-indigo-600">
@@ -101,19 +101,19 @@ export default function AxPageRequisito() {
                                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
                                         <ul role="list" className="divide-y divide-gray-200">
                                             {listaFiltro && listaFiltro.map(item => {
-                                                return <li key={item.ID}>
+                                                return <li key={item.id}>
                                                     <a onClick={() => {
-                                                        setIdRequisito(item.ID);
+                                                        setID(item.id);
                                                         setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
                                                     }}
-                                                        className={(item.ID == IDRequisito ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
+                                                        className={(item.id == ID ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
                                                         <div className="flex px-4 py-4 sm:px-6">
                                                             <div className="min-w-0 flex-1 flex">
                                                                 <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
                                                                     <div>
-                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.Nombre}</p>
+                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.nombre}</p>
                                                                         <p className="mt-2 flex text-sm text-gray-500">
-                                                                            <span className="truncate">{item.Descripcion}</span>
+                                                                            <span className="truncate">{item.descripcion}</span>
                                                                         </p>
                                                                     </div>
                                                                 </div>

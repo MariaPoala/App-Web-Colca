@@ -1,9 +1,9 @@
 import { useEffect, useReducer, useState, Fragment } from "react";
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { Dialog, Transition } from "@headlessui/react";
-import { AxInput, AxModalEliminar, AxSubmit, AxBtnEliminar, AxBtnEditar, AxBtnCancelar } from 'components/ax-form'
+import { AxInput, AxModalEliminar, AxSubmit, AxBtnEliminar, AxBtnEditar, AxBtnCancelar } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
-import ConsideracionModel from 'models/consideraciones-model'
+import ConsideracionModel from 'models/consideracion_model'
 import { ChevronLeftIcon } from "@heroicons/react/outline"
 
 export const getServerSideProps = withPageAuthRequired();
@@ -27,13 +27,13 @@ export default function AxConsideracion({ ID, setID, setEstadoEdicion }: TypeFor
 
     useEffect(() => {
         setIsLoading(true)
-        setTipoEdicion(ID == "$ADD" ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
-        if (ID == "$ADD") {
+        setTipoEdicion(ID == 0 ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
+        if (ID == 0) {
             setFormData({ FORM_ADD: true })
         }
         else {
             const fetchData = async () => {
-                const response = await fetch(`/api/consideracion/${ID}`);
+                const response = await fetch(`/api/documento/consideracion/${ID}`);
                 const data: ConsideracionModel = await response.json();
                 setFormData({ FORM_DATA: data });
             }
@@ -54,17 +54,17 @@ export default function AxConsideracion({ ID, setID, setEstadoEdicion }: TypeFor
         event.preventDefault();
         setIsSubmitting(true);
         const dataEnvio = JSON.stringify(formData);
-        const response = await fetch('/api/consideracion/edicion', {
+        const response = await fetch('/api/documento/consideracion', {
             body: dataEnvio,
             headers: { 'Content-Type': 'application/json', },
             method: tipoEdicion == EnumTipoEdicion.EDITAR ? "PUT" : tipoEdicion == EnumTipoEdicion.ELIMINAR ? "DELETE" : "POST"
         })
 
         const result: ConsideracionModel = await response.json()
-        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.ID);
+        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.id);
         setIsSubmitting(false);
         setOpen(false);
-        if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID("$NULL");
+        if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
         setTipoEdicion(EnumTipoEdicion.VISUALIZAR)
         setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
     }
@@ -88,7 +88,7 @@ export default function AxConsideracion({ ID, setID, setEstadoEdicion }: TypeFor
                             {/*CABECERA*/}
                             <div className="ml-6 flex-1">
                                 <div className="-mt-2">
-                                    <h3 className="font-bold text-white text-2xl">{formData.Nombre ? formData.Nombre : "..."}  </h3>
+                                    <h3 className="font-bold text-white text-2xl">{formData.nombre ? formData.nombre : "..."}  </h3>
                                 </div>
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="w-0 flex-1 pt-2">
@@ -98,7 +98,7 @@ export default function AxConsideracion({ ID, setID, setEstadoEdicion }: TypeFor
                                     </div>
                                     <Transition.Root show={open} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.Nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Consideracion"}> </AxModalEliminar>
+                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Consideracion"}> </AxModalEliminar>
                                         </Dialog>
                                     </Transition.Root>
                                 </div>
@@ -116,11 +116,11 @@ export default function AxConsideracion({ ID, setID, setEstadoEdicion }: TypeFor
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
                                             <div className="md:col-span-2">
-                                                <AxInput name="Nombre" label="Nombre" value={formData.Nombre} handleChange={handleChange} />
+                                                <AxInput name="nombre" label="Nombre" value={formData.nombre} handleChange={handleChange} />
                                             </div>
                                             <div className="hidden md:flex md:col-span-4" />
                                             <div className="md:col-span-3">
-                                                <AxInput name="Descripcion" label="Descripcion" value={formData.Descripcion} handleChange={handleChange} />
+                                                <AxInput name="descripcion" label="Descripcion" value={formData.descripcion} handleChange={handleChange} />
                                             </div>                                           
                                         </div>
                                     </div>

@@ -1,5 +1,5 @@
 class SolicitudModel {
-    id: string;
+    id: number;
     asunto: string;
     numero_documento: string;
     fecha_inicio: Date;
@@ -13,7 +13,7 @@ class SolicitudModel {
     fecha_edicion?: string;
 
     constructor(){
-        this.id="";
+        this.id=0;
         this.asunto="";
         this.numero_documento="";
         this.fecha_inicio=new Date();

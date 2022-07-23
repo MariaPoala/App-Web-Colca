@@ -3,13 +3,13 @@ import useSWRImmutable from "swr/immutable"
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { Dialog, Transition } from "@headlessui/react";
 import * as uuid from 'uuid'
-import { AxBtnCancelar, AxBtnEditar, AxInput, AxBtnEliminar, AxSelect, AxSubmit, AxModalEliminar, AxSelectMultiple } from 'components/ax-form'
+import { AxBtnCancelar, AxBtnEditar, AxInput, AxBtnEliminar, AxSelect, AxSubmit, AxModalEliminar, AxSelectMultiple } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
-import RegistroDocumentoModel from 'models/registro-documento-model'
+import RegistroDocumentoModel from 'models/registro_documento_model'
 import { ChevronLeftIcon, XIcon } from "@heroicons/react/outline";
 import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
-import db from "lib/firebase-config";
-db.app
+// import db from "lib/firebase-config";
+// db.app
 
 export const getServerSideProps = withPageAuthRequired();
 const fetcherEmpleado = (url: string): Promise<any> =>
@@ -50,8 +50,8 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion }: Typ
     useEffect(() => {
         setIsLoading(true)
 
-        setTipoEdicion(ID == "$ADD" ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
-        if (ID == "$ADD") {
+        setTipoEdicion(ID == 0 ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
+        if (ID == 0) {
             setFormData({ FORM_ADD: true })
         }
         else {
@@ -76,7 +76,7 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion }: Typ
             getDownloadURL(snapshot.ref).then((url) => {
                 setListaimage((prev) => [...prev, url]);
                 console.log(url)
-                formData.URLArchivo = (url)
+                formData.url_archivo = (url)
             })
         });
         return;
@@ -131,10 +131,10 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion }: Typ
             method: tipoEdicion == EnumTipoEdicion.EDITAR ? "PUT" : tipoEdicion == EnumTipoEdicion.ELIMINAR ? "DELETE" : "POST"
         })
         const result: RegistroDocumentoModel = await response.json()
-        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.ID);
+        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.id);
         setIsSubmitting(false);
         setOpen(false);
-        if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID("$NULL");
+        if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
         setTipoEdicion(EnumTipoEdicion.VISUALIZAR)
         setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
     }
@@ -154,7 +154,7 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion }: Typ
                         </div>
                         <Transition.Root show={open} as={Fragment}>
                             <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                                <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.NroDocumento} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Grupo"}> </AxModalEliminar>
+                                <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.numero_documento} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Grupo"}> </AxModalEliminar>
                             </Dialog>
                         </Transition.Root>
                     </div>
@@ -172,40 +172,40 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion }: Typ
                                                 <AxInput name="Nombre" label="Nombre" value={formData.Nombre} handleChange={handleChange} />
                                             </div> */}
                                             <div className="md:col-span-3">
-                                                <AxInput name="NroDocumento" label="NroDocumento" value={formData.NroDocumento} handleChange={handleChange} />
+                                                <AxInput name="numero_documento" label="NroDocumento" value={formData.numero_documento} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="Observacion" label="Observacion" value={formData.Observacion} handleChange={handleChange} type="text" />
+                                                <AxInput name="observacion" label="Observacion" value={formData.observacion} handleChange={handleChange} type="text" />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxSelect name="IDEmpleado" value={formData.IDEmpleado} label="Empleado" handleChange={handleChange}>
+                                                <AxSelect name="id_empleado" value={formData.id_empleado} label="Empleado" handleChange={handleChange}>
                                                     {listaEmpleado && listaEmpleado.map((empleado: any) => <option key={empleado.ID} value={"/empleado/" + empleado.ID}>{empleado.Nombres}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxSelect name="IDCiudadano" value={formData.IDCiudadano} label="Ciudadano" handleChange={handleChange}>
+                                                <AxSelect name="id_ciudadano" value={formData.id_ciudadano} label="Ciudadano" handleChange={handleChange}>
                                                     {listaCiudadano && listaCiudadano.map((ciudadano: any) => <option key={ciudadano.ID} value={"/ciudadano/" + ciudadano.ID}>{ciudadano.Nombres}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxSelect name="IDDocumento" value={formData.IDDocumento} label="Documento" handleChange={handleChange}>
+                                                <AxSelect name="id_documento" value={formData.id_documento} label="Documento" handleChange={handleChange}>
                                                     {listaDocumento && listaDocumento.map((documento: any) => <option key={documento.ID} value={"/documento/" + documento.ID}>{documento.Nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="FecRegistro" label="Fecha Registro" value={formData.FecRegistro} handleChange={handleChange} type="date" />
+                                                <AxInput name="fecha_registro" label="Fecha Registro" value={formData.fecha_registro} handleChange={handleChange} type="date" />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="FecEdicion" label="Fecha Edición" value={formData.FecEdicion} handleChange={handleChange} type="date" />
+                                                <AxInput name="fecha_edicion" label="Fecha Edición" value={formData.fecha_edicion} handleChange={handleChange} type="date" />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="FecDocumento" label="Fecha Documento" value={formData.FecDocumento} handleChange={handleChange} type="date" />
+                                                <AxInput name="fecha_documento" label="Fecha Documento" value={formData.fecha_documento} handleChange={handleChange} type="date" />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="FecAnulacion" label="Fecha Anulación" value={formData.FecAnulacion} handleChange={handleChange} type="date" />
+                                                <AxInput name="fecha_anulacion" label="Fecha Anulación" value={formData.fecha_anulacion} handleChange={handleChange} type="date" />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="Motivo" label="Motivo" value={formData.Motivo} handleChange={handleChange} type="text" />
+                                                <AxInput name="motivo" label="Motivo" value={formData.motivo} handleChange={handleChange} type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -231,7 +231,7 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion }: Typ
                                                 <p className="text-xs text-gray-500">Word, Pdf, Img hasta 10MB</p>
                                                 <button type="button" className="bg-indigo-300 border-2 rounded-md text-white" onClick={uploadimage} > GUARDAR IMAGEN </button>
                                                 <div className="visibility: hidden">
-                                                    <AxInput name="URLArchivo" label="Archivo" value={formData.URLArchivo ? formData.URLArchivo : ""} handleChange={handleChange} />
+                                                    <AxInput name="url_archivo" label="Archivo" value={formData.url_archivo ? formData.url_archivo : ""} handleChange={handleChange} />
                                                 </div>
                                             </div>
                                         </div>

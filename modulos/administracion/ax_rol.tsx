@@ -116,12 +116,15 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
                                             <div className="md:col-span-2">
                                                 <AxInput name="nombre" label="Nombre" value={formData.nombre} handleChange={handleChange} />
                                             </div>
-                                            <div className="hidden md:flex md:col-span-4" />
-                                            <div className="md:col-span-3">
+                                            <div className="md:col-span-2">
                                                 <AxInput name="descripcion" label="Descripción" value={formData.descripcion} handleChange={handleChange} />
                                             </div>
-
-                                        </div>
+                                            <div className="md:col-span-2">
+                                                <AxInput name="descripcion" label="Descripción" value={formData.descripcion} handleChange={handleChange} />
+                                            </div>
+                                        </div>   <div className="md:col-span-2">
+                                                <AxInput name="descripcion" label="Descripción" value={formData.descripcion} handleChange={handleChange} />
+                                            </div>
                                     </div>
                                 </fieldset>
                                 {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">

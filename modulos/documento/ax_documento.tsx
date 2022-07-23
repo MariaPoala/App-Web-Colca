@@ -2,12 +2,10 @@ import { Fragment, useEffect, useReducer, useState } from "react";
 import useSWRImmutable from "swr/immutable"
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { Dialog, Transition } from "@headlessui/react";
-import { AxBtnCancelar, AxBtnEditar, AxInput, AxBtnEliminar, AxSelect, AxSubmit, AxModalEliminar, AxSelectMultiple } from 'components/ax-form'
+import { AxBtnCancelar, AxBtnEditar, AxInput, AxBtnEliminar, AxSelect, AxSubmit, AxModalEliminar, AxSelectMultiple } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
-import DocumentoModel from 'models/documento-model'
-import ConsideracionDocumentoModel from 'models/consideracion-documento-model'
+import DocumentoModel from 'models/documento_model'
 import { ChevronLeftIcon } from "@heroicons/react/outline";
-import { PlusSmIcon as PlusSmIconSolid } from '@heroicons/react/solid'
 
 export const getServerSideProps = withPageAuthRequired();
 const fetcherGrupo = (url: string): Promise<any> =>
@@ -33,10 +31,10 @@ const formReducer = (state: DocumentoModel, event: any): DocumentoModel => {
 }
 
 export default function AxDocumento({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
-    const { data: listaGrupo } = useSWRImmutable('/api/grupo/edicion', fetcherGrupo);
-    const { data: listaTipoDocumento } = useSWRImmutable('/api/tipo-documento/edicion', fetcherTipoDocumento);
-    const { data: listaRequisito } = useSWRImmutable('/api/requisito/edicion', fetcherRequisito);
-    const { data: listaConsideracion } = useSWRImmutable('/api/consideracion/edicion', fetcherConsideracion);
+    const { data: listaGrupo } = useSWRImmutable('/api/administracion/grupo', fetcherGrupo);
+    const { data: listaTipoDocumento } = useSWRImmutable('/api/documento/tipo_documento', fetcherTipoDocumento);
+    const { data: listaRequisito } = useSWRImmutable('/api/documento/requisito', fetcherRequisito);
+    const { data: listaConsideracion } = useSWRImmutable('/api/documento/consideracion', fetcherConsideracion);
     const [formData, setFormData] = useReducer(formReducer, new DocumentoModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -46,13 +44,13 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion }: TypeFormula
     useEffect(() => {
         setIsLoading(true)
 
-        setTipoEdicion(ID == "$ADD" ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
-        if (ID == "$ADD") {
+        setTipoEdicion(ID == 0 ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
+        if (ID == 0) {
             setFormData({ FORM_ADD: true })
         }
         else {
             const fetchData = async () => {
-                const response = await fetch(`/api/documento/${ID}`);
+                const response = await fetch(`/api/documento/documento/${ID}`);
                 const data: DocumentoModel = await response.json();
                 setFormData({ FORM_DATA: data });
             }
@@ -64,31 +62,31 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion }: TypeFormula
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
         if (event.target.name == "IDsConsideracion") {
-            const indexAnterior = formData.IDsConsideracion.indexOf(event.target.value);
-            if (indexAnterior != -1) formData.IDsConsideracion.splice(indexAnterior, 1);
-            else formData.IDsConsideracion.push(event.target.value);
+            const indexAnterior = formData.id_consideracion.indexOf(event.target.value);
+            if (indexAnterior != -1) formData.id_consideracion.splice(indexAnterior, 1);
+            else formData.id_consideracion.push(event.target.value);
             setFormData({
                 name: event.target.name,
-                value: [...formData.IDsConsideracion]
+                value: [...formData.id_consideracion]
             })
         }
         else if (event.target.name == "IDsRequisito") {
-            const indexAnterior = formData.IDsRequisito.indexOf(event.target.value);
-            if (indexAnterior != -1) formData.IDsRequisito.splice(indexAnterior, 1);
-            else formData.IDsRequisito.push(event.target.value);
+            const indexAnterior = formData.id_requisito.indexOf(event.target.value);
+            if (indexAnterior != -1) formData.id_requisito.splice(indexAnterior, 1);
+            else formData.id_requisito.push(event.target.value);
             setFormData({
                 name: event.target.name,
-                value: [...formData.IDsRequisito]
+                value: [...formData.id_requisito]
             })
         }
-        else if (event.target.name == "Nombre") {
+        else if (event.target.name == "nombre") {
             setFormData({
-                name: "Nombre",
+                name: "nombre",
                 value: event.target.value
             })
             setFormData({
-                name: "Codigo",             
-                value: formData.Nombre.substring(0,3) + "-" + fecha.getFullYear()
+                name: "codigo",             
+                value: formData.nombre.substring(0,3) + "-" + fecha.getFullYear()
             })
 
 
@@ -105,17 +103,18 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion }: TypeFormula
         event.preventDefault();
         setIsSubmitting(true);
         const dataEnvio = JSON.stringify(formData);
-        const response = await fetch('/api/documento/edicion', {
-            body: dataEnvio,
+        console.log(dataEnvio)
+        const response = await fetch('/api/documento/documento', {
+            body: dataEnvio,           
             headers: { 'Content-Type': 'application/json', },
             method: tipoEdicion == EnumTipoEdicion.EDITAR ? "PUT" : tipoEdicion == EnumTipoEdicion.ELIMINAR ? "DELETE" : "POST"
         })
 
         const result: DocumentoModel = await response.json()
-        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.ID);
+        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.id);
         setIsSubmitting(false);
         setOpen(false);
-        if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID("$NULL");
+        if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
         setTipoEdicion(EnumTipoEdicion.VISUALIZAR)
         setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
     }
@@ -139,7 +138,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion }: TypeFormula
                             {/*CABECERA*/}
                             <div className="ml-6 flex-1">
                                 <div className="-mt-2">
-                                    <h3 className="font-bold text-white text-2xl">{formData.Nombre ? formData.Nombre : "..."}</h3>
+                                    <h3 className="font-bold text-white text-2xl">{formData.nombre ? formData.nombre : "..."}</h3>
                                 </div>
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="w-0 flex-1 pt-2">
@@ -149,7 +148,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion }: TypeFormula
                                     </div>
                                     <Transition.Root show={open} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.Nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"documento"}> </AxModalEliminar>
+                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"documento"}> </AxModalEliminar>
                                         </Dialog>
                                     </Transition.Root>
                                 </div>
@@ -166,40 +165,40 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion }: TypeFormula
                                             <h3 className="text-lg leading-6 font-medium text-gray-900">Información Personal </h3>
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
-                                            <div className="md:col-span-3">
-                                                <AxInput name="Codigo" label="Código" value={formData.Codigo} handleChange={handleChange} disabled={true} />
+                                            <div className="col-span-3">
+                                                <AxInput name="codigo" label="Código" value={formData.codigo} handleChange={handleChange} disabled={true} />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="Nombre" label="Nombre" value={formData.Nombre} handleChange={handleChange} />
+                                                <AxInput name="nombre" label="Nombre" value={formData.nombre} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="Descripcion" label="Descripción" value={formData.Descripcion} handleChange={handleChange} type="text" />
+                                                <AxInput name="descripcion" label="Descripción" value={formData.descripcion} handleChange={handleChange} type="text" />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="TiempoEntrega" label="Tiempo Entrega" value={formData.TiempoEntrega} handleChange={handleChange} type="number" />
+                                                <AxInput name="tiempo_entrega" label="Tiempo Entrega" value={formData.tiempo_entrega} handleChange={handleChange} type="number" />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="Costo" label="Costo" value={formData.Costo} handleChange={handleChange} placeholder="0.00" />
+                                                <AxInput name="costo" label="Costo" value={formData.costo} handleChange={handleChange} placeholder="0.00" />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxSelect name="IDGrupo" value={formData.IDGrupo} label="Grupo" handleChange={handleChange}>
-                                                    {listaGrupo && listaGrupo.map((grupo: any) => <option key={grupo.ID} value={"/grupo/" + grupo.ID}>{grupo.Nombre}</option>)}
+                                                <AxSelect name="id_grupo" value={formData.id_grupo} label="Grupo" handleChange={handleChange}>
+                                                    {listaGrupo && listaGrupo.map((grupo: any) => <option key={grupo.id} value={grupo.id}>{grupo.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxSelect name="IDTipoDocumento" value={formData.IDTipoDocumento} label="Tipo Documento" handleChange={handleChange}>
-                                                    {listaTipoDocumento && listaTipoDocumento.map((tipodoc: any) => <option key={tipodoc.ID} value={"/tipo-documento/" + tipodoc.ID}>{tipodoc.Nombre}</option>)}
+                                                <AxSelect name="id_tipo_documento" value={formData.id_tipo_documento} label="Tipo Documento" handleChange={handleChange}>
+                                                    {listaTipoDocumento && listaTipoDocumento.map((tipodoc: any) => <option key={tipodoc.id} value={ tipodoc.id}>{tipodoc.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3" />
                                             <div className="md:col-span-3">
-                                                <AxSelectMultiple name="IDsConsideracion" value={formData.IDsConsideracion} label="Consideraciones" handleChange={handleChange}>
-                                                    {listaConsideracion && listaConsideracion.map((consideracion: any) => <option key={consideracion.ID} value={"/consideracion/" + consideracion.ID}>{consideracion.Nombre}</option>)}
+                                                <AxSelectMultiple name="id_consideracion" value={formData.id_consideracion} label="Consideraciones" handleChange={handleChange}>
+                                                    {listaConsideracion && listaConsideracion.map((consideracion: any) => <option key={consideracion.id} value={consideracion.id}>{consideracion.nombre}</option>)}
                                                 </AxSelectMultiple>
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxSelectMultiple name="IDsRequisito" value={formData.IDsRequisito} label="Requisitos" handleChange={handleChange}>
-                                                    {listaRequisito && listaRequisito.map((requisito: any) => <option key={requisito.ID} value={"/requisito/" + requisito.ID}>{requisito.Nombre}</option>)}
+                                                <AxSelectMultiple name="id_requisito" value={formData.id_requisito} label="Requisitos" handleChange={handleChange}>
+                                                    {listaRequisito && listaRequisito.map((requisito: any) => <option key={requisito.id} value={requisito.id}>{requisito.nombre}</option>)}
                                                 </AxSelectMultiple>
                                             </div>
                                         </div>

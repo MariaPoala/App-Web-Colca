@@ -1,5 +1,5 @@
 class Registro_DocumentoModel {
-    id: string;
+    id: number;
     numero_documento: string;
     observacion: string;
     url_archivo: string;
@@ -17,7 +17,7 @@ class Registro_DocumentoModel {
     
     constructor() {
         let today = new Date()
-        this.id = "";
+        this.id =0;
         this.observacion = "";
         this.numero_documento = "";
         this.url_archivo = "";

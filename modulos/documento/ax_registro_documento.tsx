@@ -2,12 +2,12 @@ import {useEffect, useReducer, useState} from "react";
 import useSWRImmutable from "swr/immutable"
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import * as uuid from 'uuid'
-import { AxBtnCancelar, AxInput, AxSelect, AxSubmit, AxCheck } from 'components/ax-form'
+import { AxBtnCancelar, AxInput, AxSelect, AxSubmit, AxCheck } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
-import RegistroDocumentoModel from 'models/registro-documento-model'
+import RegistroDocumentoModel from 'models/registro_documento_model'
 import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
-import db from "lib/firebase-config";
-db.app
+// import db from "lib/firebase-config";
+// db.app
 export const getServerSideProps = withPageAuthRequired();
 const fetcherEmpleado = (url: string): Promise<any> =>
     fetch(url, { method: "GET" }).then(r => r.json());
@@ -38,7 +38,7 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, tipoE
     const [listaimage, setListaimage] = useState<Array<any>>([]);
     useEffect(() => {
         setIsLoading(true)
-        if (ID == "$ADD") {
+        if (ID == 0) {
             setFormData({ FORM_ADD: true })
         }
         else {
@@ -63,7 +63,7 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, tipoE
             getDownloadURL(snapshot.ref).then((url) => {
                 setListaimage((prev) => [...prev, url]);
                 console.log(url)
-                formData.URLArchivo = (url)
+                formData.url_archivo = (url)
             })
         });
         return;
@@ -85,10 +85,10 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, tipoE
             method: tipoEdicion == EnumTipoEdicion.EDITAR ? "PUT" : tipoEdicion == EnumTipoEdicion.ELIMINAR ? "DELETE" : "POST"
         })
         const result: RegistroDocumentoModel = await response.json()
-        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.ID);
+        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.id);
         setIsSubmitting(false);
         setOpen(false);
-        if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID("$NULL");
+        if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
         setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
     }
     return (
@@ -108,34 +108,34 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, tipoE
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
                                             <div className="md:col-span-2">
-                                                <AxSelect name="IDDocumento" value={formData.IDDocumento} label="Documento" handleChange={handleChange}>
+                                                <AxSelect name="id_documento" value={formData.id_documento} label="Documento" handleChange={handleChange}>
                                                     {listaDocumento && listaDocumento.map((documento: any) => <option key={documento.ID} value={"/documento/" + documento.ID}>{documento.Nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="NroDocumento" label="NroDocumento" value={formData.NroDocumento} handleChange={handleChange} />
+                                                <AxInput name="numero_documento" label="NroDocumento" value={formData.numero_documento} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="FecDocumento" label="Fecha Documento" value={formData.FecDocumento} handleChange={handleChange} type="date" />
+                                                <AxInput name="fecha_documento" label="Fecha Documento" value={formData.fecha_documento} handleChange={handleChange} type="date" />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxSelect name="IDEmpleado" value={formData.IDEmpleado} label="Empleado" handleChange={handleChange}>
+                                                <AxSelect name="id_empleado" value={formData.id_empleado} label="Empleado" handleChange={handleChange}>
                                                     {listaEmpleado && listaEmpleado.map((empleado: any) => <option key={empleado.ID} value={"/empleado/" + empleado.ID}>{empleado.Nombres}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxSelect name="IDCiudadano" value={formData.IDCiudadano} label="Ciudadano" handleChange={handleChange}>
+                                                <AxSelect name="id_ciudadano" value={formData.id_ciudadano} label="Ciudadano" handleChange={handleChange}>
                                                     {listaCiudadano && listaCiudadano.map((ciudadano: any) => <option key={ciudadano.ID} value={"/ciudadano/" + ciudadano.ID}>{ciudadano.Nombres}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="FecRegistro" label="Fecha Registro" value={formData.FecRegistro} handleChange={handleChange} disabled type="date" />
+                                                <AxInput name="fecha_registro" label="Fecha Registro" value={formData.fecha_registro} handleChange={handleChange} disabled type="date" />
                                             </div>
                                             <div className="md:col-span-4">
-                                                <AxInput name="Observacion" label="Observacion" value={formData.Observacion} handleChange={handleChange} type="text" />
+                                                <AxInput name="observacion" label="Observacion" value={formData.observacion} handleChange={handleChange} type="text" />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="FecEdicion" label="Fecha Edición" value={formData.FecEdicion} handleChange={handleChange} disabled type="date" />
+                                                <AxInput name="fecha_edicion" label="Fecha Edición" value={formData.fecha_edicion} handleChange={handleChange} disabled type="date" />
                                             </div>
                                         </div>
                                     </div>
@@ -160,7 +160,7 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, tipoE
                                                         <p className="text-xs text-gray-500">Word, Pdf, Img hasta 10MB</p>
                                                         <button type="button" className="bg-indigo-300 border-2 rounded-md text-white" onClick={uploadimage} > GUARDAR IMAGEN </button>
                                                         <div className="visibility: hidden">
-                                                            <AxInput name="URLArchivo" label="Archivo" value={formData.URLArchivo ? formData.URLArchivo : ""} handleChange={handleChange} />
+                                                            <AxInput name="url_archivo" label="Archivo" value={formData.url_archivo ? formData.url_archivo : ""} handleChange={handleChange} />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -174,13 +174,13 @@ export default function AxRegistroDocumento({ ID, setID, setEstadoEdicion, tipoE
                                             </div>
                                             <div className="md:col-span-1" />
                                             <div className="md:col-span-1">
-                                                <AxCheck id="EsAnulado" name="EsAnulado" value={formData.EsAnulado} label="¿Es anulado?" handleChange={handleChange} />
+                                                <AxCheck id="es_anulado" name="EsAnulado" value={formData.es_anulado} label="¿Es anulado?" handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-1">
-                                                <AxInput name="FecAnulacion" label="Fecha Anulación" value={formData.FecAnulacion} handleChange={handleChange} type="date" />
+                                                <AxInput name="fecha_anulacion" label="Fecha Anulación" value={formData.fecha_anulacion} handleChange={handleChange} type="date" />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="Motivo" label="Motivo" value={formData.Motivo} handleChange={handleChange} type="text" />
+                                                <AxInput name="motivo" label="Motivo" value={formData.motivo} handleChange={handleChange} type="text" />
                                             </div>
                                         </div>
                                     </fieldset>

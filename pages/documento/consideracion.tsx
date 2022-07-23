@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { SearchIcon, ChevronRightIcon, UsersIcon, PlusIcon } from '@heroicons/react/solid'
-import AxInicio from 'components/ax-inicio'
-import AxConsideracion from 'components/documento/ax-consideracion'
+import AxInicio from 'components/layout/ax_inicio'
+import AxConsideracion from 'modulos/documento/ax_consideracion'
 import { EnumEstadoEdicion } from 'lib/edicion'
-import ConsideracionModel from 'models/consideraciones-model'
+import ConsideracionModel from 'models/consideracion_model'
 
 export const getServerSideProps = withPageAuthRequired();
 
 export default function AxPageConsideracion() {
-    const [IDConsideracion, setIDConsideracion] = useState("$NULL")
-    const [listaConsideracion, setListaConsideracion] = useState<ConsideracionModel[]>([]);
+    const [ID, setID] = useState(-1)
+    const [lista, setLista] = useState<ConsideracionModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
     const [isLoading, setIsLoading] = useState(true);
     const [textoFiltro, setTextoFiltro] = useState('')
@@ -20,18 +20,18 @@ export default function AxPageConsideracion() {
         if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
         setIsLoading(true)
         const fetchData = async () => {
-            const response = await fetch(`/api/consideracion/edicion`, {
+            const response = await fetch(`/api/documento/consideracion`, {
                 method: "GET"
             })
             const result: ConsideracionModel[] = await response.json()
-            setListaConsideracion(result);
+            setLista(result);
             setIsLoading(false)
         }
         fetchData().catch(console.error);
     }, [estadoEdicion])
 
-    const listaFiltro = (textoFiltro == "" ? listaConsideracion : listaConsideracion.filter(item =>
-        item.Nombre.toUpperCase().includes(textoFiltro.toUpperCase())
+    const listaFiltro = (textoFiltro == "" ? lista : lista.filter(item =>
+        item.nombre.toUpperCase().includes(textoFiltro.toUpperCase())
     ))
     return (
         <>
@@ -41,9 +41,9 @@ export default function AxPageConsideracion() {
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
                         {/*DETALLE DEL Consideracion*/}
                         <div className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "block" : "hidden sm:block") + " flex-1 inset-y-0 pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
-                            {IDConsideracion == "$NULL"
+                            {ID == -1
                                 ? <AxInicio nombre={"Consideracion"}></AxInicio>
-                                : <AxConsideracion ID={IDConsideracion} setID={setIDConsideracion} setEstadoEdicion={setEstadoEdicion}></AxConsideracion>
+                                : <AxConsideracion ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion}></AxConsideracion>
                             }
                         </div>
                         {/*LISTA DE Consideracion*/}
@@ -84,7 +84,7 @@ export default function AxPageConsideracion() {
                                             <div>
                                                 <button onClick=
                                                     {() => {
-                                                        setIDConsideracion("$ADD");
+                                                        setID(0);
                                                         setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
                                                     }}
                                                     type="button" className="bg-indigo-200 p-1 rounded-full text-indigo-500 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:text-indigo-600">
@@ -100,19 +100,19 @@ export default function AxPageConsideracion() {
                                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
                                         <ul role="list" className="divide-y divide-gray-200">
                                             {listaFiltro && listaFiltro.map(item => {
-                                                return <li key={item.ID}>
+                                                return <li key={item.id}>
                                                     <a onClick={() => {
-                                                        setIDConsideracion(item.ID);
+                                                        setID(item.id);
                                                         setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
                                                     }}
-                                                        className={(item.ID == IDConsideracion ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
+                                                        className={(item.id == ID ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
                                                         <div className="flex px-4 py-4 sm:px-6">
                                                             <div className="min-w-0 flex-1 flex">
                                                                 <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
                                                                     <div>
-                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.Nombre}</p>
+                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.nombre}</p>
                                                                         <p className="mt-2 flex text-sm text-gray-500">
-                                                                            <span className="truncate">{item.Descripcion}</span>
+                                                                            <span className="truncate">{item.descripcion}</span>
                                                                         </p>
                                                                     </div>
                                                                 </div>

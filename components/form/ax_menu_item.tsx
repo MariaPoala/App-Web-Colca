@@ -21,6 +21,7 @@ const navigation = [
         name: 'Entidades', href: '', icon: UserGroupIcon, current: false,
         children: [
             { name: 'Distrito', href: '/entidad/distrito', icon: OfficeBuildingIcon, current: false },
+            { name: 'Anexo', href: '/entidad/anexo', icon: OfficeBuildingIcon, current: false },
             { name: 'Empleado', href: '/entidad/empleado', icon: UserIcon, current: false },
             { name: 'Ciudadano', href: '/entidad/ciudadano', icon: UsersIcon, current: false }
         ],

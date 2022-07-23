@@ -2,15 +2,15 @@ import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PlusIcon } from '@heroicons/react/solid'
-import AxInicio from 'components/ax-inicio'
-import AxArea from 'components/administracion/ax-area'
+import AxInicio from 'components/layout/ax_inicio'
+import AxArea from 'modulos/administracion/ax_area'
 import { EnumEstadoEdicion } from 'lib/edicion'
-import AreaModel from 'models/area-model'
+import AreaModel from 'models/area_model'
 
 export const getServerSideProps = withPageAuthRequired();
 
 export default function AxPageArea() {
-    const [IDArea, setIDArea] = useState("$NULL")
+    const [ID, setID] = useState(-1)
     const [listaArea, setListaArea] = useState<AreaModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
     const [isLoading, setIsLoading] = useState(true);
@@ -20,7 +20,7 @@ export default function AxPageArea() {
         if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
         setIsLoading(true)
         const fetchData = async () => {
-            const response = await fetch(`/api/area/edicion`, {
+            const response = await fetch(`/api/administracion/area`, {
                 method: "GET"
             })
             const result: AreaModel[] = await response.json()
@@ -31,7 +31,7 @@ export default function AxPageArea() {
     }, [estadoEdicion])
 
     const listaFiltro = (textoFiltro == "" ? listaArea : listaArea.filter(item =>
-        item.Nombre.toUpperCase().includes(textoFiltro.toUpperCase())
+        item.nombre.toUpperCase().includes(textoFiltro.toUpperCase())
     ))
     return (
         <>
@@ -41,9 +41,9 @@ export default function AxPageArea() {
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
                         {/*DETALLE DEL Area*/}
                         <div className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "block" : "hidden sm:block") + " flex-1 inset-y-0 pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
-                            {IDArea == "$NULL"
+                            {ID == -1
                                 ? <AxInicio nombre={"Area"}></AxInicio>
-                                : <AxArea ID={IDArea} setID={setIDArea} setEstadoEdicion={setEstadoEdicion}></AxArea>
+                                : <AxArea ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion}></AxArea>
                             }
                         </div>
                         {/*LISTA DE Area*/}
@@ -84,7 +84,7 @@ export default function AxPageArea() {
                                             <div>
                                                 <button onClick=
                                                     {() => {
-                                                        setIDArea("$ADD");
+                                                        setID(0);
                                                         setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
                                                     }}
                                                     type="button" className="bg-indigo-200 p-1 rounded-full text-indigo-500 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:text-indigo-600">
@@ -100,19 +100,19 @@ export default function AxPageArea() {
                                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
                                         <ul role="list" className="divide-y divide-gray-200">
                                             {listaFiltro && listaFiltro.map(item => {
-                                                return <li key={item.ID}>
+                                                return <li key={item.id}>
                                                     <a onClick={() => {
-                                                        setIDArea(item.ID);
+                                                        setID(item.id);
                                                         setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO);
                                                     }}
-                                                        className={(item.ID == IDArea ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
+                                                        className={(item.id == ID ? "bg-indigo-100" : "") + " block hover:bg-indigo-200"}>
                                                         <div className="flex px-4 py-4 sm:px-6">
                                                             <div className="min-w-0 flex-1 flex">
                                                                 <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
                                                                     <div>
-                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.Nombre}</p>
+                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.nombre}</p>
                                                                         <p className="mt-2 flex text-sm text-gray-500">
-                                                                            <span className="truncate">{item.Descripcion}</span>
+                                                                            <span className="truncate">{item.descripcion}</span>
                                                                         </p>
                                                                     </div>
                                                                 </div>

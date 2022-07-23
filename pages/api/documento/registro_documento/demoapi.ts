@@ -1,4 +1,5 @@
 import db from "lib/firebase-config";
+import supabase from "lib/supabase_config";
 import { doc, setDoc, updateDoc, collection, addDoc, getDocs, deleteDoc, query, orderBy, startAfter, limit } from "firebase/firestore";
 import { NextApiRequest } from "next";
 
