@@ -4,7 +4,7 @@ import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { Dialog, Transition } from "@headlessui/react";
 import { AxBtnCancelar, AxBtnEditar, AxCheck, AxInput, AxBtnEliminar, AxSelect, AxSubmit, AxModalEliminar } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
-import CiudadanoModel from 'models/ciudadano_model'
+import CiudadanoModel from 'models/persona_model'
 import { ChevronLeftIcon } from "@heroicons/react/outline";
 
 export const getServerSideProps = withPageAuthRequired();

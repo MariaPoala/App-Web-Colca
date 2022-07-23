@@ -5,7 +5,7 @@ import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersI
 import AxInicio from 'components/layout/ax_inicio'
 import AxCiudadano from 'modulos/entidad/ax_ciudadano'
 import { EnumEstadoEdicion } from 'lib/edicion'
-import CiudadanoModel from 'models/ciudadano_model'
+import CiudadanoModel from 'models/persona_model'
 
 export const getServerSideProps = withPageAuthRequired();
 

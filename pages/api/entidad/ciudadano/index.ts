@@ -1,5 +1,5 @@
 import FnSaveData from "lib/database/save_data";
-import CiudadanoModel from "models/ciudadano_model";
+import CiudadanoModel from "models/persona_model";
 
 export default async function handler(req: any, res: any) {
     const { data, error } = await FnSaveData<CiudadanoModel>("ciudadano", req.method, req.body);

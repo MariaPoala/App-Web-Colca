@@ -1,5 +1,5 @@
 import supabase from "lib/supabase_config";
-import CiudadanoModel from "models/ciudadano_model";
+import CiudadanoModel from "models/persona_model";
 
 export default async function handler(req: any, res: any) {
     const { id } = req.query

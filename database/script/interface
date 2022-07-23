@@ -1,3 +1,15 @@
+SELECT
+  D.nombre
+FROM anexo A
+JOIN distrito D
+ON A.id_distrito = D.id
+
+
+
+
+
+
+
 interface Anexo {
   id: number   /* primary key */;
   fecha_creacion: string;
