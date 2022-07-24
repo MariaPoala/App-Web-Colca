@@ -6,9 +6,12 @@ import { ChevronLeftIcon } from "@heroicons/react/outline"
 import { AxInput, AxModalEliminar, AxSubmit, AxBtnEliminar, AxBtnEditar, AxBtnCancelar, AxSelect } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
 import AnexoModel from 'models/anexo_model'
+
 export const getServerSideProps = withPageAuthRequired();
+
 const fetcherDistrito = (url: string): Promise<any> =>
     fetch(url, { method: "GET" }).then(r => r.json());
+
 const formReducer = (state: AnexoModel, event: any): AnexoModel => {
     if (event.FORM_DATA) {
         return { ...event.FORM_DATA }
@@ -62,7 +65,6 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
         })
 
         const result: AnexoModel = await response.json()
-        console.log(result);
         if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.id);
         if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
         setIsSubmitting(false);
@@ -95,12 +97,12 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="w-0 flex-1 pt-2">
                                     <div className="mt-2 flex">
-                                        <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}  ></AxBtnEditar>
-                                        <AxBtnEliminar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setOpen={setOpen} > </AxBtnEliminar>
+                                        <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
+                                        <AxBtnEliminar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} setOpen={setOpen} />
                                     </div>
                                     <Transition.Root show={open} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Anexo"}> </AxModalEliminar>
+                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal="Anexo" />
                                         </Dialog>
                                     </Transition.Root>
                                 </div>
@@ -121,8 +123,8 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
                                                 <AxInput name="nombre" label="Nombre" value={formData.nombre} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxSelect name="id_distrito" value={formData.id_distrito} label="Anexo" handleChange={handleChange}>
-                                                    {listaDistrito && listaDistrito.map((anexo: any) => <option key={anexo.id} value={anexo.id}>{anexo.nombre}</option>)}
+                                                <AxSelect name="id_distrito" value={formData.id_distrito} label="Distrito" handleChange={handleChange}>
+                                                    {listaDistrito && listaDistrito.map((item: any) => <option key={item.id} value={item.id}>{item.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-4">
@@ -131,12 +133,14 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
                                         </div>
                                     </div>
                                 </fieldset>
-                                {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">
-                                    <div className="flex justify-end">
-                                        <AxBtnCancelar setID={setID} setTipoEdicion={setTipoEdicion} tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion}></AxBtnCancelar>
-                                        <AxSubmit loading={isSubmitting} />
+                                {
+                                    tipoEdicion != EnumTipoEdicion.VISUALIZAR &&
+                                    <div className="pt-5">
+                                        <div className="flex justify-end">
+                                            <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID} />
+                                            <AxSubmit loading={isSubmitting} />
+                                        </div>
                                     </div>
-                                </div>
                                 }
                             </form >
                         </div >

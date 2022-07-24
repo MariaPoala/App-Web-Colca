@@ -93,12 +93,12 @@ export default function AxConsideracion({ ID, setID, setEstadoEdicion }: TypeFor
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="w-0 flex-1 pt-2">
                                     <div className="mt-2 flex">
-                                        <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}  ></AxBtnEditar>
-                                        <AxBtnEliminar tipoEdicion={tipoEdicion} EnumTipoEdicion setTipoEdicion={setTipoEdicion} setOpen={setOpen} > </AxBtnEliminar>
+                                        <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
+                                        <AxBtnEliminar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} setOpen={setOpen} />
                                     </div>
                                     <Transition.Root show={open} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Consideracion"}> </AxModalEliminar>
+                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal="Consideracion" />
                                         </Dialog>
                                     </Transition.Root>
                                 </div>
@@ -121,16 +121,18 @@ export default function AxConsideracion({ ID, setID, setEstadoEdicion }: TypeFor
                                             <div className="hidden md:flex md:col-span-4" />
                                             <div className="md:col-span-3">
                                                 <AxInput name="descripcion" label="Descripcion" value={formData.descripcion} handleChange={handleChange} />
-                                            </div>                                           
+                                            </div>
                                         </div>
                                     </div>
                                 </fieldset>
-                                {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">
-                                    <div className="flex justify-end">
-                                        <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID}></AxBtnCancelar>
-                                        <AxSubmit loading={isSubmitting} />
+                                {
+                                    tipoEdicion != EnumTipoEdicion.VISUALIZAR &&
+                                    <div className="pt-5">
+                                        <div className="flex justify-end">
+                                            <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID}></AxBtnCancelar>
+                                            <AxSubmit loading={isSubmitting} />
+                                        </div>
                                     </div>
-                                </div>
                                 }
                             </form >
                         </div >

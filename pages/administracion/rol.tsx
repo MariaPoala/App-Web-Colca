@@ -9,7 +9,7 @@ import RolModel from 'models/rol_model'
 
 export const getServerSideProps = withPageAuthRequired();
 
-export default function AxPageDistrito() {
+export default function AxPageRol() {
     const [ID, setID] = useState(-1)
     const [lista, setLista] = useState<RolModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)

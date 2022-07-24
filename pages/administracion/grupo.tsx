@@ -11,7 +11,7 @@ export const getServerSideProps = withPageAuthRequired();
 
 export default function AxPageGrupo() {
     const [ID, setID] = useState(-1)
-    const [listaGrupo, setListaGrupo] = useState<GrupoModel[]>([]);
+    const [lista, setLista] = useState<GrupoModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
     const [isLoading, setIsLoading] = useState(true);
     const [textoFiltro, setTextoFiltro] = useState('')
@@ -24,13 +24,13 @@ export default function AxPageGrupo() {
                 method: "GET"
             })
             const result: GrupoModel[] = await response.json()
-            setListaGrupo(result);
+            setLista(result);
             setIsLoading(false)
         }
         fetchData().catch(console.error);
     }, [estadoEdicion])
 
-    const listaFiltro = (textoFiltro == "" ? listaGrupo : listaGrupo.filter(item =>
+    const listaFiltro = (textoFiltro == "" ? lista : lista.filter(item =>
         item.nombre.toUpperCase().includes(textoFiltro.toUpperCase())
     ))
     return (
@@ -42,7 +42,7 @@ export default function AxPageGrupo() {
                         {/*DETALLE DEL GRUPO*/}
                         <div className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "block" : "hidden sm:block") + " flex-1 inset-y-0 pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
                             {ID == -1
-                                ? <AxInicio nombre={"Grupo"}></AxInicio>
+                                ? <AxInicio nombre="Grupo"></AxInicio>
                                 : <AxGrupo ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion}></AxGrupo>
                             }
                         </div>

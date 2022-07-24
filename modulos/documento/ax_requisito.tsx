@@ -1,12 +1,12 @@
 import { useEffect, useReducer, useState, Fragment } from "react";
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { Dialog, Disclosure, Transition } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 import { AxInput, AxModalEliminar, AxSubmit, AxBtnEliminar, AxBtnEditar, AxBtnCancelar } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
+import { ChevronLeftIcon } from "@heroicons/react/outline"
 import * as uuid from 'uuid'
-import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
+// import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
 import RequisitoModel from 'models/requisito_model'
-import { ChevronLeftIcon, FingerPrintIcon, HomeIcon, OfficeBuildingIcon, SortAscendingIcon } from "@heroicons/react/outline"
 // import db from "lib/firebase-config";
 // db.app
 export const getServerSideProps = withPageAuthRequired();
@@ -27,7 +27,6 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
     const [isLoading, setIsLoading] = useState(true);
     const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
     const [open, setOpen] = useState(false)
-    
 
     useEffect(() => {
         setIsLoading(true)
@@ -75,7 +74,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
 
     //subir archivo
     const [imagenupload, setImagen] = useState(null);
-    const storage = getStorage();
+    // const storage = getStorage();
     const [listaimage, setListaimage] = useState<Array<any>>([]);
     const [imgurl, setImgurl] = useState("")
     //OBTENIENDO LA IMAGEN
@@ -83,19 +82,19 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
         setImagen(e.target.files[0]);
 
     }
-    const uploadimage = () => {
-        if (imagenupload == null) return;
-        const imageRef = ref(storage, `archivorequisito/${setImagen.name + uuid.v4()}`)
-        uploadBytes(imageRef, imagenupload).then((snapshot) => {
-            alert('Uploaded a blob or file!');
-            getDownloadURL(snapshot.ref).then((url) => {
-                setListaimage((prev) => [...prev, url]);
-                console.log(url)
-                formData.url_imagen=(url)
-            })
-        });
-        return;
-    }
+    // const uploadimage = () => {
+    //     if (imagenupload == null) return;
+    //     const imageRef = ref(storage, `archivorequisito/${setImagen.name + uuid.v4()}`)
+    //     uploadBytes(imageRef, imagenupload).then((snapshot) => {
+    //         alert('Uploaded a blob or file!');
+    //         getDownloadURL(snapshot.ref).then((url) => {
+    //             setListaimage((prev) => [...prev, url]);
+    //             console.log(url)
+    //             formData.url_imagen = (url)
+    //         })
+    //     });
+    //     return;
+    // }
 
     // useEffect(() => {
     //     listAll( listaimage).then((response) => {
@@ -133,12 +132,12 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="w-0 flex-1 pt-2">
                                     <div className="mt-2 flex">
-                                        <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}  ></AxBtnEditar>
-                                        <AxBtnEliminar tipoEdicion={tipoEdicion} EnumTipoEdicion setTipoEdicion={setTipoEdicion} setOpen={setOpen} > </AxBtnEliminar>
+                                        <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
+                                        <AxBtnEliminar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} setOpen={setOpen} />
                                     </div>
                                     <Transition.Root show={open} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Grupo"}> </AxModalEliminar>
+                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal="Grupo" />
                                         </Dialog>
                                     </Transition.Root>
                                 </div>
@@ -162,9 +161,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                             <div className="md:col-span-3">
                                                 <AxInput name="descripcion" label="Descripcion" value={formData.descripcion} handleChange={handleChange} />
                                             </div>
-
                                         </div>
-
                                     </div>
                                 </fieldset>
                                 <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
@@ -186,7 +183,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                                     </label>
                                                 </div>
                                                 <p className="text-xs text-gray-500">Word, Pdf, Img hasta 10MB</p>
-                                                <button type="button" className="bg-indigo-300 border-2 rounded-md text-white" onClick={uploadimage} > GUARDAR IMAGEN </button>
+                                                {/* <button type="button" className="bg-indigo-300 border-2 rounded-md text-white" onClick={uploadimage} > GUARDAR IMAGEN </button> */}
                                                 <div className="visibility: hidden">
                                                     <AxInput name="url_imagen" label="Url Image" value={formData.url_imagen ? formData.url_imagen : ""} handleChange={handleChange} />
                                                 </div>
@@ -197,27 +194,23 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                 </div>
                                 <div className="bg-white">
                                     <div className="">
-                                        <ul
-                                            role="list"
-                                            className="space-y-12 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 lg:grid-cols-3 lg:gap-x-8"
-                                        >
+                                        <ul role="list" className="space-y-12 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 lg:grid-cols-3 lg:gap-x-8">
                                             <li key={formData.id}>
                                                 <div className="space-y-4">
                                                     <img className="object-cover shadow-lg rounded-lg" src={formData.url_imagen} alt="" />
-
                                                 </div>
                                             </li>
-
                                         </ul>
-
                                     </div>
                                 </div>
-                                {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">
-                                    <div className="flex justify-end">
-                                        <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID}></AxBtnCancelar>
-                                        <AxSubmit loading={isSubmitting} />
+                                {
+                                    tipoEdicion != EnumTipoEdicion.VISUALIZAR &&
+                                    <div className="pt-5">
+                                        <div className="flex justify-end">
+                                            <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID}/>
+                                            <AxSubmit loading={isSubmitting} />
+                                        </div>
                                     </div>
-                                </div>
                                 }
                             </form >
                         </div >

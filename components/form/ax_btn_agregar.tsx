@@ -1,10 +1,10 @@
 import { DocumentAddIcon } from '@heroicons/react/outline';
 import { EnumTipoEdicion, EnumEstadoEdicion } from 'lib/edicion'
-export default function AxBtnAgregar({ setEstadoEdicion, setIdRegistroDocumento, setTipoEdicion }: any) {
+export default function AxBtnAgregar({ setEstadoEdicion, setId, setTipoEdicion }: any) {
     return <button type="button"
     onClick=
     {() => {
-      setIdRegistroDocumento("$ADD");
+      setId(0);
       setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
       setTipoEdicion(EnumTipoEdicion.AGREGAR);
     }}

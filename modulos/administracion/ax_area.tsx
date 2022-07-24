@@ -1,10 +1,11 @@
 import { useEffect, useReducer, useState, Fragment } from "react";
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { Dialog, Disclosure, Transition } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
+import { ChevronLeftIcon } from "@heroicons/react/outline"
 import { AxInput, AxModalEliminar, AxSubmit, AxBtnEliminar, AxBtnEditar, AxBtnCancelar } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
 import AreaModel from 'models/area_model'
-import { ChevronLeftIcon, FingerPrintIcon, HomeIcon, OfficeBuildingIcon, SortAscendingIcon } from "@heroicons/react/outline"
+
 export const getServerSideProps = withPageAuthRequired();
 
 const formReducer = (state: AreaModel, event: any): AreaModel => {
@@ -92,8 +93,8 @@ export default function AxArea({ ID, setID, setEstadoEdicion }: TypeFormularioPr
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="w-0 flex-1 pt-2">
                                     <div className="mt-2 flex">
-                                        <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}  ></AxBtnEditar>
-                                        <AxBtnEliminar tipoEdicion={tipoEdicion} EnumTipoEdicion setTipoEdicion={setTipoEdicion} setOpen={setOpen} > </AxBtnEliminar>
+                                        <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
+                                        <AxBtnEliminar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} setOpen={setOpen} />
                                     </div>
                                     <Transition.Root show={open} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -121,9 +122,7 @@ export default function AxArea({ ID, setID, setEstadoEdicion }: TypeFormularioPr
                                             <div className="md:col-span-3">
                                                 <AxInput name="descripcion" label="Descripcion" value={formData.descripcion} handleChange={handleChange} />
                                             </div>
-                                           
                                         </div>
-
                                     </div>
                                 </fieldset>
                                 {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">

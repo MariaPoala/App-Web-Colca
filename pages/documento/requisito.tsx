@@ -7,7 +7,6 @@ import AxRequisito from 'modulos/documento/ax_requisito'
 import { EnumEstadoEdicion } from 'lib/edicion'
 import RequisitoModel from 'models/requisito_model'
 
-
 export const getServerSideProps = withPageAuthRequired();
 
 export default function AxPageRequisito() {
@@ -21,9 +20,7 @@ export default function AxPageRequisito() {
         if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
         setIsLoading(true)
         const fetchData = async () => {
-            const response = await fetch(`/api/documento/requisito`, {
-                method: "GET"
-            })
+            const response = await fetch(`/api/documento/requisito`, { method: "GET" })
             const result: RequisitoModel[] = await response.json()
             setLista(result);
             setIsLoading(false)
@@ -64,8 +61,6 @@ export default function AxPageRequisito() {
                                                             </div>
                                                             <input
                                                                 type="search"
-                                                                name="search"
-                                                                id="search"
                                                                 className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-indigo-300 rounded-md"
                                                                 placeholder="Buscar..."
                                                                 onChange={(event) => setTextoFiltro(event.target.value)}

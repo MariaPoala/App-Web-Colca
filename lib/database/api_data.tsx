@@ -1,12 +1,24 @@
 import supabase from "lib/supabase_config";
 
-export default async function FnSaveData<T>(table: string, method: string, body: any): Promise<{ data: null | T | T[]; error: any }> {
+export default async function FnApiData<T>(table: string, method: string, body: any, query?: any): Promise<{ data: null | T | T[]; error: any }> {
     try {
         const datos = { ...body };
         const id = datos.id;
         if (method == "GET") {
-            const { data, error } = await supabase.from<T>(table).select()
-            return { data: data || [], error };
+            let dataRespuesta: any = [];
+            let errorRespuesta: any = null;
+            if (query) {
+                const { inicio, cantidad } = query;
+                const { data, error } = await supabase.from<T>(table).select().range(inicio, cantidad);
+                dataRespuesta = data;
+                errorRespuesta = error;
+            }
+            else {
+                const { data, error } = await supabase.from<T>(table).select()
+                dataRespuesta = data;
+                errorRespuesta = error;
+            }
+            return { data: dataRespuesta, error: errorRespuesta };
         }
         else if (method === 'POST') {
             delete datos['id'];

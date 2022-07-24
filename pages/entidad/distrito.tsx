@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { SearchIcon, ChevronRightIcon, UsersIcon, PlusIcon, MailIcon, PaperClipIcon } from '@heroicons/react/solid'
+import { SearchIcon, ChevronRightIcon, UsersIcon, PlusIcon } from '@heroicons/react/solid'
 import AxInicio from 'components/layout/ax_inicio'
 import AxDistrito from 'modulos/entidad/ax_distrito'
 import { EnumEstadoEdicion } from 'lib/edicion'
@@ -44,7 +44,7 @@ export default function AxPageDistrito() {
                         <div className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "block" : "hidden sm:block") + " flex-1 inset-y-0 pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
                             {ID == -1
                                 ? <AxInicio nombre={"Distrito"}></AxInicio>
-                                : <AxDistrito ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion}></AxDistrito>
+                                : <AxDistrito ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} />
                             }
                         </div>
                         {/*LISTA DE Distrito*/}
@@ -110,7 +110,7 @@ export default function AxPageDistrito() {
                                                                     <div>
                                                                         <p className="text-sm font-medium text-indigo-600 truncate">{item.nombre}</p>
                                                                         <p className="mt-2 flex text-sm text-gray-500">
-                                                                            <span className="truncate">{"Código Postal: " + item.codigo_postal}</span>
+                                                                            <span className="truncate">{"Descripcion: " + item.descripcion}</span>
                                                                         </p>
                                                                     </div>
                                                                 </div>

@@ -53,7 +53,7 @@ export default function AxPageDistrito() {
                                 {/*CABECERA */}
                                 <div className="flex-shrink-0">
                                     <div className="px-6 pt-2 pb-2 ">
-                                        <h2 className="text-lg font-medium text-gray-900">Lista de Distritos</h2>
+                                        <h2 className="text-lg font-medium text-gray-900">Lista de Anexos</h2>
                                         <div className="mt-2 flex space-x-4">
                                             <div className="flex-1 min-w-0">
                                                 <div className="relative rounded-md shadow-sm overflow-y-auto">
@@ -125,7 +125,7 @@ export default function AxPageDistrito() {
                                         {textoFiltro !== '' && listaFiltro.length === 0 && (
                                             <div className="py-14 px-4 text-center sm:px-14">
                                                 <UsersIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
-                                                <p className="mt-4 text-sm text-gray-900">No se encontraron distritos usando ese término de búsqueda.</p>
+                                                <p className="mt-4 text-sm text-gray-900">No se encontraron anexos usando ese término de búsqueda.</p>
                                             </div>
                                         )}
                                     </div>

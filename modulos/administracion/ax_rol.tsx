@@ -48,6 +48,7 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
             value: isCheckbox ? event.target.checked : event.target.value,
         });
     }
+    
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         setIsSubmitting(true);
@@ -91,8 +92,8 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="w-0 flex-1 pt-2">
                                     <div className="mt-2 flex">
-                                        <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}/>
-                                        <AxBtnEliminar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setOpen={setOpen}/>
+                                        <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
+                                        <AxBtnEliminar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} setOpen={setOpen} />
                                     </div>
                                     <Transition.Root show={open} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -116,15 +117,10 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
                                             <div className="md:col-span-2">
                                                 <AxInput name="nombre" label="Nombre" value={formData.nombre} handleChange={handleChange} />
                                             </div>
-                                            <div className="md:col-span-2">
+                                            <div className="md:col-span-4">
                                                 <AxInput name="descripcion" label="Descripción" value={formData.descripcion} handleChange={handleChange} />
                                             </div>
-                                            <div className="md:col-span-2">
-                                                <AxInput name="descripcion" label="Descripción" value={formData.descripcion} handleChange={handleChange} />
-                                            </div>
-                                        </div>   <div className="md:col-span-2">
-                                                <AxInput name="descripcion" label="Descripción" value={formData.descripcion} handleChange={handleChange} />
-                                            </div>
+                                        </div>
                                     </div>
                                 </fieldset>
                                 {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">

@@ -4,35 +4,26 @@ import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { Dialog, Transition } from "@headlessui/react";
 import { AxBtnCancelar, AxBtnEditar, AxCheck, AxInput, AxBtnEliminar, AxSelect, AxSubmit, AxModalEliminar } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
-import CiudadanoModel from 'models/persona_model'
+import PersonaModel from 'models/persona_model'
 import { ChevronLeftIcon } from "@heroicons/react/outline";
 
 export const getServerSideProps = withPageAuthRequired();
 const fetcherDistrito = (url: string): Promise<any> =>
     fetch(url, { method: "GET" }).then(r => r.json());
 
-const fetcherRol = (url: string): Promise<any> =>
-    fetch(url, { method: "GET" }).then(r => r.json());
-
-const fetcherArea = (url: string): Promise<any> =>
-    fetch(url, { method: "GET" }).then(r => r.json());
-
-
-const formReducer = (state: CiudadanoModel, event: any): CiudadanoModel => {
+const formReducer = (state: PersonaModel, event: any): PersonaModel => {
     if (event.FORM_DATA) {
         return { ...event.FORM_DATA }
     }
     if (event.FORM_ADD) {
-        return new CiudadanoModel()
+        return new PersonaModel()
     }
     return { ...state, [event.name]: event.value }
 }
 
 export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
-    const { data: listaDistrito } = useSWRImmutable('/api/distrito/edicion', fetcherDistrito);
-    const { data: listaRol } = useSWRImmutable('/api/rol/edicion', fetcherRol);
-    const { data: listaArea } = useSWRImmutable('/api/area/edicion', fetcherArea);
-    const [formData, setFormData] = useReducer(formReducer, new CiudadanoModel());
+    const { data: listaDistrito } = useSWRImmutable('/api/entidad/distrito', fetcherDistrito);
+    const [formData, setFormData] = useReducer(formReducer, new PersonaModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
@@ -46,8 +37,8 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
         }
         else {
             const fetchData = async () => {
-                const response = await fetch(`/api/ciudadano/${ID}`);
-                const data: CiudadanoModel = await response.json();
+                const response = await fetch(`/api/entidad/persona/${ID}`);
+                const data: PersonaModel = await response.json();
                 setFormData({ FORM_DATA: data });
             }
             fetchData().catch(console.error);
@@ -67,13 +58,14 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
         event.preventDefault();
         setIsSubmitting(true);
         const dataEnvio = JSON.stringify(formData);
-        const response = await fetch('/api/ciudadano/edicion', {
+        const response = await fetch('/api/entidad/persona', {
             body: dataEnvio,
             headers: { 'Content-Type': 'application/json', },
             method: tipoEdicion == EnumTipoEdicion.EDITAR ? "PUT" : tipoEdicion == EnumTipoEdicion.ELIMINAR ? "DELETE" : "POST"
         })
 
-        const result: CiudadanoModel = await response.json()
+        const result: PersonaModel = await response.json()
+        console.log(result);
         if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.id);
         setIsSubmitting(false);
         setOpen(false);
@@ -101,7 +93,7 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
                             {/*CABECERA*/}
                             <div className="ml-6 flex-1">
                                 <div className="-mt-2">
-                                    <h3 className="font-bold text-white text-2xl">{formData.nombres ? formData.nombres + " " + formData.apellidos : "..."}</h3>
+                                    <h3 className="font-bold text-white text-2xl">{formData.nombre ? formData.nombre + " " + formData.apellido : "..."}</h3>
                                 </div>
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="w-0 flex-1 pt-2">
@@ -131,12 +123,12 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
                                                 Mensaje
                                             </button>
                                         </a>
-                                        <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}  ></AxBtnEditar>
-                                        <AxBtnEliminar tipoEdicion={tipoEdicion}  setTipoEdicion={setTipoEdicion} setOpen={setOpen} > </AxBtnEliminar>
+                                        <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
+                                        <AxBtnEliminar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} setOpen={setOpen} />
                                     </div>
                                     <Transition.Root show={open} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.nombres} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Ciudadano"}> </AxModalEliminar>
+                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal="Personas" />
                                         </Dialog>
                                     </Transition.Root>
                                 </div>
@@ -154,7 +146,7 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
                                             <div className="md:col-span-2">
-                                                <AxInput name="nro_documento" label="DNI" value={formData.nro_documento} handleChange={handleChange} />
+                                                <AxInput name="numero_documento" label="DNI" value={formData.numero_documento} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
                                                 <AxSelect name="id_distrito" value={formData.id_distrito} label="Distrito" handleChange={handleChange}>
@@ -162,10 +154,10 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="nombres" label="Nombres" value={formData.nombres} handleChange={handleChange} />
+                                                <AxInput name="nombre" label="Nombres" value={formData.nombre} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="apellidos" label="Apellidos" value={formData.apellidos} handleChange={handleChange} />
+                                                <AxInput name="apellido" label="Apellidos" value={formData.apellido} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
                                                 <AxInput name="fecha_nacimiento" label="Fecha Nacimiento" value={formData.fecha_nacimiento} handleChange={handleChange} type="date" />
@@ -185,12 +177,14 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
                                         </div>
                                     </div>
                                 </fieldset>
-                                {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">
-                                    <div className="flex justify-end">
-                                        <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID}></AxBtnCancelar>
-                                        <AxSubmit loading={isSubmitting} />
+                                {
+                                    tipoEdicion != EnumTipoEdicion.VISUALIZAR &&
+                                    <div className="pt-5">
+                                        <div className="flex justify-end">
+                                            <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID} />
+                                            <AxSubmit loading={isSubmitting} />
+                                        </div>
                                     </div>
-                                </div>
                                 }
                             </form >
                         </div >

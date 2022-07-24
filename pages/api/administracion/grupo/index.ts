@@ -1,4 +1,4 @@
-import FnSaveData from "lib/database/save_data";
+import FnSaveData from "lib/database/api_data";
 import GrupoModel from "models/grupo_model";
 
 export default async function handler(req: any, res: any) {

@@ -11,7 +11,7 @@ export const getServerSideProps = withPageAuthRequired();
 
 export default function AxPageArea() {
     const [ID, setID] = useState(-1)
-    const [listaArea, setListaArea] = useState<AreaModel[]>([]);
+    const [lista, setLista] = useState<AreaModel[]>([]);
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
     const [isLoading, setIsLoading] = useState(true);
     const [textoFiltro, setTextoFiltro] = useState('')
@@ -24,13 +24,13 @@ export default function AxPageArea() {
                 method: "GET"
             })
             const result: AreaModel[] = await response.json()
-            setListaArea(result);
+            setLista(result);
             setIsLoading(false)
         }
         fetchData().catch(console.error);
     }, [estadoEdicion])
 
-    const listaFiltro = (textoFiltro == "" ? listaArea : listaArea.filter(item =>
+    const listaFiltro = (textoFiltro == "" ? lista : lista.filter(item =>
         item.nombre.toUpperCase().includes(textoFiltro.toUpperCase())
     ))
     return (
@@ -42,7 +42,7 @@ export default function AxPageArea() {
                         {/*DETALLE DEL Area*/}
                         <div className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "block" : "hidden sm:block") + " flex-1 inset-y-0 pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
                             {ID == -1
-                                ? <AxInicio nombre={"Area"}></AxInicio>
+                                ? <AxInicio nombre="Area"></AxInicio>
                                 : <AxArea ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion}></AxArea>
                             }
                         </div>
@@ -63,8 +63,6 @@ export default function AxPageArea() {
                                                             </div>
                                                             <input
                                                                 type="search"
-                                                                name="search"
-                                                                id="search"
                                                                 className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-indigo-300 rounded-md"
                                                                 placeholder="Buscar..."
                                                                 onChange={(event) => setTextoFiltro(event.target.value)}

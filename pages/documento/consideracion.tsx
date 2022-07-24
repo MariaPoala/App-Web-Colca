@@ -20,9 +20,7 @@ export default function AxPageConsideracion() {
         if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
         setIsLoading(true)
         const fetchData = async () => {
-            const response = await fetch(`/api/documento/consideracion`, {
-                method: "GET"
-            })
+            const response = await fetch('/api/documento/consideracion')
             const result: ConsideracionModel[] = await response.json()
             setLista(result);
             setIsLoading(false)
@@ -42,7 +40,7 @@ export default function AxPageConsideracion() {
                         {/*DETALLE DEL Consideracion*/}
                         <div className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "block" : "hidden sm:block") + " flex-1 inset-y-0 pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
                             {ID == -1
-                                ? <AxInicio nombre={"Consideracion"}></AxInicio>
+                                ? <AxInicio nombre="Consideracion"></AxInicio>
                                 : <AxConsideracion ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion}></AxConsideracion>
                             }
                         </div>
@@ -63,8 +61,6 @@ export default function AxPageConsideracion() {
                                                             </div>
                                                             <input
                                                                 type="search"
-                                                                name="search"
-                                                                id="search"
                                                                 className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-indigo-300 rounded-md"
                                                                 placeholder="Buscar..."
                                                                 onChange={(event) => setTextoFiltro(event.target.value)}

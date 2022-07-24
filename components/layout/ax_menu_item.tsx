@@ -23,7 +23,8 @@ const navigation = [
             { name: 'Distrito', href: '/entidad/distrito', icon: OfficeBuildingIcon, current: false },
             { name: 'Anexo', href: '/entidad/anexo', icon: OfficeBuildingIcon, current: false },
             { name: 'Empleado', href: '/entidad/empleado', icon: UserIcon, current: false },
-            { name: 'Ciudadano', href: '/entidad/ciudadano', icon: UsersIcon, current: false }
+            { name: 'Persona', href: '/entidad/persona', icon: UserIcon, current: false },
+            { name: 'Empresa', href: '/entidad/empresa', icon: UsersIcon, current: false }
         ],
     },
     {
@@ -31,7 +32,7 @@ const navigation = [
         children: [
             { name: 'Grupo', href: '/administracion/grupo', icon: DuplicateIcon, current: false },
             { name: 'Consideraciones', href: '/documento/consideracion', icon: ClipboardListIcon, current: false },
-            { name: 'Tipo Documento', href: '/documento/tipo-documento', icon: DocumentDuplicateIcon, current: false },
+            { name: 'Tipo Documento', href: '/documento/tipo_documento', icon: DocumentDuplicateIcon, current: false },
             { name: 'Area', href: '/administracion/area', icon: LibraryIcon, current: false },
             { name: 'Requisitos', href: '/documento/requisito', icon: ClipboardCheckIcon, current: false }
         ],
@@ -45,9 +46,7 @@ const navigation = [
     {
         name: 'Digitalización', href: '', icon: CloudIcon, current: false,
         children: [
-            { name: 'Registro de Documento', href: '/documento/registro-documento', icon: CloudUploadIcon, current: false },
-            { name: 'Prueba doc', href: '/documento/pruebadoc', icon: CloudUploadIcon, current: false },
-            { name: 'Demo', href: '/documento/demo', icon: CloudUploadIcon, current: false },
+            { name: 'Documentos', href: '/documento/documento', icon: CloudUploadIcon, current: false }
         ],
     },
     {
@@ -55,7 +54,7 @@ const navigation = [
        
         children: [
             
-            { name: 'Registro de Documento', href: '/documento/registro-documento', icon: PaperClipIcon, current: false },
+            { name: 'Solicitud de Documento', href: '/documento/solicitud-documento', icon: PaperClipIcon, current: false },
         ],
     },
     {

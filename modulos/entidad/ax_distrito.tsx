@@ -59,7 +59,6 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
         })
 
         const result: DistritoModel = await response.json()
-        console.log(result);
         if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.id);
         if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
         setIsSubmitting(false);
@@ -92,12 +91,12 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="w-0 flex-1 pt-2">
                                     <div className="mt-2 flex">
-                                        <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}  ></AxBtnEditar>
-                                        <AxBtnEliminar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setOpen={setOpen} > </AxBtnEliminar>
+                                        <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
+                                        <AxBtnEliminar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} setOpen={setOpen} />
                                     </div>
                                     <Transition.Root show={open} as={Fragment}>
                                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal={"Distrito"}> </AxModalEliminar>
+                                            <AxModalEliminar setOpen={setOpen} setTipoEdicion={setTipoEdicion} formData={formData.nombre} isSubmitting={isSubmitting} handleSubmit={handleSubmit} nombreModal="Distrito" />
                                         </Dialog>
                                     </Transition.Root>
                                 </div>
@@ -114,11 +113,8 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
                                             <h3 className="text-lg leading-6 font-medium text-gray-900">Datos </h3>
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
-                                            <div className="md:col-span-3">
+                                            <div className="md:col-span-2">
                                                 <AxInput name="nombre" label="Nombre" value={formData.nombre} handleChange={handleChange} />
-                                            </div>
-                                            <div className="md:col-span-3">
-                                                <AxInput name="codigo_postal" label="Codigo Postal" value={formData.codigo_postal} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-4">
                                                 <AxInput name="descripcion" label="Descripcion" value={formData.descripcion} handleChange={handleChange} />
@@ -126,12 +122,14 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
                                         </div>
                                     </div>
                                 </fieldset>
-                                {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">
-                                    <div className="flex justify-end">
-                                        <AxBtnCancelar setID={setID} setTipoEdicion={setTipoEdicion} tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion}></AxBtnCancelar>
-                                        <AxSubmit loading={isSubmitting} />
+                                {
+                                    tipoEdicion != EnumTipoEdicion.VISUALIZAR &&
+                                    <div className="pt-5">
+                                        <div className="flex justify-end">
+                                            <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID} />
+                                            <AxSubmit loading={isSubmitting} />
+                                        </div>
                                     </div>
-                                </div>
                                 }
                             </form >
                         </div >

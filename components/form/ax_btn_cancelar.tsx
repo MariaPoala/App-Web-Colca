@@ -1,9 +1,10 @@
 import { EnumTipoEdicion, EnumEstadoEdicion } from 'lib/edicion'
 import { TypeBtnCancelarProps, } from 'lib/edicion'
-export default function AxBtnModalCancelar({ setEstadoEdicion, setTipoEdicion, tipoEdicion, setID }: TypeBtnCancelarProps) {
+
+export default function AxBtnCancelar({ setEstadoEdicion, setTipoEdicion, tipoEdicion, setID }: TypeBtnCancelarProps) {
     return <button onClick={() => {
         setEstadoEdicion(EnumEstadoEdicion.CANCELADO);
-        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID("$NULL");
+        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(-1);
         setTipoEdicion(EnumTipoEdicion.VISUALIZAR);
     }}
         type="button"
@@ -12,4 +13,3 @@ export default function AxBtnModalCancelar({ setEstadoEdicion, setTipoEdicion, t
         Cancelar
     </button>
 }
-
