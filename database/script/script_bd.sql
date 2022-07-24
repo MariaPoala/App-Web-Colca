@@ -8,10 +8,10 @@ drop table rol;
 drop table area;
 drop table anexo;
 drop table distrito;
-drop table grupo;
 drop table tipo_documento_requisito;
 drop table tipo_documento_consideracion;
 drop table tipo_documento;
+drop table grupo;
 drop table consideracion;
 drop table requisito;
 
@@ -182,11 +182,11 @@ create table solicitud (
   -- persona, empresa
   tipo_entidad varchar not null,
   id_tipo_documento bigint not null references tipo_documento,
-  id_documento bigint not null references documento
+  id_documento bigint not null references documento,
   id_area bigint not null references area,
   id_empleado bigint not null references empleado,
   id_persona bigint not null references persona,
-  id_empresa bigint null references empresa,
+  id_empresa bigint null references empresa
 );
 
 create table solicitud_seguimiento (
