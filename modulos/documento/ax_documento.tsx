@@ -28,7 +28,7 @@ const formReducer = (state: DocumentoModel, event: any): DocumentoModel => {
     return { ...state, [event.name]: event.value }
 }
 
-export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion }: TypeFormularioProps) {
+export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, setOpen }: any) {
     const { data: listaEmpleado } = useSWRImmutable('/api/entidad/empleado', fetcherEmpleado);
     const { data: listaPersona } = useSWRImmutable('/api/entidad/persona', fetcherPersona);
     const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
@@ -36,7 +36,6 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion }
     const [formData, setFormData] = useReducer(formReducer, new DocumentoModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    const [open, setOpen] = useState(false)
     const [imagenupload, setImagen] = useState(null);
     // const storage = getStorage();
     const [listaimage, setListaimage] = useState<Array<any>>([]);
@@ -93,8 +92,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion }
         })
         const result: DocumentoModel = await response.json()
         if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.id);
-        setIsSubmitting(false);
-        setOpen(false);
+        setIsSubmitting(false);        
         if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
         setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
     }
@@ -116,7 +114,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion }
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
                                             <div className="md:col-span-2">
                                                 <AxSelect name="id_tipo_documento" value={formData.id_tipo_documento} label="Documento" handleChange={handleChange}>
-                                                    {listaTipoDocumento && listaTipoDocumento.map((documento: any) => <option key={documento.id} value={documento.id}>{documento.nombre}</option>)}
+                                                    {listaTipoDocumento && listaTipoDocumento.map((documento: any) => <option key={"tipo_documento_" + documento.id} value={documento.id}>{documento.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
@@ -127,12 +125,12 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion }
                                             </div>
                                             <div className="md:col-span-2">
                                                 <AxSelect name="id_empleado" value={formData.id_empleado} label="Empleado" handleChange={handleChange}>
-                                                    {listaEmpleado && listaEmpleado.map((empleado: any) => <option key={empleado.ID} value={empleado.ID}>{empleado.nombre}</option>)}
+                                                    {listaEmpleado && listaEmpleado.map((empleado: any) => <option key={"empleado_" + empleado.ID} value={empleado.ID}>{empleado.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
                                                 <AxSelect name="id_persona" value={formData.id_persona} label="Persona" handleChange={handleChange}>
-                                                    {listaPersona && listaPersona.map((ciudadano: any) => <option key={ciudadano.ID} value={ciudadano.ID}>{ciudadano.nombre}</option>)}
+                                                    {listaPersona && listaPersona.map((ciudadano: any) => <option key={"persona_" + ciudadano.ID} value={ciudadano.ID}>{ciudadano.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
@@ -195,7 +193,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion }
 
                                 {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">
                                     <div className="flex justify-end">
-                                        <AxBtnModalCancelar setOpen={setOpen} setEstadoEdicion={setEstadoEdicion} />
+                                        <AxBtnModalCancelar setEstadoEdicion={setEstadoEdicion} />
                                         <AxSubmit loading={isSubmitting} />
                                     </div>
                                 </div>

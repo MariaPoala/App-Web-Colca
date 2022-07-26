@@ -10,7 +10,7 @@ export default async function handler(req: any, res: any) {
         const datos = { ...req.body };
         const id = datos.id;
         if (req.method == "GET") {
-            const { data, error } = await supabase.from<TipoDocumentoModel>("tipo_documento").select()
+            const { data, error } = await supabase.from<TipoDocumentoModel>("tipo_documento").select().order('nombre', { ascending: true })
             dataRespuesta = data;
             errorRespuesta = error;
         }

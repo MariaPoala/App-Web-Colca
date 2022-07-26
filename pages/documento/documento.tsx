@@ -62,7 +62,6 @@ export default function AxPageDocumento() {
       const response = await fetch(`/api/documento/documento?inicio=${paginacion.inicio}&cantidad=${paginacion.cantidad}`, {
         method: "GET"
       })
-      console.log(paginacion);
       const result: DocumentoModel[] = await response.json()
       setLista([...lista, ...result]);
       setIsLoading(false)
@@ -71,7 +70,6 @@ export default function AxPageDocumento() {
   }, [estadoEdicion, paginacion])
 
   useEffect(() => {
-    console.log(lista);
     FnFiltrarLista();
   }, [lista])
 
