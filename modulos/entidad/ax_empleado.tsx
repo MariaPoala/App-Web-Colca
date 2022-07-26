@@ -101,12 +101,12 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
                                         <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                                     </svg>
                                 }
-                                <span className={(formData.es_activo == true ? "bg-green-400 " : "bg-red-400 ") + " absolute bottom-1 right-2 block h-4 w-4 rounded-full ring-2 ring-white"} />
+                                <span className={(formData.estado == true ? "bg-green-400 " : "bg-red-400 ") + " absolute bottom-1 right-2 block h-4 w-4 rounded-full ring-2 ring-white"} />
                             </div>
                             {/*CABECERA*/}
                             <div className="ml-6 flex-1">
                                 <div className="-mt-2">
-                                    <h3 className="font-bold text-white text-2xl">{formData.nombres ? formData.nombres + " " + formData.apellidos : "..."}</h3>
+                                    <h3 className="font-bold text-white text-2xl">{formData.nombre ? formData.nombre + " " + formData.apellido : "..."}</h3>
                                 </div>
                                 {/*AREA DE EDICIÓN*/}
                                 <div className="w-0 flex-1 pt-2">
@@ -136,7 +136,7 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
                                                 Mensaje
                                             </button>
                                         </a>
-                                        <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}  ></AxBtnEditar>
+                                        <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
                                     </div>
                                 </div>
                             </div>
@@ -157,10 +157,10 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
                                             </div>
                                             <div className="hidden md:flex md:col-span-4" />
                                             <div className="md:col-span-3">
-                                                <AxInput name="nombres" label="Nombres" value={formData.nombres} handleChange={handleChange} />
+                                                <AxInput name="nombre" label="Nombres" value={formData.nombre} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="apellidos" label="Apellidos" value={formData.apellidos} handleChange={handleChange} />
+                                                <AxInput name="apellido" label="Apellidos" value={formData.apellido} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
                                                 <AxInput name="fecha_nacimiento" label="Fecha Nacimiento" value={formData.fecha_nacimiento} handleChange={handleChange} type="date" />
@@ -190,7 +190,7 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
                                             </div>
                                             <div className="md:col-span-3">
                                                 <AxSelect name="id_area" value={formData.id_area} label="Area" handleChange={handleChange}>
-                                                    {listaArea && listaArea.map((area: any) => <option key={area.id} value={ area.id}>{area.nombre}</option>)}
+                                                    {listaArea && listaArea.map((area: any) => <option key={area.id} value={area.id}>{area.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
@@ -209,7 +209,7 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
                                                     Laboral
                                                 </div>
                                                 <div className="mt-4 space-y-4">
-                                                    <AxCheck id="es_activo" name="EsActivo" value={formData.es_activo} label="¿Es Activo?" handleChange={handleChange} />
+                                                    <AxCheck id="estado" name="estado" value={formData.estado} label="¿Es Activo?" handleChange={handleChange} />
                                                 </div>
                                             </fieldset>
                                             <fieldset className="mt-6">
@@ -223,12 +223,14 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
                                         </div>
                                     </div>
                                 </fieldset>
-                                {tipoEdicion != EnumTipoEdicion.VISUALIZAR && <div className="pt-5">
-                                    <div className="flex justify-end">
-                                        <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID}></AxBtnCancelar>
-                                        <AxSubmit loading={isSubmitting} />
+                                {
+                                    tipoEdicion != EnumTipoEdicion.VISUALIZAR &&
+                                    <div className="pt-5">
+                                        <div className="flex justify-end">
+                                            <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID} />
+                                            <AxSubmit loading={isSubmitting} />
+                                        </div>
                                     </div>
-                                </div>
                                 }
                             </form >
                         </div >

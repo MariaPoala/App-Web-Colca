@@ -32,9 +32,9 @@ export default function AxPageEmpleado() {
         fetchData().catch(console.error);
     }, [estadoEdicion])
 
-    const listaFiltro = ((textoFiltro == "" && tipoFiltro=="TODOS" ? lista : lista.filter(empleado =>
-        (empleado.nombres.toUpperCase().includes(textoFiltro.toUpperCase()) || empleado.apellidos.toUpperCase().includes(textoFiltro.toUpperCase())) &&
-        (tipoFiltro == "TODOS" || empleado.es_activo == (tipoFiltro == "ACTIVO"))
+    const listaFiltro = ((textoFiltro == "" && tipoFiltro=="TODOS" ? lista : lista.filter(item =>
+        (item.nombre.toUpperCase().includes(textoFiltro.toUpperCase()) || item.apellido.toUpperCase().includes(textoFiltro.toUpperCase())) &&
+        (tipoFiltro == "TODOS" || item.estado == (tipoFiltro == "ACTIVO"))
     )))
     return (
         <>
@@ -149,13 +149,13 @@ export default function AxPageEmpleado() {
                                                                                 <svg className="bg-indigo-300 text-white h-12 w-12 rounded-full" viewBox="0 0 20 20" fill="currentColor">
                                                                                     <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                                                                                 </svg>
-                                                                                <span className={(empleado.es_activo == true ? " bg-green-400 " : " bg-red-400 ") + " absolute bottom-0 right-0 block h-3.5 w-3.5 rounded-full ring-2 ring-white "} />
+                                                                                <span className={(empleado.estado == true ? " bg-green-400 " : " bg-red-400 ") + " absolute bottom-0 right-0 block h-3.5 w-3.5 rounded-full ring-2 ring-white "} />
                                                                             </span>
                                                                     }
                                                                 </div>
                                                                 <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
                                                                     <div>
-                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{empleado.nombres + ' ' + empleado.apellidos}</p>
+                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{empleado.nombre + ' ' + empleado.apellido}</p>
                                                                         <p className="mt-2 flex text-sm text-gray-500">
                                                                             <MailIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
                                                                             <span className="truncate">{empleado.email}</span>

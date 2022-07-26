@@ -131,8 +131,8 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
                                         </div>
                                     </div>
                                 }
-                            </form >
-                        </div >
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

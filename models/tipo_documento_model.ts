@@ -8,6 +8,8 @@ class TipoDocumentoModel {
     tiempo_entrega?: number;
     costo: number;
     id_grupo: number;
+    tipo_documento_consideracion: number[];
+    tipo_documento_requisito: number[];
 
     constructor() {
         this.id = 0;
@@ -17,6 +19,8 @@ class TipoDocumentoModel {
         this.tiempo_entrega = 0;
         this.costo = 0;
         this.id_grupo = 0;
+        this.tipo_documento_consideracion = []
+        this.tipo_documento_requisito = []
     }
 }
 export default TipoDocumentoModel

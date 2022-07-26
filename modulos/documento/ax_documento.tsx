@@ -5,7 +5,7 @@ import * as uuid from 'uuid'
 import { AxInput, AxSelect, AxSubmit, AxCheck, AxBtnModalCancelar } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
 import DocumentoModel from 'models/documento_model'
-import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
+// import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
 // import db from "lib/firebase-config";
 // db.app
 export const getServerSideProps = withPageAuthRequired();
@@ -32,13 +32,13 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion }
     const { data: listaEmpleado } = useSWRImmutable('/api/entidad/empleado', fetcherEmpleado);
     const { data: listaPersona } = useSWRImmutable('/api/entidad/persona', fetcherPersona);
     const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
-    const { data: listaDocumento } = useSWRImmutable('/api/documento', fetcherDocumento);
+    const { data: listaTipoDocumento } = useSWRImmutable('/api/documento/tipo_documento', fetcherDocumento);
     const [formData, setFormData] = useReducer(formReducer, new DocumentoModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [open, setOpen] = useState(false)
     const [imagenupload, setImagen] = useState(null);
-    const storage = getStorage();
+    // const storage = getStorage();
     const [listaimage, setListaimage] = useState<Array<any>>([]);
     useEffect(() => {
         setIsLoading(true)
@@ -47,7 +47,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion }
         }
         else {
             const fetchData = async () => {
-                const response = await fetch(`/api/documento/${ID}`);
+                const response = await fetch(`/api/documento/documento/${ID}`);
                 const data: DocumentoModel = await response.json();
                 setFormData({ FORM_DATA: data });
             }
@@ -61,17 +61,17 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion }
 
     }
     const uploadimage = () => {
-        if (imagenupload == null) return;
-        const imageRef = ref(storage, `archivodocumento/${setImagen.name + uuid.v4()}`)
-        uploadBytes(imageRef, imagenupload).then((snapshot) => {
-            alert('Uploaded a blob or file!');
-            getDownloadURL(snapshot.ref).then((url) => {
-                setListaimage((prev) => [...prev, url]);
-                console.log(url)
-                formData.url_archivo = (url)
-            })
-        });
-        return;
+        // if (imagenupload == null) return;
+        // const imageRef = ref(storage, `archivodocumento/${setImagen.name + uuid.v4()}`)
+        // uploadBytes(imageRef, imagenupload).then((snapshot) => {
+        //     alert('Uploaded a blob or file!');
+        //     getDownloadURL(snapshot.ref).then((url) => {
+        //         setListaimage((prev) => [...prev, url]);
+        //         console.log(url)
+        //         formData.url_archivo = (url)
+        //     })
+        // });
+        // return;
     }
 
     const handleChange = (event: any) => {
@@ -86,7 +86,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion }
         event.preventDefault();
         setIsSubmitting(true);
         const dataEnvio = JSON.stringify(formData);
-        const response = await fetch('/api/documento', {
+        const response = await fetch('/api/documento/documento', {
             body: dataEnvio,
             headers: { 'Content-Type': 'application/json', },
             method: tipoEdicion == EnumTipoEdicion.EDITAR ? "PUT" : tipoEdicion == EnumTipoEdicion.ELIMINAR ? "DELETE" : "POST"
@@ -116,7 +116,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion }
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
                                             <div className="md:col-span-2">
                                                 <AxSelect name="id_tipo_documento" value={formData.id_tipo_documento} label="Documento" handleChange={handleChange}>
-                                                    {listaDocumento && listaDocumento.map((documento: any) => <option key={documento.ID} value={"/documento/" + documento.ID}>{documento.Nombre}</option>)}
+                                                    {listaTipoDocumento && listaTipoDocumento.map((documento: any) => <option key={documento.id} value={documento.id}>{documento.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
@@ -127,12 +127,12 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion }
                                             </div>
                                             <div className="md:col-span-2">
                                                 <AxSelect name="id_empleado" value={formData.id_empleado} label="Empleado" handleChange={handleChange}>
-                                                    {listaEmpleado && listaEmpleado.map((empleado: any) => <option key={empleado.ID} value={empleado.ID}>{empleado.Nombres}</option>)}
+                                                    {listaEmpleado && listaEmpleado.map((empleado: any) => <option key={empleado.ID} value={empleado.ID}>{empleado.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
                                                 <AxSelect name="id_persona" value={formData.id_persona} label="Persona" handleChange={handleChange}>
-                                                    {listaPersona && listaPersona.map((ciudadano: any) => <option key={ciudadano.ID} value={ciudadano.ID}>{ciudadano.Nombres}</option>)}
+                                                    {listaPersona && listaPersona.map((ciudadano: any) => <option key={ciudadano.ID} value={ciudadano.ID}>{ciudadano.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">

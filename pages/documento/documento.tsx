@@ -12,7 +12,7 @@ import EmpresaModel from 'models/empresa_model'
 import DocumentoModel from 'models/documento_model'
 import AxDocumento from 'modulos/documento/ax_documento';
 
-const fetcherDoc = (url: string): Promise<any> =>
+const fetcherTipoDocumento = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
 const fetcherPersona = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
@@ -40,7 +40,7 @@ type TypeFiltro = {
 }
 
 export default function AxPageDocumento() {
-  const { data: listaTipoDocumento } = useSWRImmutable<TipoDocumentoModel[]>('/api/documento/tipo_documento', fetcherDoc);
+  const { data: listaTipoDocumento } = useSWRImmutable<TipoDocumentoModel[]>('/api/documento/tipo_documento', fetcherTipoDocumento);
   const { data: listaPersona } = useSWRImmutable('/api/entidad/persona', fetcherPersona);
   const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
   const { data: listaEmpleado } = useSWRImmutable('/api/entidad/empleado', fetcherEmpleado);

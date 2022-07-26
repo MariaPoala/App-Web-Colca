@@ -60,26 +60,25 @@ export default function AxTipoDocumento({ ID, setID, setEstadoEdicion }: TypeFor
 
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
-        // if (event.target.name == "IDsConsideracion") {
-        //     const indexAnterior = formData.id_consideracion.indexOf(event.target.value);
-        //     if (indexAnterior != -1) formData.id_consideracion.splice(indexAnterior, 1);
-        //     else formData.id_consideracion.push(event.target.value);
-        //     setFormData({
-        //         name: event.target.name,
-        //         value: [...formData.id_consideracion]
-        //     })
-        // }
-        // else if (event.target.name == "IDsRequisito") {
-        //     const indexAnterior = formData.id_requisito.indexOf(event.target.value);
-        //     if (indexAnterior != -1) formData.id_requisito.splice(indexAnterior, 1);
-        //     else formData.id_requisito.push(event.target.value);
-        //     setFormData({
-        //         name: event.target.name,
-        //         value: [...formData.id_requisito]
-        //     })
-        // }
-        // else 
-        if (event.target.name == "nombre") {
+        if (event.target.name == "tipo_documento_consideracion") {
+            const indexAnterior = formData.tipo_documento_consideracion.indexOf(parseInt(event.target.value));
+            if (indexAnterior != -1) formData.tipo_documento_consideracion.splice(indexAnterior, 1);
+            else formData.tipo_documento_consideracion.push(parseInt(event.target.value));
+            setFormData({
+                name: event.target.name,
+                value: [...formData.tipo_documento_consideracion]
+            })
+        }
+        else if (event.target.name == "tipo_documento_requisito") {
+            const indexAnterior = formData.tipo_documento_requisito.indexOf(parseInt(event.target.value));
+            if (indexAnterior != -1) formData.tipo_documento_requisito.splice(indexAnterior, 1);
+            else formData.tipo_documento_requisito.push(parseInt(event.target.value));
+            setFormData({
+                name: event.target.name,
+                value: [...formData.tipo_documento_requisito]
+            })
+        }
+        else if (event.target.name == "nombre") {
             setFormData({
                 name: "nombre",
                 value: event.target.value
@@ -88,8 +87,6 @@ export default function AxTipoDocumento({ ID, setID, setEstadoEdicion }: TypeFor
                 name: "codigo",
                 value: formData.nombre.substring(0, 3) + "-" + fecha.getFullYear()
             })
-
-
         }
         else {
             setFormData({
@@ -184,17 +181,16 @@ export default function AxTipoDocumento({ ID, setID, setEstadoEdicion }: TypeFor
                                                     {listaGrupo && listaGrupo.map((grupo: any) => <option key={grupo.id} value={grupo.id}>{grupo.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
-                                            <div className="md:col-span-3" />
-                                            {/* <div className="md:col-span-3">
-                                                <AxSelectMultiple name="id_consideracion" value={formData.id_consideracion} label="Consideraciones" handleChange={handleChange}>
+                                            <div className="md:col-span-3">
+                                                <AxSelectMultiple name="tipo_documento_consideracion" value={formData.tipo_documento_consideracion} label="Consideraciones" handleChange={handleChange}>
                                                     {listaConsideracion && listaConsideracion.map((consideracion: any) => <option key={consideracion.id} value={consideracion.id}>{consideracion.nombre}</option>)}
                                                 </AxSelectMultiple>
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxSelectMultiple name="id_requisito" value={formData.id_requisito} label="Requisitos" handleChange={handleChange}>
+                                                <AxSelectMultiple name="tipo_documento_requisito" value={formData.tipo_documento_requisito} label="Requisitos" handleChange={handleChange}>
                                                     {listaRequisito && listaRequisito.map((requisito: any) => <option key={requisito.id} value={requisito.id}>{requisito.nombre}</option>)}
                                                 </AxSelectMultiple>
-                                            </div> */}
+                                            </div>
                                         </div>
                                     </div>
                                 </fieldset>
