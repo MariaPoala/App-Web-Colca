@@ -142,9 +142,13 @@ export default function AxPageEmpleado() {
                                                                 <div className="flex-shrink-0">
                                                                     {
                                                                         (empleado.url_imagen)
-                                                                            ? <img className="h-12 w-12 rounded-full" src={empleado.url_imagen} alt="" >
-                                                                                {/* <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white bg-green-400" /> */}
-                                                                            </img>
+                                                                            ?
+                                                                            <span className="inline-block relative">
+                                                                                <img className="h-12 w-12 rounded-full" src={empleado.url_imagen} alt="" >
+                                                                                </img>
+                                                                                <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white bg-green-400" />
+                                                                            </span>
+
                                                                             : <span className="inline-block relative">
                                                                                 <svg className="bg-indigo-300 text-white h-12 w-12 rounded-full" viewBox="0 0 20 20" fill="currentColor">
                                                                                     <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />

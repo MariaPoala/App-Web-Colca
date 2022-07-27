@@ -85,6 +85,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
         event.preventDefault();
         setIsSubmitting(true);
         const dataEnvio = JSON.stringify(formData);
+        console.log(dataEnvio)
         const response = await fetch('/api/documento/documento', {
             body: dataEnvio,
             headers: { 'Content-Type': 'application/json', },
@@ -95,6 +96,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
         setIsSubmitting(false);        
         if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
         setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
+        console.log(result)
     }
     return (
         <>
@@ -113,8 +115,8 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
                                             <div className="md:col-span-2">
-                                                <AxSelect name="id_tipo_documento" value={formData.id_tipo_documento} label="Documento" handleChange={handleChange}>
-                                                    {listaTipoDocumento && listaTipoDocumento.map((documento: any) => <option key={"tipo_documento_" + documento.id} value={documento.id}>{documento.nombre}</option>)}
+                                                <AxSelect name="id_tipo_documento" value={formData.id_tipo_documento} label="Tipo Documento" handleChange={handleChange}>
+                                                    {listaTipoDocumento && listaTipoDocumento.map((documento: any) => <option key={documento.id} value={documento.id}>{documento.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
@@ -125,12 +127,17 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                             </div>
                                             <div className="md:col-span-2">
                                                 <AxSelect name="id_empleado" value={formData.id_empleado} label="Empleado" handleChange={handleChange}>
-                                                    {listaEmpleado && listaEmpleado.map((empleado: any) => <option key={"empleado_" + empleado.ID} value={empleado.ID}>{empleado.nombre}</option>)}
+                                                    {listaEmpleado && listaEmpleado.map((empleado: any) => <option key={empleado.id} value={empleado.id}>{empleado.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
                                                 <AxSelect name="id_persona" value={formData.id_persona} label="Persona" handleChange={handleChange}>
-                                                    {listaPersona && listaPersona.map((ciudadano: any) => <option key={"persona_" + ciudadano.ID} value={ciudadano.ID}>{ciudadano.nombre}</option>)}
+                                                    {listaPersona && listaPersona.map((persona: any) => <option key={persona.id} value={persona.id}>{persona.nombre}</option>)}
+                                                </AxSelect>
+                                            </div>
+                                            <div className="md:col-span-2">
+                                                <AxSelect name="id_empresa" value={formData.id_empresa} label="Empresa" handleChange={handleChange}>
+                                                    {listaPersona && listaPersona.map((empresa: any) => <option key={empresa.id} value={empresa.id}>{empresa.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
@@ -156,7 +163,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                                         <img className="mx-auto h-12 w-12 text-gray-400" src="/upload-file.svg" alt="Easywire logo" />
                                                         <div className="flex   text-sm text-center text-gray-600">
                                                             <label
-                                                                htmlFor="UrlImgEjemplo"
+                                                                htmlFor="url_archivo"
                                                                 className="relative ml-7 cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
                                                             >
                                                                 <input className="bg-indigo-200" type="file" name="image" onChange={changeImagen} />

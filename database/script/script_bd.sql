@@ -114,7 +114,7 @@ create table empleado (
   celular varchar null,
   email varchar null,
   tipo_contrato varchar not null,
-  estado bit not null,
+  estado bool not null,
   url_imagen varchar null,
   id_distrito bigint not null references distrito, 
   id_area bigint not null references area, 
@@ -130,7 +130,7 @@ create table empresa (
   direccion varchar not null,
   celular varchar null,
   email varchar null,
-  estado bit not null,
+  estado bool not null,
   id_distrito bigint not null references distrito,
   id_anexo bigint null references anexo
 );
@@ -148,7 +148,7 @@ create table persona (
   direccion varchar not null,
   celular varchar null,
   email varchar null,
-  estado bit not null,
+  estado bool not null,
   id_distrito bigint not null references distrito,
   id_anexo bigint null references anexo
 );
@@ -158,10 +158,10 @@ create table documento (
   fecha_creacion timestamp with time zone default timezone('utc'::text, now()) not null,
   fecha_edicion timestamp with time zone default timezone('utc'::text, now()) not null,
   numero_documento varchar not null,
-  observaciones varchar not null,
+  observacion varchar not null,
   fecha_documento timestamp not null,
   url_archivo varchar null,
-  es_anulado bit not null,
+  es_anulado bool not null,
   fecha_anulacion timestamp null,
   motivo_anulacion varchar null,
   id_empleado bigint not null references empleado,

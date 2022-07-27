@@ -2,6 +2,7 @@ class DocumentoModel {
     id: number;
     fecha_creacion?: string;
     fecha_edicion?: string;
+    id_tipo_documento: number;
     numero_documento: string;
     observacion: string;
     fecha_documento: string;
@@ -12,7 +13,7 @@ class DocumentoModel {
     id_empleado: number;
     id_empresa?: number;
     id_persona: number;
-    id_tipo_documento: number;
+    
 
     constructor() {
         this.id = 0;

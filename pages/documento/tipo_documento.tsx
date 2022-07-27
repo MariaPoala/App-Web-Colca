@@ -113,7 +113,6 @@ export default function AxPageDocumento() {
                                                                         <p className="mt-2 flex text-sm text-gray-500">
                                                                             <span className="truncate">{item.descripcion}</span>
                                                                         </p>
-
                                                                     </div>
                                                                 </div>
                                                             </div>

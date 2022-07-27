@@ -152,7 +152,6 @@ export default function AxPageDocumento() {
                     >
                       Cargas Mas
                       <RefreshIcon className='h-4 w-4 mr-1'></RefreshIcon>
-
                     </button>
                   </div>
                 </div>
@@ -177,7 +176,7 @@ export default function AxPageDocumento() {
                     <div className="flex items-center">
                       <div className="ml-2 w-10 flex-1">
                         <dl>
-                          <dt className="text-sm font-medium text-white truncate uppercase">{item.nombres}</dt>
+                          <dt className="text-sm font-medium text-white truncate uppercase">{item.nombre}</dt>
                           {/* <dd>
                             <div className="text-sm font-medium text-indigo-100">{item.Descripcion}</div>
                           </dd> */}
