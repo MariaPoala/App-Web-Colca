@@ -12,7 +12,7 @@ class EmpleadoModel {
     email?: string;
     tipo_contrato: string;
     estado: boolean;
-    url_imagen: string;
+    url_imagen?: string;
     id_distrito: number;
     id_area: number;
     id_rol: number;
@@ -26,7 +26,6 @@ class EmpleadoModel {
         this.direccion = "";
         this.tipo_contrato = "Contrato3Meses";
         this.estado = true;
-        this.url_imagen = "";
         this.id_area = 0;
         this.id_rol = 0;
         this.id_distrito = 0;
