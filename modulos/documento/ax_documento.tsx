@@ -137,7 +137,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                             </div>
                                             <div className="md:col-span-2">
                                                 <AxSelect name="id_empresa" value={formData.id_empresa} label="Empresa" handleChange={handleChange}>
-                                                    {listaPersona && listaPersona.map((empresa: any) => <option key={empresa.id} value={empresa.id}>{empresa.nombre}</option>)}
+                                                    {listaEmpresa && listaEmpresa.map((empresa: any) => <option key={empresa.id} value={empresa.id}>{empresa.razon_social}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
