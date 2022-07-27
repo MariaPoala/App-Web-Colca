@@ -40,7 +40,7 @@ type TypeFiltro = {
 }
 
 export default function AxPageDocumento() {
-  const { data: listaTipoDocumento } = useSWRImmutable<TipoDocumentoModel[]>('/api/documento/tipo_documento', fetcherTipoDocumento);
+  const { data: listaTipoDocumento } = useSWRImmutable<any[]>('/api/documento/tipo_documento', fetcherTipoDocumento);
   const { data: listaPersona } = useSWRImmutable('/api/entidad/persona', fetcherPersona);
   const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
   const { data: listaEmpleado } = useSWRImmutable('/api/entidad/empleado', fetcherEmpleado);
@@ -52,7 +52,6 @@ export default function AxPageDocumento() {
   const [listaFiltro, setListaFiltro] = useState<DocumentoModel[]>([]);
   const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
   const [esModalOpen, setEsModalOpen] = useState(false)
-  const [totalPages, setTotalPages] = useState(2);
   const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 1 })
 
   useEffect(() => {
@@ -73,7 +72,7 @@ export default function AxPageDocumento() {
     FnFiltrarLista();
   }, [lista])
 
-  const resultado = Array.from(new Set(lista.map(s => s.id)))
+  const resultado = Array.from(new Set(lista.map(s => s.id_tipo_documento)))
     .map(id => {
       return {
         id: id
@@ -99,8 +98,8 @@ export default function AxPageDocumento() {
       (filtro.numero_documento ? doc.numero_documento == filtro.numero_documento : true) &&
       (filtro.fecha_documento ? doc.fecha_documento == filtro.fecha_documento : true)
     )
+    console.log(filtrado);
     setListaFiltro(filtrado);
-    setTotalPages(totalPages);
   }
 
   function FnLoadMas() {
@@ -128,10 +127,10 @@ export default function AxPageDocumento() {
                     </AxSelectFiltro>
                   </div>
                   <div className="md:col-span-1">
-                    <AxInput name="NroDocumento" handleChange={handleChange} label="Nro Documento" type="text" filtro={true} />
+                    <AxInput name="numero_documento" handleChange={handleChange} label="Nro Documento" type="text" filtro={true} />
                   </div>
                   <div className="md:col-span-1">
-                    <AxInput name="Fecha" label="Fec Documento" handleChange={handleChange} filtro={true} type="date" />
+                    <AxInput name="fecha_documento" label="Fec Documento" handleChange={handleChange} filtro={true} type="date" />
                   </div>
                   <div className="md:col-span-2">
                     <button type="button"
@@ -164,7 +163,7 @@ export default function AxPageDocumento() {
             <h2 className="text-lg leading-6 font-medium text-gray-900">Documentos</h2>
             <div className="mt-2 grid  gap-5 grid-cols-1 sm:grid-cols-2  md:grid-cols-3  lg:grid-cols-5">
               {/* Card */}
-              {(lista && lista.map((item: any) =>
+              {(listaTipoDocumento && listaTipoDocumento.map((item: any) =>
               (resultado.map(s => s.id == item.id &&
                 < ul key={item.id} className="bg-indigo-400 overflow-hidden shadow rounded-lg hover:bg-indigo-700"
                   onClick={() => {
