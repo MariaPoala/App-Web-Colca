@@ -1,11 +1,12 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { SearchIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PhoneIcon } from '@heroicons/react/solid'
+import { SearchIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PhoneIcon, FilterIcon } from '@heroicons/react/solid'
 import AxInicio from 'components/layout/ax_inicio'
 import AxPersona from 'modulos/entidad/ax_persona'
 import { EnumEstadoEdicion } from 'lib/edicion'
 import PersonaModel from 'models/persona_model'
+import { Menu, Transition } from '@headlessui/react';
 
 export const getServerSideProps = withPageAuthRequired();
 
@@ -15,6 +16,7 @@ export default function AxPagePersona() {
     const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
     const [isLoading, setIsLoading] = useState(true);
     const [textoFiltro, setTextoFiltro] = useState('')
+    const [tipoFiltro, setTipoFiltro] = useState("TODOS")
 
     useEffect(() => {
         if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
@@ -28,8 +30,9 @@ export default function AxPagePersona() {
         fetchData().catch(console.error);
     }, [estadoEdicion])
 
-    const listaFiltro = ((textoFiltro == "" ? lista : lista.filter(item =>
+    const listaFiltro = ((textoFiltro == "" && tipoFiltro == "TODOS" ? lista : lista.filter(item =>
         (item.nombre.toUpperCase().includes(textoFiltro.toUpperCase()) || item.apellido.toUpperCase().includes(textoFiltro.toUpperCase()))
+        && (tipoFiltro == "TODOS" || item.estado == (tipoFiltro == "ACTIVO"))
     )))
     return (
         <>
@@ -69,6 +72,34 @@ export default function AxPagePersona() {
                                                     </div>
                                                 </div>
                                             </div>
+                                            <Menu as="div" className="relative z-1 inline-block text-left">
+                                                <div>
+                                                    <Menu.Button className="inline-flex justify-center px-3.5 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                        <FilterIcon className={(tipoFiltro == "ACTIVO" ? "text-green-400 " : tipoFiltro == "DESACTIVADO" ? "text-red-400 " : "text-blue-300 ") + "  h-5 w-5 "} aria-hidden="true" />
+                                                    </Menu.Button>
+                                                </div>
+                                                <Transition as={Fragment} enter="transition ease-out duration-100" enterFrom="transform opacity-0 scale-95"
+                                                    enterTo="transform opacity-100 scale-100" leave="transition ease-in duration-75"
+                                                    leaveFrom="transform opacity-100 scale-100" leaveTo="transform opacity-0 scale-95"                                                >
+                                                    <Menu.Items className="origin-top-left absolute left-0 z-10 mt-2 w-40 rounded-md shadow-2xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                        <div className="py-1">
+                                                            <a onClick={() => { setTipoFiltro("ACTIVO") }} className={(tipoFiltro == "ACTIVO" ? "bg-indigo-100" : "") + " hover:bg-indigo-200 block px-4 py-2 text-sm font-medium text-gray-900"}>
+                                                                <span className="absolute  right-16 block h-3 w-3 rounded-full ring-2 ring-white bg-green-300" />
+                                                                Activos
+                                                            </a>
+
+                                                            <a onClick={() => { setTipoFiltro("DESACTIVADO") }} className={(tipoFiltro == "DESACTIVADO" ? "bg-indigo-100" : "") + " hover:bg-indigo-200 block px-4 py-2 text-sm font-medium text-gray-900"}>
+                                                                <span className="absolute  right-16 block h-3 w-3 rounded-full ring-2 ring-white bg-red-400" />
+                                                                Inactivos
+                                                            </a>
+                                                            <a onClick={() => { setTipoFiltro("TODOS") }} className={(tipoFiltro == "TODOS" ? "bg-indigo-100" : "") + " hover:bg-indigo-200 block px-4 py-2 text-sm font-medium text-gray-900"}>
+                                                                <span className="absolute  right-16 block h-3 w-3 rounded-full ring-2 ring-white bg-blue-300" />
+                                                                Todos
+                                                            </a>
+                                                        </div>
+                                                    </Menu.Items>
+                                                </Transition>
+                                            </Menu>
                                         </div>
                                     </div>
                                     <div className="border-t border-b border-gray-200 bg-gray-100 px-6 py-2 text-sm font-medium text-gray-500">

@@ -12,6 +12,8 @@ import EmpresaModel from 'models/empresa_model'
 import DocumentoModel from 'models/documento_model'
 import AxDocumento from 'modulos/documento/ax_documento';
 
+const fetcherVDocumento = (url: string): Promise<any> =>
+  fetch(url, { method: "GET" }).then(r => r.json());
 const fetcherTipoDocumento = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
 const fetcherPersona = (url: string): Promise<any> =>
@@ -42,6 +44,7 @@ type TypeFiltro = {
 export default function AxPageDocumento() {
   const { data: listaTipoDocumento } = useSWRImmutable<any[]>('/api/documento/tipo_documento', fetcherTipoDocumento);
   const { data: listaPersona } = useSWRImmutable('/api/entidad/persona', fetcherPersona);
+  const { data: listaDoc } = useSWRImmutable('/api/documento/documento/v_documento', fetcherVDocumento);
   const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
   const { data: listaEmpleado } = useSWRImmutable('/api/entidad/empleado', fetcherEmpleado);
   const [ID, setID] = useState(-1)
@@ -230,7 +233,7 @@ export default function AxPageDocumento() {
                       </thead>
 
                       <tbody className="divide-x divide-y overflow-x-auto overflow-y-auto divide-gray-200 bg-white">
-                        {(listaFiltro && listaFiltro.map((item) => (
+                        {(listaDoc && listaDoc.map((item:any) => (
                           <tr key={item.id} className={item.id == ID ? "bg-indigo-100 table table-fixed w-full" : "bg-white table table-fixed w-full"}>
                             <td className="w-16 text-center whitespace-nowrap px-3 py-3 text-sm text-gray-500">
                               <input
@@ -244,7 +247,7 @@ export default function AxPageDocumento() {
                               />
                             </td>
                             <td className="px-1 py-3 whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.id_tipo_documento}
+                              {item.tipo_documento_nombre}
                             </td>
                             <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                               {item.numero_documento}
@@ -253,10 +256,10 @@ export default function AxPageDocumento() {
                               {item.fecha_documento}
                             </td>
                             <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.id_empleado}
+                              {item.empleado_nombre}
                             </td>
                             <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.id_persona}
+                              {item.persona_nombre}
                             </td>
                             <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
                               {item.observacion}
