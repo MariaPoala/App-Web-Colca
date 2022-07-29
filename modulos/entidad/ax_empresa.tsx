@@ -145,7 +145,7 @@ export default function AxEmpresa({ ID, setID, setEstadoEdicion }: TypeFormulari
                                             <h3 className="text-lg leading-6 font-medium text-gray-900">Información Personal </h3>
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
-                                                                                      <div className="md:col-span-2">
+                                            <div className="md:col-span-4">
                                                 <AxInput name="razon_social" label="razon_social" value={formData.razon_social} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-2">
@@ -161,28 +161,32 @@ export default function AxEmpresa({ ID, setID, setEstadoEdicion }: TypeFormulari
                                                     {listaDistrito && listaDistrito.map((anexo: any) => <option key={anexo.id} value={anexo.id}>{anexo.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
-                                            <div className="md:col-span-3">
+                                            <div className="md:col-span-4">
                                                 <AxInput name="direccion" label="direccion" value={formData.direccion} handleChange={handleChange} />
                                             </div>
-                                            <div className="md:col-span-3">
+                                            <div className="md:col-span-2">
                                                 <AxInput name="celular" label="celular" value={formData.celular} handleChange={handleChange} />
                                             </div>
-                                            <div className="md:col-span-4">
+                                            <div className="md:col-span-5">
                                                 <AxInput name="email" label="Correo Electronico" value={formData.email} handleChange={handleChange} />
                                             </div>
-                                            <div className="md:col-span-2">
-                                                <AxInput name="celular" label="Nro Celular" value={formData.celular} handleChange={handleChange} />
+                                            <div className="md:col-span-6">
+                                                <div className="pt-8">
+                                                    <div>
+                                                        <h3 className="text-lg leading-6 font-medium text-gray-900">Condiciones</h3>
+                                                    </div>
+                                                    <div className="mt-6">
+                                                        <fieldset>
+                                                            <div className="text-base font-medium text-gray-900" aria-hidden="true">
+                                                                Estado
+                                                            </div>
+                                                            <div className="mt-4 space-y-4">
+                                                                <AxCheck id="estado" name="estado" value={formData.estado} label="¿Es Activo?" handleChange={handleChange} />
+                                                            </div>
+                                                        </fieldset>
+                                                    </div>
+                                                </div>
                                             </div>
-
-                                            <fieldset>
-                                                <legend className="sr-only">Estado</legend>
-                                                <div className="text-base font-medium text-gray-900" aria-hidden="true">
-                                                    Laboral
-                                                </div>
-                                                <div className="mt-4 space-y-4">
-                                                    <AxCheck id="estado" name="estado" value={formData.estado} label="¿Es Activo?" handleChange={handleChange} />
-                                                </div>
-                                            </fieldset>
                                         </div>
                                     </div>
                                 </fieldset>

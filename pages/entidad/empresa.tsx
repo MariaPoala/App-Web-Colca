@@ -17,7 +17,7 @@ export default function AxPageEmpresa() {
     const [isLoading, setIsLoading] = useState(true);
     const [textoFiltro, setTextoFiltro] = useState('')
     const [tipoFiltro, setTipoFiltro] = useState("TODOS")
-    
+
     useEffect(() => {
         if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
         setIsLoading(true)
@@ -137,7 +137,10 @@ export default function AxPageEmpresa() {
                                                             <div className="min-w-0 flex-1 flex">
                                                                 <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols md:gap-4">
                                                                     <div>
-                                                                        <p className="text-sm font-medium text-indigo-600 truncate">{item.razon_social + ' RUC:' + item.numero_ruc}</p>
+                                                                        <span className="inline-block relative">
+                                                                            <span className={"absolute bottom-4 right-full block h-2.5 w-2.5 rounded-full ring-2 ring-white " + (item.estado == true ? "bg-green-400" : "bg-red-400")} />
+                                                                            <p className="text-sm font-medium text-indigo-600 truncate">{item.razon_social}</p>
+                                                                        </span>
                                                                         <p className="mt-2 flex text-sm text-gray-500">
                                                                             <MailIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
                                                                             <span className="truncate">{item.email}</span>
