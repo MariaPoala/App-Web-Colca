@@ -5,14 +5,11 @@ import { CheckCircleIcon, BadgeCheckIcon, RefreshIcon, BanIcon, XIcon, Exclamati
 import { Dialog, Transition } from '@headlessui/react';
 import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar } from 'components/form';
 import { EnumEstadoEdicion, EnumTipoEdicion } from 'lib/edicion';
-import TipoDocumentoModel from 'models/tipo_documento_model'
-import EmpleadoModel from 'models/empleado_model'
-import PersonaModel from 'models/persona_model'
-import EmpresaModel from 'models/empresa_model'
-import DocumentoModel from 'models/documento_model'
-import AxDocumento from 'modulos/documento/ax_documento';
+import SolicitudModel from 'models/solicitud_model'
+import AxSolicitud from 'modulos/documento/ax_solicitud';
+import Link from 'next/link';
 
-const fetcherVDocumento = (url: string): Promise<any> =>
+const fetcherVSolicitud = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
 const fetcherTipoDocumento = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
@@ -26,33 +23,36 @@ const fetcherEmpleado = (url: string): Promise<any> =>
 const campos = [
   { name: 'Documento' },
   { name: 'N° Documento' },
-  { name: 'Fecha Documento' },
-  { name: 'Empleado' },
+  { name: 'Asunto' },
+  { name: 'Fecha Inicio' },
+  { name: 'Fecha Plazo' },
+  { name: 'Motivo' },
   { name: 'Ciudadano' },
-  { name: 'Observaciones' },
-  { name: 'Fecha Registro' },
-  { name: '¿Anulado?' },
+  { name: 'Empleado' },
+  { name: 'Estado' },
+  { name: 'Seguimiento' }
 ]
 
 type TypeFiltro = {
   numero_documento: string,
   id_persona: number,
   fecha_documento: string,
-  id_tipo_documento: number[]
+  id_tipo_documento: number[],
+  id_empresa: 0
 }
 
 export default function AxPageDocumento() {
   const { data: listaTipoDocumento } = useSWRImmutable<any[]>('/api/documento/tipo_documento', fetcherTipoDocumento);
   const { data: listaPersona } = useSWRImmutable('/api/entidad/persona', fetcherPersona);
-  const { data: listaDoc } = useSWRImmutable('/api/documento/documento/v_documento', fetcherVDocumento);
+  const { data: listaSol } = useSWRImmutable('/api/documento/solicitud/v_solicitud', fetcherVSolicitud);
   const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
   const { data: listaEmpleado } = useSWRImmutable('/api/entidad/empleado', fetcherEmpleado);
   const [ID, setID] = useState(-1)
-  const [lista, setLista] = useState<DocumentoModel[]>([]);
+  const [lista, setLista] = useState<SolicitudModel[]>([]);
   const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
   const [isLoading, setIsLoading] = useState(true);
-  const [filtro, setFiltro] = useState<TypeFiltro>({ numero_documento: "", id_persona: 0, fecha_documento: "", id_tipo_documento: [] });
-  const [listaFiltro, setListaFiltro] = useState<DocumentoModel[]>([]);
+  const [filtro, setFiltro] = useState<TypeFiltro>({ numero_documento: "", id_persona: 0, fecha_documento: "", id_tipo_documento: [], id_empresa: 0 });
+  const [listaFiltro, setListaFiltro] = useState<SolicitudModel[]>([]);
   const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
   const [esModalOpen, setEsModalOpen] = useState(false)
   const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 1 })
@@ -64,7 +64,7 @@ export default function AxPageDocumento() {
       const response = await fetch(`/api/documento/documento?inicio=${paginacion.inicio}&cantidad=${paginacion.cantidad}`, {
         method: "GET"
       })
-      const result: DocumentoModel[] = await response.json()
+      const result: SolicitudModel[] = await response.json()
       setLista([...lista, ...result]);
       setIsLoading(false)
     }
@@ -95,18 +95,17 @@ export default function AxPageDocumento() {
   }
 
   function FnFiltrarLista() {
-    let filtrado =listaDoc && listaDoc.filter((doc:any) =>
-      (filtro.id_tipo_documento.indexOf(doc.id_tipo_documento) != -1) &&
-      (filtro.id_persona ? doc.id_persona == filtro.id_persona : true) &&
-      (filtro.numero_documento ? doc.numero_documento == filtro.numero_documento : true) &&
-      (filtro.fecha_documento ? doc.fecha_documento == filtro.fecha_documento : true)
+    let filtrado = listaSol && listaSol.filter((sol: any) =>
+      (filtro.id_persona ? sol.id_persona == filtro.id_persona : true) &&
+      (filtro.id_empresa ? sol.id_empresa == filtro.id_empresa : true) &&
+      (filtro.numero_documento ? sol.numero_documento == filtro.numero_documento : true)
     )
     console.log(filtrado);
     setListaFiltro(filtrado);
   }
 
   function FnLoadMas() {
-    setPaginacion({ inicio: listaDoc.length, cantidad: paginacion.cantidad });
+    setPaginacion({ inicio: listaSol.length, cantidad: paginacion.cantidad });
   }
 
   return (
@@ -124,16 +123,20 @@ export default function AxPageDocumento() {
                   Filtrar Por:
                 </dd>
                 <div className="mt-2 grid ml-14 grid-cols-1   gap-y-6 gap-x-4 md:grid-cols-6">
+                  <div className="md:col-span-1">
+                    <AxSelectFiltro name={"id_persona" && "id_empresa"} value={filtro.id_persona} filtro={true} label="Persona" handleChange={handleChange}>
+                      {listaPersona && listaPersona.map((ciudadano: any) =>
+                        <option key={ciudadano.id} value={ciudadano.id}>{ciudadano.nombre}</option>)}
+                    </AxSelectFiltro>
+                  </div>
                   <div className="md:col-span-2">
-                    <AxSelectFiltro name="id_persona" value={filtro.id_persona} filtro={true} label="Ciudadanos" handleChange={handleChange}>
-                      {listaPersona && listaPersona.map((ciudadano: any) => <option key={ciudadano.id} value={ciudadano.id}>{ciudadano.nombre}</option>)}
+                    <AxSelectFiltro name={"id_persona" && "id_empresa"} value={filtro.id_empresa} filtro={true} label="Empresa" handleChange={handleChange}>
+                      {listaEmpresa && listaEmpresa.map((empresa: any) =>
+                        <option key={empresa.id} value={empresa.id}>{empresa.razon_social}</option>)}
                     </AxSelectFiltro>
                   </div>
                   <div className="md:col-span-1">
                     <AxInput name="numero_documento" handleChange={handleChange} label="Nro Documento" type="text" filtro={true} />
-                  </div>
-                  <div className="md:col-span-1">
-                    <AxInput name="fecha_documento" label="Fec Documento" handleChange={handleChange} filtro={true} type="date" />
                   </div>
                   <div className="md:col-span-2">
                     <button type="button"
@@ -162,41 +165,11 @@ export default function AxPageDocumento() {
           </div>
         </div>
         <div className="mt-4">
-          <div className="max-w-6xl mx-16 px-2 sm:px-2 ">
-            <h2 className="text-lg leading-6 font-medium text-gray-900">Documentos</h2>
-            <div className="mt-2 grid  gap-5 grid-cols-1 sm:grid-cols-2  md:grid-cols-3  lg:grid-cols-5">
-              {/* Card */}
-              {(listaTipoDocumento && listaTipoDocumento.map((item: any) =>
-              (resultado.map(s => s.id == item.id &&
-                < ul key={item.id} className="bg-indigo-400 overflow-hidden shadow rounded-lg hover:bg-indigo-700"
-                  onClick={() => {
-                    handleChange({ target: { name: "FiltroGrupo", value: item.id } });
-                    FnFiltrarLista();
-                  }}>
-
-                  <div className={(filtro.id_tipo_documento.indexOf(item.id) != -1 ? "bg-indigo-600" : "bg-indigo-400") + " p-2 bg-indigo-100"}>
-                    <div className="flex items-center">
-                      <div className="ml-2 w-10 flex-1">
-                        <dl>
-                          <dt className="text-sm font-medium text-white truncate uppercase">{item.nombre}</dt>
-                          {/* <dd>
-                            <div className="text-sm font-medium text-indigo-100">{item.Descripcion}</div>
-                          </dd> */}
-                        </dl>
-                      </div>
-                    </div>
-                  </div>
-                </ul>
-              )))
-              )
-              }
-            </div>
-          </div>
           <div className="sm:flex sm:items-center px-16 mt-4">
             <div className="sm:flex-auto">
-              <h1 className="text-xl font-semibold text-gray-900">Lista </h1>
+              <h1 className="text-xl font-semibold text-gray-900">Lista De</h1>
               <p className="mt-2 text-sm text-gray-700">
-                Documentos registrados
+                Solicitudes
               </p>
             </div>
             <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none ">
@@ -209,75 +182,78 @@ export default function AxPageDocumento() {
             <div className="mx-auto px-14 sm:px-16 lg:px-8">
               <div className="flex flex-col mt-2">
                 <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg ">
-                  {filtro.id_tipo_documento.length == 0 ?
-                    <dd className="mt-10 gap-2 p-10 flex items-center text-sm text-gray-500 font-medium sm:mr-6 sm:mt-0 capitalize">
-                      <ExclamationCircleIcon
+                  {/* {filtro.id_tipo_documento.length == 0 ?
+                    // <dd className="mt-10 gap-2 p-10 flex items-center text-sm text-gray-500 font-medium sm:mr-6 sm:mt-0 capitalize">
+                    //   <ExclamationCircleIcon
 
-                        className="flex-shrink-0 mr-0 h-5 w-5 text-orange-500"
-                        aria-hidden="true"
-                      />
-                      ¡Seleccionar un Documento!
-                    </dd> :
-                    <table className="flex flex-col w-full h-[calc(100vh-23rem)] divide-gray-300">
-                      <thead className='bg-indigo-200'>
-                        <tr className='table table-fixed w-full divide-x divide-y divide-gray-200'>
-                          <th scope="col" className="relative w-16 px-3">
-                            ✔
+                    //     className="flex-shrink-0 mr-0 h-5 w-5 text-orange-500"
+                    //     aria-hidden="true"
+                    //   />
+                    //   ¡Seleccionar un Documento!
+                    // </dd> : */}
+                  <table className="flex flex-col w-full h-[calc(100vh-23rem)] divide-gray-300">
+                    <thead className='bg-indigo-200'>
+                      <tr className='table table-fixed w-full divide-x divide-y divide-gray-200'>
+                        <th scope="col" className="relative w-16 px-3">
+                          ✔
+                        </th>
+                        {campos.map((item) => (
+                          <th key={item.name} className="px-1 py-3 text-center text-sm text-gray-900">
+                            {item.name}
                           </th>
-                          {campos.map((item) => (
-                            <th key={item.name} className="px-1 py-3 text-center text-sm text-gray-900">
-                              {item.name}
-                            </th>
-                          ))}
+                        ))}
+                      </tr>
+                    </thead>
+
+                    <tbody className="divide-x divide-y overflow-x-auto overflow-y-auto divide-gray-200 bg-white">
+                      {(listaSol && listaSol.map((item: any) => (
+                        <tr key={item.id} className={item.id == ID ? "bg-indigo-100 table table-fixed w-full" : "bg-white table table-fixed w-full"}>
+                          <td className="w-16 text-center whitespace-nowrap px-3 py-3 text-sm text-gray-500">
+                            <input
+                              onChange={(event) => {
+                                if (!event.target.checked) setID(-1);
+                                else setID(item.id);
+                              }}
+                              checked={item.id == ID}
+                              type="checkbox"
+                              className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                            />
+                          </td>
+                          <td className="px-1 py-3 whitespace-nowrap text-sm text-gray-500 truncate">
+                            {item.nombre_documento}
+                          </td>
+                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                            {item.numero_documento}
+                          </td>
+                          <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
+                            {item.asunto}
+                          </td>
+                          <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
+                            {item.fecha_inicio}
+                          </td>
+                          <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
+                            {item.fecha_plazo}
+                          </td>
+                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                            {item.motivo}
+                          </td>
+                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                            {item.persona_nombre}
+                          </td>
+                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                            {item.empleado_nombre}
+                          </td>
+                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                            {item.empleado_nombre}
+                          </td>
+                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                          <AxBtnAgregar setEstadoEdicion={setEstadoEdicion} setID={setID} setTipoEdicion={setTipoEdicion}></AxBtnAgregar>
+                          </td>                         
                         </tr>
-                      </thead>
-
-                      <tbody className="divide-x divide-y overflow-x-auto overflow-y-auto divide-gray-200 bg-white">
-                        {(listaFiltro && listaFiltro.map((item:any) => (
-                          <tr key={item.id} className={item.id == ID ? "bg-indigo-100 table table-fixed w-full" : "bg-white table table-fixed w-full"}>
-                            <td className="w-16 text-center whitespace-nowrap px-3 py-3 text-sm text-gray-500">
-                              <input
-                                onChange={(event) => {
-                                  if (!event.target.checked) setID(-1);
-                                  else setID(item.id);
-                                }}
-                                checked={item.id == ID}
-                                type="checkbox"
-                                className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                              />
-                            </td>
-                            <td className="px-1 py-3 whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.tipo_documento_nombre}
-                            </td>
-                            <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.numero_documento}
-                            </td>
-                            <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.fecha_documento}
-                            </td>
-                            <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.empleado_nombre}
-                            </td>
-                            <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.persona_nombre}
-                            </td>
-                            <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.observacion}
-                            </td>
-                            <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.fecha_creacion}
-                            </td>
-                            <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.es_anulado == true ?
-
-                                <BanIcon className='h-6 w-6    text-red-400'></BanIcon> :
-                                <BadgeCheckIcon className='h-6 w-6  text-green-400 '></BadgeCheckIcon>
-                              }
-                            </td>
-                          </tr>
-                        )))}
-                      </tbody>
-                    </table>}
+                      )))}
+                    </tbody>
+                  </table>
+                  {/* } */}
                 </div>
               </div>
             </div>
@@ -329,7 +305,7 @@ export default function AxPageDocumento() {
                       </div>
                     </div>
                   </div>
-                  <AxDocumento ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxDocumento>
+                  <AxSolicitud ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSolicitud>
                 </Dialog.Panel>
               </Transition.Child>
             </div>

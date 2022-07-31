@@ -10,6 +10,8 @@ import RequisitoModel from 'models/requisito_model'
 // import db from "lib/firebase-config";
 // db.app
 export const getServerSideProps = withPageAuthRequired();
+import supabase from "lib/supabase_config";
+
 
 const formReducer = (state: RequisitoModel, event: any): RequisitoModel => {
     if (event.FORM_DATA) {
@@ -27,6 +29,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
     const [isLoading, setIsLoading] = useState(true);
     const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
     const [open, setOpen] = useState(false)
+   
 
     useEffect(() => {
         setIsLoading(true)
@@ -82,6 +85,8 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
         setImagen(e.target.files[0]);
 
     }
+
+   
     // const uploadimage = () => {
     //     if (imagenupload == null) return;
     //     const imageRef = ref(storage, `archivorequisito/${setImagen.name + uuid.v4()}`)
@@ -207,7 +212,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                     tipoEdicion != EnumTipoEdicion.VISUALIZAR &&
                                     <div className="pt-5">
                                         <div className="flex justify-end">
-                                            <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID}/>
+                                            <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID} />
                                             <AxSubmit loading={isSubmitting} />
                                         </div>
                                     </div>

@@ -62,22 +62,22 @@ export default function AxBodyNavegacion({ clase }: any) {
                                 </Disclosure.Button>
                                 <Disclosure.Panel className="space-y-1">
                                     {item.children.map((subItem) => (
-                                        item.name == "Tramites" ?
-                                            (listaGrupo && listaGrupo.map((grupoItem:any) => (
-                                                <Link key={grupoItem.nombre} href='/tramite'>
+                                        // item.name == "Tramites" ?
+                                        //     (listaGrupo && listaGrupo.map((grupoItem:any) => (
+                                        //         <Link key={grupoItem.nombre} href='/tramite'>
                                                     
-                                                    <Disclosure.Button
-                                                        key={grupoItem.nombre}
-                                                        as="a"
-                                                        href='/tramite'
-                                                        className="group w-full flex items-center pl-11 pr-2 py-2 text-sm font-medium text-white rounded-md hover:bg-indigo-500"
-                                                    >
-                                                        <subItem.icon className="mr-4 flex-shrink-0 h-5 w-5 text-indigo-200" aria-hidden="true"></subItem.icon>
-                                                        {grupoItem.nombre}
-                                                    </Disclosure.Button>
-                                                </Link>
-                                            )))
-                                            :
+                                        //             <Disclosure.Button
+                                        //                 key={grupoItem.nombre}
+                                        //                 as="a"
+                                        //                 href='/tramite'
+                                        //                 className="group w-full flex items-center pl-11 pr-2 py-2 text-sm font-medium text-white rounded-md hover:bg-indigo-500"
+                                        //             >
+                                        //                 <subItem.icon className="mr-4 flex-shrink-0 h-5 w-5 text-indigo-200" aria-hidden="true"></subItem.icon>
+                                        //                 {grupoItem.nombre}
+                                        //             </Disclosure.Button>
+                                        //         </Link>
+                                        //     )))
+                                        //     :
                                             <Link key={subItem.name} href={subItem.href}>
                                                 <Disclosure.Button
                                                     key={subItem.name}

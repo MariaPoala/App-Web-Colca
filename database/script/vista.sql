@@ -20,3 +20,33 @@ inner join tipo_documento as tipo on doc.id_tipo_documento=tipo.id
 inner join empleado as empleado on doc.id_empleado=empleado.id
 inner join empresa as empresa on doc.id_empresa=empresa.id
 inner join persona as persona on doc.id_persona=persona.id
+
+
+-- solicitud
+
+create view v_solicitud
+as
+select 
+sol.id,
+to_char(sol.fecha_creacion, 'DD/MM/YYYY') as fecha_creacion,
+to_char(sol.fecha_edicion, 'DD/MM/YYYY') as fecha_edicion,
+sol.asunto,
+sol.numero_documento,
+to_char(sol.fecha_inicio, 'DD/MM/YYYY') as fecha_inicio,
+to_char(sol.fecha_plazo, 'DD/MM/YYYY') as fecha_plazo,
+sol.motivo,
+sol.tipo_entidad,
+sol.id_tipo_documento,tipo.nombre as tipo_documento_nombre,
+sol.id_documento,doc.numero_documento as nombre_documento,
+sol.id_empleado, empleado.nombre as empleado_nombre,
+area.nombre as nombre_area,
+-- sol.id_empresa, empresa.razon_social as razon_social
+sol.id_persona,persona.nombre as persona_nombre
+
+from solicitud as sol
+inner join tipo_documento as tipo on sol.id_tipo_documento=tipo.id
+inner join documento as doc on sol.id_documento=doc.id
+inner join empleado as empleado on sol.id_empleado=empleado.id  
+inner join area as area on empleado.id_area=area.id
+-- inner join empresa as empresa on sol.id_empresa=empresa.id
+inner join persona as persona on sol.id_persona=persona.id

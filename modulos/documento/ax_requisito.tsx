@@ -83,16 +83,19 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
     //OBTENIENDO LA IMAGEN
     const changeImagen = (e: any) => {
         setImagen(e.target.files[0]);
-
+        // const { data, error } = await supabase.storage
+        // .from('archivos')
+        // .upload('public/'+ setImagen.name, setImagen)
+    return;
     }
 
   
-    const uploadimage = () => {
-        const { data, error } = await supabase.storage
-            .from('archivos')
-            .upload('public/'+ setImagen.name, setImagen)
-        return;
-    }
+    // const uploadimage = () => {
+    //     const { data, error } = await supabase.storage
+    //         .from('archivos')
+    //         .upload('public/'+ setImagen.name, setImagen)
+    //     return;
+    // }
 
     // useEffect(() => {
     //     listAll( listaimage).then((response) => {
