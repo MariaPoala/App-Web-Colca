@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
 import { CheckCircleIcon, BadgeCheckIcon, RefreshIcon, BanIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
-import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar } from 'components/form';
+import { AxInput, AxSelectFiltro, AxBtnEditarLista, AxPagination, AxBtnAgregar } from 'components/form';
 import { EnumEstadoEdicion, EnumTipoEdicion } from 'lib/edicion';
 import TipoDocumentoModel from 'models/tipo_documento_model'
 import EmpleadoModel from 'models/empleado_model'
@@ -11,6 +11,7 @@ import PersonaModel from 'models/persona_model'
 import EmpresaModel from 'models/empresa_model'
 import DocumentoModel from 'models/documento_model'
 import AxDocumento from 'modulos/documento/ax_documento';
+import ConsideracionModel from 'models/consideracion_model';
 
 const fetcherTipoDocumento = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
@@ -52,7 +53,7 @@ export default function AxPageDocumento() {
   const [listaFiltro, setListaFiltro] = useState<DocumentoModel[]>([]);
   const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
   const [esModalOpen, setEsModalOpen] = useState(false)
-  const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 1 })
+  const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 10 })
 
   useEffect(() => {
     if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
@@ -62,7 +63,7 @@ export default function AxPageDocumento() {
         method: "GET"
       })
       const result: DocumentoModel[] = await response.json()
-      setLista([...lista, ...result]);
+      setLista(result);
       setIsLoading(false)
     }
     fetchData().catch(console.error);
@@ -103,7 +104,8 @@ export default function AxPageDocumento() {
   }
 
   function FnLoadMas() {
-    setPaginacion({ inicio: lista.length, cantidad: paginacion.cantidad });
+    // setPaginacion({ inicio: lista.length, cantidad: paginacion.cantidad });
+    setPaginacion({ inicio: 0, cantidad: paginacion.cantidad + 10 });
   }
 
   return (
@@ -197,9 +199,9 @@ export default function AxPageDocumento() {
               </p>
             </div>
             <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none ">
-              <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}></AxBtnEditar>
+              <AxBtnEditarLista estadoEdicion={estadoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
               {/* {tipoEdicion==EnumTipoEdicion.EDITAR && setabrir(true)} */}
-              <AxBtnAgregar setEstadoEdicion={setEstadoEdicion} setID={setID} setTipoEdicion={setTipoEdicion}></AxBtnAgregar>
+              <AxBtnAgregar setEstadoEdicion={setEstadoEdicion} setID={setID} setTipoEdicion={setTipoEdicion} />
             </div>
           </div>
           <div className="hidden sm:block">
@@ -235,8 +237,14 @@ export default function AxPageDocumento() {
                             <td className="w-16 text-center whitespace-nowrap px-3 py-3 text-sm text-gray-500">
                               <input
                                 onChange={(event) => {
-                                  if (!event.target.checked) setID(-1);
-                                  else setID(item.id);
+                                  if (!event.target.checked) {
+                                    setID(-1);
+                                    setEstadoEdicion(EnumEstadoEdicion.CANCELADO)
+                                  }
+                                  else {
+                                    setID(item.id);
+                                    setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO)
+                                  }
                                 }}
                                 checked={item.id == ID}
                                 type="checkbox"

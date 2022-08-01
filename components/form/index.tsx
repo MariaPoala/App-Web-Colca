@@ -7,6 +7,7 @@ import AxSubmit from 'components/form/ax_submit'
 import AxBtnSubmitEliminar from 'components/form/modal/ax_btn_submit_eliminar'
 import AxBtnEliminar from 'components/form/ax_btn_eliminar'
 import AxBtnEditar from 'components/form/ax_btn_editar'
+import AxBtnEditarLista from 'components/form/ax_btn_editar_lista'
 import AxBtnModalCancelar from 'components/form/modal/ax_btn_modal_cancelar'
 import AxBtnCancelar from 'components/form/ax_btn_cancelar'
 import AxModalEliminar from 'components/form/modal/ax_modal_eliminar'
@@ -17,7 +18,7 @@ export {
     AxCheck, AxRadio,
     AxInput,
     AxSelect, AxSelectFiltro, AxSelectMultiple,
-    AxSubmit, AxBtnSubmitEliminar, AxBtnEliminar, AxBtnEditar,
+    AxSubmit, AxBtnSubmitEliminar, AxBtnEliminar, AxBtnEditar, AxBtnEditarLista,
     AxBtnModalCancelar, AxBtnCancelar, AxModalEliminar, AxBtnAgregar,
     AxPagination
 }
