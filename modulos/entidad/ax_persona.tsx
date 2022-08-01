@@ -10,6 +10,8 @@ import { ChevronLeftIcon } from "@heroicons/react/outline";
 export const getServerSideProps = withPageAuthRequired();
 const fetcherDistrito = (url: string): Promise<any> =>
     fetch(url, { method: "GET" }).then(r => r.json());
+const fetcherAnexo = (url: string): Promise<any> =>
+    fetch(url, { method: "GET" }).then(r => r.json());
 
 const formReducer = (state: PersonaModel, event: any): PersonaModel => {
     if (event.FORM_DATA) {
@@ -23,6 +25,7 @@ const formReducer = (state: PersonaModel, event: any): PersonaModel => {
 
 export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
     const { data: listaDistrito } = useSWRImmutable('/api/entidad/distrito', fetcherDistrito);
+    const { data: listaAnexo } = useSWRImmutable('/api/entidad/anexo', fetcherAnexo);
     const [formData, setFormData] = useReducer(formReducer, new PersonaModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -148,9 +151,14 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
                                             <div className="md:col-span-2">
                                                 <AxInput name="numero_documento" label="DNI" value={formData.numero_documento} handleChange={handleChange} />
                                             </div>
-                                            <div className="md:col-span-3">
+                                            <div className="md:col-span-2">
                                                 <AxSelect name="id_distrito" value={formData.id_distrito} label="Distrito" handleChange={handleChange}>
                                                     {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.id} value={distrito.id}>{distrito.nombre}</option>)}
+                                                </AxSelect>
+                                            </div>
+                                            <div className="md:col-span-2">
+                                                <AxSelect name="id_anexo" value={formData.id_anexo} label="Anexo" handleChange={handleChange}>
+                                                    {listaAnexo && listaAnexo.map((anexo: any) => <option key={anexo.id} value={anexo.id}>{anexo.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
@@ -171,10 +179,23 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
                                             <div className="md:col-span-2">
                                                 <AxInput name="celular" label="Nro Celular" value={formData.celular} handleChange={handleChange} />
                                             </div>
-                                            {/* <div className="md:col-span-2">
-                                                <AxInput name="Celular" label="Nro Celular" value={formData.Celular} handleChange={handleChange}  setIsSubmitting={setIsSubmitting}/>
-                                            </div> */}
+                                            <div className="pt-8">
+                                            <div>
+                                                <h3 className="text-lg leading-6 font-medium text-gray-900">Condiciones</h3>
+                                            </div>
+                                            <div className="mt-6">
+                                                <fieldset>
+                                                    <div className="text-base font-medium text-gray-900" aria-hidden="true">
+                                                        Estado
+                                                    </div>
+                                                    <div className="mt-4 space-y-4">
+                                                        <AxCheck id="estado" name="estado" value={formData.estado} label="¿Es Activo?" handleChange={handleChange} />
+                                                    </div>
+                                                </fieldset>
+                                            </div>
                                         </div>
+                                        </div>
+                                        
                                     </div>
                                 </fieldset>
                                 {

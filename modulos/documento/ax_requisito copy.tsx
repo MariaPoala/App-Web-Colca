@@ -10,8 +10,6 @@ import RequisitoModel from 'models/requisito_model'
 // import db from "lib/firebase-config";
 // db.app
 export const getServerSideProps = withPageAuthRequired();
-import supabase from "lib/supabase_config";
-
 
 const formReducer = (state: RequisitoModel, event: any): RequisitoModel => {
     if (event.FORM_DATA) {
@@ -29,7 +27,6 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
     const [isLoading, setIsLoading] = useState(true);
     const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
     const [open, setOpen] = useState(false)
-   
 
     useEffect(() => {
         setIsLoading(true)
@@ -85,14 +82,19 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
         setImagen(e.target.files[0]);
 
     }
-
-  
-    const uploadimage = () => {
-        const { data, error } = await supabase.storage
-            .from('archivos')
-            .upload('public/'+ setImagen.name, setImagen)
-        return;
-    }
+    // const uploadimage = () => {
+    //     if (imagenupload == null) return;
+    //     const imageRef = ref(storage, `archivorequisito/${setImagen.name + uuid.v4()}`)
+    //     uploadBytes(imageRef, imagenupload).then((snapshot) => {
+    //         alert('Uploaded a blob or file!');
+    //         getDownloadURL(snapshot.ref).then((url) => {
+    //             setListaimage((prev) => [...prev, url]);
+    //             console.log(url)
+    //             formData.url_imagen = (url)
+    //         })
+    //     });
+    //     return;
+    // }
 
     // useEffect(() => {
     //     listAll( listaimage).then((response) => {
@@ -205,7 +207,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                     tipoEdicion != EnumTipoEdicion.VISUALIZAR &&
                                     <div className="pt-5">
                                         <div className="flex justify-end">
-                                            <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID} />
+                                            <AxBtnCancelar tipoEdicion={tipoEdicion} setEstadoEdicion={setEstadoEdicion} setTipoEdicion={setTipoEdicion} setID={setID}/>
                                             <AxSubmit loading={isSubmitting} />
                                         </div>
                                     </div>

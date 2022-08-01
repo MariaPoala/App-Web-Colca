@@ -51,10 +51,9 @@ const navigation = [
     },
     {
         name: 'Tramites', href: '', icon: DesktopComputerIcon, current: false,
-       
         children: [
             
-            { name: 'Solicitud de Documento', href: '/documento/solicitud-documento', icon: PaperClipIcon, current: false },
+            {    name: '' , href: '/documento/solicitud_doc', icon: PaperClipIcon, current: false },
         ],
     },
     {
@@ -79,6 +78,3 @@ const secondaryNavigation = [
 
 export { navigation, secondaryNavigation }
 
-function useSWRImmutable(arg0: string, fetcherEmpleado: (url: string) => Promise<any>): { data: any; } {
-    throw new Error('Function not implemented.');
-}
