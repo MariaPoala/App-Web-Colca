@@ -7,7 +7,7 @@ export default async function FnApiData<T>(table: string, method: string, body: 
         if (method == "GET") {
             let dataRespuesta: any = [];
             let errorRespuesta: any = null;
-            if (query) {
+            if (query && query.inicio) {
                 const { inicio, cantidad } = query;
                 const { data, error } = await supabase.from<T>(table).select().range(inicio, cantidad);
                 dataRespuesta = data;

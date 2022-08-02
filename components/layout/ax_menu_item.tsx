@@ -53,7 +53,7 @@ const navigation = [
         name: 'Tramites', href: '', icon: DesktopComputerIcon, current: false,
         children: [
             
-            {    name: '' , href: '/documento/solicitud_doc', icon: PaperClipIcon, current: false },
+            {    name: 'Solicitud' , href: '/documento/solicitud', icon: PaperClipIcon, current: false },
         ],
     },
     {
