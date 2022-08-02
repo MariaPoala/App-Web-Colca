@@ -8,6 +8,7 @@ class SolicitudModel {
     fecha_inicio: string;
     fecha_plazo: string;
     motivo: string;
+    estado: string;
     tipo_entidad: string;
     i_total: number;
     id_tipo_documento: number;
@@ -26,6 +27,7 @@ class SolicitudModel {
         this.fecha_creacion = dayjs().format("YYYY-MM-DD")
         this.fecha_plazo = "";
         this.motivo = "";
+        this.estado = "Registrado";
         this.tipo_entidad = "Natural";
         this.i_total = 0;
         this.id_tipo_documento = 0;

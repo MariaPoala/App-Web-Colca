@@ -196,7 +196,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                                 <AxInput name="i_total" label="Total a Pagar" value={formData.i_total} handleChange={handleChange} disabled={true} />
                                             </div>
 
-                                            <div className="md:col-span-4">
+                                            <div className="md:col-span-2">
                                                 <AxSelect name="id_empleado" value={formData.id_empleado} label="Empleado" handleChange={handleChange} disabled={true}>
                                                     {listaEmpleado && listaEmpleado.map((item: any) => <option key={item.id} value={item.id}>{item.nombre_apellido}</option>)}
                                                 </AxSelect>
@@ -213,6 +213,12 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                             </div> */}
                                             <div className="md:col-span-2">
                                                 <AxInput name="fecha_creacion" label="Fecha Registro" value={formData.fecha_creacion} handleChange={handleChange} disabled type="date" />
+                                            </div>
+                                            <div className="md:col-span-2">
+                                                <AxSelect name="estado" value={formData.estado} label="Estado" handleChange={handleChange}>
+                                                    <option key="Registrado" value="Registrado">Registrado</option>
+                                                    <option key="Validado" value="Validado">Validado</option>
+                                                </AxSelect>
                                             </div>
                                             {/* <div className="md:col-span-2">
                                                 <AxInput name="fecha_edicion" label="Fecha Edición" value={formData.fecha_edicion} handleChange={handleChange} disabled type="date" />

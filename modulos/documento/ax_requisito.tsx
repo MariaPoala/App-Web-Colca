@@ -4,6 +4,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { AxInput, AxModalEliminar, AxSubmit, AxBtnEliminar, AxBtnEditar, AxBtnCancelar } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
 import { ChevronLeftIcon } from "@heroicons/react/outline"
+
 import * as uuid from 'uuid'
 // import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
 import RequisitoModel from 'models/requisito_model'
@@ -29,7 +30,8 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
     const [isLoading, setIsLoading] = useState(true);
     const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
     const [open, setOpen] = useState(false)
-   
+    const [uploading, setUploading] = useState(false)
+    const [avatarUrl, setAvatarUrl] = useState(null)
 
     useEffect(() => {
         setIsLoading(true)
@@ -86,10 +88,10 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
         // const { data, error } = await supabase.storage
         // .from('archivos')
         // .upload('public/'+ setImagen.name, setImagen)
-    return;
+        return;
     }
 
-  
+
     // const uploadimage = () => {
     //     const { data, error } = await supabase.storage
     //         .from('archivos')
@@ -107,7 +109,40 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
     //         console.log(response)
     //     })
     // }, [imagenupload])
-    // // subir archivo
+    //
+    async function uploadAvatar(event: any) {
+        try {
+
+            setUploading(true)
+
+            if (!event.target.files || event.target.files.length === 0) {
+                throw new Error('You must select an image to upload.')
+            }
+
+            const file = event.target.files[0]
+            const fileExt = file.name.split('.').pop()
+            const fileName = `${Math.random()}.${fileExt}`
+            const filePath = `${fileName}`
+         
+            let { error: uploadError } = await supabase.storage
+                .from('archivo-requisito')
+                .upload(filePath, file)
+            console.log(fileName)
+            if (uploadError) {
+                console.log(uploadError)
+                throw uploadError
+            }
+           
+            // onUpload(filePath)
+
+
+        } catch (error: any) {
+            alert(error.message)
+        } finally {
+            setUploading(false)
+        }
+    }
+
     return (
         <>
             <nav className="flex items-start pb-1 sm:hidden" aria-label="Breadcrumb">
@@ -170,27 +205,33 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                         Adjuntar formato de Ejemplo
                                     </label>
 
-                                    <div className="mt-1 sm:mt-0 sm:col-span-2">
-                                        <div className="max-w-lg flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                            <div className="space-y-1 text-center">
-                                                <img className="mx-auto h-12 w-12 text-gray-400" src="/upload-file.svg" alt="Easywire logo" />
-                                                <div className="flex   text-sm text-center text-gray-600">
-                                                    <label
-                                                        htmlFor="UrlImgEjemplo"
-                                                        className="relative ml-7 cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
-                                                    >
-
-                                                        <input className="bg-indigo-200" type="file" name="image" onChange={changeImagen} />
-                                                    </label>
-                                                </div>
-                                                <p className="text-xs text-gray-500">Word, Pdf, Img hasta 10MB</p>
-                                                {/* <button type="button" className="bg-indigo-300 border-2 rounded-md text-white" onClick={uploadimage} > GUARDAR IMAGEN </button> */}
-                                                <div className="visibility: hidden">
-                                                    <AxInput name="url_imagen" label="Url Image" value={formData.url_imagen ? formData.url_imagen : ""} handleChange={handleChange} />
-                                                </div>
-                                            </div>
+                                    <div>
+                                        {avatarUrl ? (
+                                            <img
+                                                src={avatarUrl}
+                                                alt="archivo-requisito"
+                                                className="archivo-requisito image"
+                                                style={{ height: 10, width: 10 }}
+                                            />
+                                        ) : (
+                                            <div className="archivo-requisito no-image" style={{ height: 10, width: 10 }} />
+                                        )}
+                                        <div style={{ width: 10 }}>
+                                            <label className="button primary block" htmlFor="single">
+                                                {uploading ? 'Uploading ...' : 'Upload'}
+                                            </label>
+                                            <input
+                                                style={{
+                                                    visibility: 'hidden',
+                                                    position: 'absolute',
+                                                }}
+                                                type="file"
+                                                id="single"
+                                                accept="image/*"
+                                                onChange={uploadAvatar}
+                                                disabled={uploading}
+                                            />
                                         </div>
-
                                     </div>
                                 </div>
                                 <div className="bg-white">

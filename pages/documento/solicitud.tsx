@@ -1,7 +1,7 @@
 
 import { Fragment, useEffect, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
-import { CheckCircleIcon, BadgeCheckIcon, RefreshIcon, BanIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
+import { CheckCircleIcon, BadgeCheckIcon, RefreshIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
 import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar, AxBtnEditarLista } from 'components/form';
 import { EnumEstadoEdicion, EnumTipoEdicion } from 'lib/edicion';
@@ -21,16 +21,16 @@ const fetcherEmpleado = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
 
 const campos = [
-  { name: 'Documento' },
+  { name: 'Tipo Documento' },
   { name: 'N° Documento' },
-  { name: 'Asunto' },
+  { name: 'Entidad' },
+  { name: 'Documento' },
+  { name: 'Motivo' },
+  { name: 'I Total' },
+  { name: 'Empleado' },
   { name: 'Fecha Inicio' },
   { name: 'Fecha Plazo' },
-  { name: 'Motivo' },
-  { name: 'Ciudadano' },
-  { name: 'Empleado' },
   { name: 'Estado' },
-  { name: 'Seguimiento' }
 ]
 
 type TypeFiltro = {
@@ -218,13 +218,25 @@ export default function AxPageDocumento() {
                             />
                           </td>
                           <td className="px-1 py-3 whitespace-nowrap text-sm text-gray-500 truncate">
-                            {item.nombre_documento}
+                            {item.tipo_documento_nombre}
                           </td>
                           <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                             {item.numero_documento}
                           </td>
+                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                            {item.persona_nombre}
+                          </td>
+                          <td className="px-1 py-3 whitespace-nowrap text-sm text-gray-500 truncate">
+                            {item.nombre_documento}
+                          </td>
+                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                            {item.motivo}
+                          </td>
                           <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
-                            {item.asunto}
+                            {item.i_total}
+                          </td>
+                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                            {item.empleado_nombre}
                           </td>
                           <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
                             {item.fecha_inicio}
@@ -233,19 +245,17 @@ export default function AxPageDocumento() {
                             {item.fecha_plazo}
                           </td>
                           <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                            {item.motivo}
-                          </td>
-                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                            {item.persona_nombre}
-                          </td>
-                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                            {item.empleado_nombre}
-                          </td>
-                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                            {item.empleado_nombre}
-                          </td>
-                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                            <AxBtnAgregar setEstadoEdicion={setEstadoEdicion} setID={setID} setTipoEdicion={setTipoEdicion}></AxBtnAgregar>
+                            {/* {item.estado} */}
+                            <button type="button"
+                              disabled={tipoEdicion == EnumTipoEdicion.EDITAR || tipoEdicion == EnumTipoEdicion.AGREGAR}
+                              onClick={() => {
+
+                              }}
+                              className="ml-3 inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500     disabled:bg-indigo-300"
+                            >
+                              <RefreshIcon className='h-4 w-4 mr-2'></RefreshIcon>
+                              Actualizar
+                            </button>
                           </td>
                         </tr>
                       )))}
