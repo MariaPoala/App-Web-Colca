@@ -1,3 +1,5 @@
+let yourDate = new Date()
+
 class SolicitudModel {
     id: number;
     fecha_creacion?: string;
@@ -19,7 +21,7 @@ class SolicitudModel {
         this.id = 0;
         this.asunto = "";
         this.numero_documento = "";
-        this.fecha_inicio = "";
+        this.fecha_inicio = yourDate.toISOString().split('T')[0];
         this.fecha_plazo = "";
         this.motivo = "";
         this.tipo_entidad = "PERSONA";

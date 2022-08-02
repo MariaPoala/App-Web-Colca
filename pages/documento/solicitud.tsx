@@ -185,7 +185,6 @@ export default function AxPageDocumento() {
                   {/* {filtro.id_tipo_documento.length == 0 ?
                     // <dd className="mt-10 gap-2 p-10 flex items-center text-sm text-gray-500 font-medium sm:mr-6 sm:mt-0 capitalize">
                     //   <ExclamationCircleIcon
-
                     //     className="flex-shrink-0 mr-0 h-5 w-5 text-orange-500"
                     //     aria-hidden="true"
                     //   />
@@ -247,8 +246,8 @@ export default function AxPageDocumento() {
                             {item.empleado_nombre}
                           </td>
                           <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                          <AxBtnAgregar setEstadoEdicion={setEstadoEdicion} setID={setID} setTipoEdicion={setTipoEdicion}></AxBtnAgregar>
-                          </td>                         
+                            <AxBtnAgregar setEstadoEdicion={setEstadoEdicion} setID={setID} setTipoEdicion={setTipoEdicion}></AxBtnAgregar>
+                          </td>
                         </tr>
                       )))}
                     </tbody>
@@ -292,7 +291,7 @@ export default function AxPageDocumento() {
                 <Dialog.Panel className="relative bg-white  rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:p-6 ">
                   <div className="px-4 sm:px-6">
                     <div className="flex items-start justify-between">
-                      <Dialog.Title className="text-lg font-medium text-gray-900"> Registro de Documento [{tipoEdicion}]</Dialog.Title>
+                      <Dialog.Title className="text-lg font-medium text-gray-900"> Registro de Solicitud [{tipoEdicion}]</Dialog.Title>
                       <div className="ml-3 flex h-7 items-center">
                         <button
                           type="button"

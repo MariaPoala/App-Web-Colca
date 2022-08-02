@@ -21,7 +21,7 @@ const fetcherArea = (url: string): Promise<any> =>
     fetch(url, { method: "GET" }).then(r => r.json());
 const fetcherDocumento = (url: string): Promise<any> =>
     fetch(url, { method: "GET" }).then(r => r.json());
-    
+
 const formReducer = (state: SolicitudModel, event: any): SolicitudModel => {
     if (event.FORM_DATA) {
         return { ...event.FORM_DATA }
@@ -37,7 +37,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
     const { data: listaPersona } = useSWRImmutable('/api/entidad/persona', fetcherPersona);
     const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
     const { data: listaArea } = useSWRImmutable('/api/administracion/area', fetcherArea);
-    const { data: listaDocumento} = useSWRImmutable('/api/documento/documento', fetcherDocumento);
+    const { data: listaDocumento } = useSWRImmutable('/api/documento/documento', fetcherDocumento);
     const { data: listaTipoDocumento } = useSWRImmutable('/api/documento/tipo_documento', fetcherTipoDocumento);
     const [formData, setFormData] = useReducer(formReducer, new SolicitudModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,7 +52,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
         }
         else {
             const fetchData = async () => {
-                const response = await fetch(`/api/documento/documento/${ID}`);
+                const response = await fetch(`/api/documento/solicitud/${ID}`);
                 const data: SolicitudModel = await response.json();
                 setFormData({ FORM_DATA: data });
             }
@@ -92,7 +92,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
         setIsSubmitting(true);
         const dataEnvio = JSON.stringify(formData);
         console.log(dataEnvio)
-        const response = await fetch('/api/documento/documento', {
+        const response = await fetch('/api/documento/solicitud', {
             body: dataEnvio,
             headers: { 'Content-Type': 'application/json', },
             method: tipoEdicion == EnumTipoEdicion.EDITAR ? "PUT" : tipoEdicion == EnumTipoEdicion.ELIMINAR ? "DELETE" : "POST"
@@ -117,9 +117,14 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                 <fieldset disabled={tipoEdicion == EnumTipoEdicion.VISUALIZAR} className="space-y-8 divide-y divide-gray-200">
                                     <div className="">
                                         <div>
-                                            <h3 className="text-lg leading-6 font-medium text-gray-900">Información Personal </h3>
+                                            <h3 className="text-lg leading-6 font-medium text-gray-900">Información</h3>
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
+                                        <div className="md:col-span-2">
+                                                <AxSelect name="id_documento" value={formData.id_documento} label="Tipo Documento" handleChange={handleChange}>
+                                                    {listaDocumento && listaDocumento.map((Doc: any) => <option key={Doc.id} value={Doc.id}>{Doc.nombre}</option>)}
+                                                </AxSelect>
+                                            </div>
                                             <div className="md:col-span-2">
                                                 <AxInput name="asunto" label="Asunto" value={formData.asunto} handleChange={handleChange} />
                                             </div>
@@ -133,17 +138,16 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                                 <AxInput name="fecha_plazo" label="Fecha Plazo" value={formData.fecha_plazo} handleChange={handleChange} type="date" />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="motivo" label="motivo" value={formData.motivo} handleChange={handleChange} />
+                                                <AxInput name="motivo" label="Motivo" value={formData.motivo} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-2">
-                                            <legend className="contents text-base font-medium text-gray-900">Tipo de Contrato</legend>
-                                                <div className="mt-4 space-y-4">
-                                                    <AxRadio id="Natural" name="Natural" value={formData.tipo_entidad} label="Natural" handleChange={handleChange} />
-                                                    <AxRadio id="Judicial" name="Judicial" value={formData.tipo_entidad} label="Judicial" handleChange={handleChange} />
-                                                </div>
+                                                <AxSelect name="tipo_entidad" value={formData.tipo_entidad} label="Tipo Entidad" handleChange={handleChange}>
+                                                    <option key="Natural" value="Natural">Natural</option>
+                                                    <option key="Juridico" value="Juridico">Juridico</option>
+                                                </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxSelect name="id_tipo_documento" value={formData.id_tipo_documento} label="Tipo DOcumento" handleChange={handleChange}>
+                                                <AxSelect name="id_tipo_documento" value={formData.id_tipo_documento} label="Tipo Documento" handleChange={handleChange}>
                                                     {listaTipoDocumento && listaTipoDocumento.map((tipoDoc: any) => <option key={tipoDoc.id} value={tipoDoc.id}>{tipoDoc.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
