@@ -1,3 +1,5 @@
+import { default as dayjs } from 'dayjs';
+dayjs.locale("America/Lima")
 import '../styles/globals.css'
 // import type { AppProps } from 'next/app'
 import { UserProvider } from '@auth0/nextjs-auth0';

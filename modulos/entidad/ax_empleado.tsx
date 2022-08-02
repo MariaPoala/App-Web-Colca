@@ -151,13 +151,10 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
                                         <div>
                                             <h3 className="text-lg leading-6 font-medium text-gray-900">Información Personal </h3>
                                         </div>
-                                            <div className="md:col-span-2">
-                                                <AxInput name="url_imagen" label="Imagen" value={formData.url_imagen} handleChange={handleChange} />
-                                            </div>
+                                        <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
                                             <div className="md:col-span-2">
                                                 <AxInput name="numero_documento" label="DNI" value={formData.numero_documento} handleChange={handleChange} />
                                             </div>
-                                        <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
                                             <div className="hidden md:flex md:col-span-4" />
                                             <div className="md:col-span-3">
                                                 <AxInput name="nombre" label="Nombres" value={formData.nombre} handleChange={handleChange} />

@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
 import { CheckCircleIcon, BadgeCheckIcon, RefreshIcon, BanIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
-import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar } from 'components/form';
+import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar, AxBtnEditarLista } from 'components/form';
 import { EnumEstadoEdicion, EnumTipoEdicion } from 'lib/edicion';
 import TipoDocumentoModel from 'models/tipo_documento_model'
 import EmpleadoModel from 'models/empleado_model'
@@ -55,7 +55,7 @@ export default function AxPageDocumento() {
   const [listaFiltro, setListaFiltro] = useState<DocumentoModel[]>([]);
   const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
   const [esModalOpen, setEsModalOpen] = useState(false)
-  const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 1 })
+  const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 10 })
 
   useEffect(() => {
     if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
@@ -95,7 +95,7 @@ export default function AxPageDocumento() {
   }
 
   function FnFiltrarLista() {
-    let filtrado =listaDoc && listaDoc.filter((doc:any) =>
+    let filtrado = listaDoc && listaDoc.filter((doc: any) =>
       (filtro.id_tipo_documento.indexOf(doc.id_tipo_documento) != -1) &&
       (filtro.id_persona ? doc.id_persona == filtro.id_persona : true) &&
       (filtro.numero_documento ? doc.numero_documento == filtro.numero_documento : true) &&
@@ -106,7 +106,7 @@ export default function AxPageDocumento() {
   }
 
   function FnLoadMas() {
-    setPaginacion({ inicio: listaDoc.length, cantidad: paginacion.cantidad });
+    setPaginacion({ inicio: 0, cantidad: paginacion.cantidad + 10 });
   }
 
   return (
@@ -174,7 +174,7 @@ export default function AxPageDocumento() {
                     FnFiltrarLista();
                   }}>
 
-                  <div className={(filtro.id_tipo_documento.indexOf(item.id) != -1 ? "bg-indigo-600" : "bg-indigo-400") + " p-2 bg-indigo-100"}>
+                  <div className={(filtro.id_tipo_documento.indexOf(item.id) != -1 ? "bg-indigo-600" : "bg-indigo-400") + " p-2"}>
                     <div className="flex items-center">
                       <div className="ml-2 w-10 flex-1">
                         <dl>
@@ -200,8 +200,7 @@ export default function AxPageDocumento() {
               </p>
             </div>
             <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none ">
-              <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}></AxBtnEditar>
-              {/* {tipoEdicion==EnumTipoEdicion.EDITAR && setabrir(true)} */}
+              <AxBtnEditarLista estadoEdicion={ID > 0 ? EnumEstadoEdicion.SELECCIONADO : estadoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
               <AxBtnAgregar setEstadoEdicion={setEstadoEdicion} setID={setID} setTipoEdicion={setTipoEdicion}></AxBtnAgregar>
             </div>
           </div>
@@ -233,17 +232,23 @@ export default function AxPageDocumento() {
                       </thead>
 
                       <tbody className="divide-x divide-y overflow-x-auto overflow-y-auto divide-gray-200 bg-white">
-                        {(listaFiltro && listaFiltro.map((item:any) => (
+                        {(listaFiltro && listaFiltro.map((item: any) => (
                           <tr key={item.id} className={item.id == ID ? "bg-indigo-100 table table-fixed w-full" : "bg-white table table-fixed w-full"}>
                             <td className="w-16 text-center whitespace-nowrap px-3 py-3 text-sm text-gray-500">
                               <input
                                 onChange={(event) => {
-                                  if (!event.target.checked) setID(-1);
-                                  else setID(item.id);
+                                  if (!event.target.checked) {
+                                    setID(-1);
+                                    setEstadoEdicion(EnumEstadoEdicion.CANCELADO)
+                                  }
+                                  else {
+                                    setID(item.id);
+                                    setEstadoEdicion(EnumEstadoEdicion.SELECCIONADO)
+                                  }
                                 }}
                                 checked={item.id == ID}
-                                type="checkbox"
-                                className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                                type="radio"
+                                className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                               />
                             </td>
                             <td className="px-1 py-3 whitespace-nowrap text-sm text-gray-500 truncate">

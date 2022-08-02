@@ -1,10 +1,12 @@
 import { useEffect, useReducer, useState } from "react";
 import useSWRImmutable from "swr/immutable"
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
+import { default as dayjs } from 'dayjs';
 import * as uuid from 'uuid'
 import { AxInput, AxSelect, AxSubmit, AxCheck, AxBtnModalCancelar, AxRadio } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
 import SolicitudModel from 'models/solicitud_model'
+import DocumentoModel from "models/documento_model";
 // import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
 // import db from "lib/firebase-config";
 // db.app
@@ -33,12 +35,14 @@ const formReducer = (state: SolicitudModel, event: any): SolicitudModel => {
 }
 
 export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, setOpen }: any) {
-    const { data: listaEmpleado } = useSWRImmutable('/api/entidad/empleado', fetcherEmpleado);
-    const { data: listaPersona } = useSWRImmutable('/api/entidad/persona', fetcherPersona);
+    const { user, error, isLoading: isLoadingUser } = useUser();
+    const { data: listaEmpleado } = useSWRImmutable<any[]>('/api/entidad/empleado/v_empleado', fetcherEmpleado);
+    const { data: listaPersona } = useSWRImmutable<any[]>('/api/entidad/persona/v_persona', fetcherPersona);
     const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
     const { data: listaArea } = useSWRImmutable('/api/administracion/area', fetcherArea);
-    const { data: listaDocumento } = useSWRImmutable('/api/documento/documento', fetcherDocumento);
-    const { data: listaTipoDocumento } = useSWRImmutable('/api/documento/tipo_documento', fetcherTipoDocumento);
+    const { data: listaDocumento } = useSWRImmutable<DocumentoModel[]>('/api/documento/documento', fetcherDocumento);
+    const [listaDocumentoFiltrado, setListaDocumentoFiltrado] = useState<DocumentoModel[]>([])
+    const { data: listaTipoDocumento } = useSWRImmutable<any[]>('/api/documento/tipo_documento', fetcherTipoDocumento);
     const [formData, setFormData] = useReducer(formReducer, new SolicitudModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -49,17 +53,33 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
         setIsLoading(true)
         if (ID == 0) {
             setFormData({ FORM_ADD: true })
+            const empleado = listaEmpleado?.filter(x => x.email == user?.email);
+            if (empleado && empleado[0]) {
+                setFormData({ name: "id_empleado", value: empleado[0].id })
+                setFormData({ name: "id_area", value: empleado[0].id_area, })
+            }
         }
         else {
             const fetchData = async () => {
                 const response = await fetch(`/api/documento/solicitud/${ID}`);
                 const data: SolicitudModel = await response.json();
+                data.fecha_creacion = dayjs(data.fecha_creacion).format("YYYY-MM-DD")
+                data.fecha_inicio = dayjs(data.fecha_inicio).format("YYYY-MM-DD")
+                data.fecha_plazo = dayjs(data.fecha_plazo).format("YYYY-MM-DD")
+                data.fecha_edicion = dayjs().format("YYYY-MM-DD")
                 setFormData({ FORM_DATA: data });
             }
             fetchData().catch(console.error);
         }
         setIsLoading(false)
     }, [ID])
+
+    useEffect(() => {
+        if (ID > 0) {
+            const filtrado = listaDocumento?.filter(x => x.id_persona == formData.id_persona && x.id_tipo_documento == formData.id_tipo_documento);
+            if (filtrado) setListaDocumentoFiltrado(filtrado);
+        }
+    }, [listaDocumento, formData.id_persona])
 
     const changeImagen = (e: any) => {
         setImagen(e.target.files[0]);
@@ -81,6 +101,18 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
 
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
+        if (event.target.name == "id_tipo_documento") {
+            const item = listaTipoDocumento?.filter(x => x.id == event.target.value);
+            if (item && item[0]) {
+                const fechaFinal = dayjs().add(item[0].tiempo_entrega, 'days').format("YYYY-MM-DD")
+                setFormData({ name: "fecha_plazo", value: fechaFinal })
+                setFormData({ name: "i_total", value: item[0].costo })
+            }
+        }
+        else if (event.target.name == "id_persona") {
+            const filtrado = listaDocumento?.filter(x => x.id_persona == event.target.value && x.id_tipo_documento == formData.id_tipo_documento);
+            if (filtrado) setListaDocumentoFiltrado(filtrado);
+        }
         setFormData({
             name: event.target.name,
             value: isCheckbox ? event.target.checked : event.target.value,
@@ -91,7 +123,6 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
         event.preventDefault();
         setIsSubmitting(true);
         const dataEnvio = JSON.stringify(formData);
-        console.log(dataEnvio)
         const response = await fetch('/api/documento/solicitud', {
             body: dataEnvio,
             headers: { 'Content-Type': 'application/json', },
@@ -102,7 +133,6 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
         setIsSubmitting(false);
         if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
         setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
-        console.log(result)
     }
     return (
         <>
@@ -119,26 +149,20 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                         <div>
                                             <h3 className="text-lg leading-6 font-medium text-gray-900">Información</h3>
                                         </div>
-                                        <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
-                                        <div className="md:col-span-2">
-                                                <AxSelect name="id_documento" value={formData.id_documento} label="Tipo Documento" handleChange={handleChange}>
-                                                    {listaDocumento && listaDocumento.map((Doc: any) => <option key={Doc.id} value={Doc.id}>{Doc.nombre}</option>)}
-                                                </AxSelect>
-                                            </div>
+                                        <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-8">
                                             <div className="md:col-span-2">
-                                                <AxInput name="asunto" label="Asunto" value={formData.asunto} handleChange={handleChange} />
+                                                <AxSelect name="id_tipo_documento" value={formData.id_tipo_documento} label="Tipo Documento" handleChange={handleChange}>
+                                                    {listaTipoDocumento && listaTipoDocumento.map((tipoDoc: any) => <option key={tipoDoc.id} value={tipoDoc.id}>{tipoDoc.nombre}</option>)}
+                                                </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
                                                 <AxInput name="numero_documento" label="NroDocumento" value={formData.numero_documento} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="fecha_inicio" label="Fecha Inicio" value={formData.fecha_inicio} handleChange={handleChange} type="date" />
+                                                <AxInput name="fecha_inicio" label="Fecha Inicio" value={formData.fecha_inicio} handleChange={handleChange} disabled={true} type="date" />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="fecha_plazo" label="Fecha Plazo" value={formData.fecha_plazo} handleChange={handleChange} type="date" />
-                                            </div>
-                                            <div className="md:col-span-2">
-                                                <AxInput name="motivo" label="Motivo" value={formData.motivo} handleChange={handleChange} />
+                                                <AxInput name="fecha_plazo" label="Fecha Plazo" value={formData.fecha_plazo} handleChange={handleChange} disabled={true} type="date" />
                                             </div>
                                             <div className="md:col-span-2">
                                                 <AxSelect name="tipo_entidad" value={formData.tipo_entidad} label="Tipo Entidad" handleChange={handleChange}>
@@ -146,29 +170,40 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                                     <option key="Juridico" value="Juridico">Juridico</option>
                                                 </AxSelect>
                                             </div>
+                                            {
+                                                formData.tipo_entidad == "Natural"
+                                                    ? <div className="md:col-span-3">
+                                                        <AxSelect name="id_persona" value={formData.id_persona} label="Persona" handleChange={handleChange}>
+                                                            {listaPersona && listaPersona.map((persona: any) => <option key={persona.id} value={persona.id}>{persona.nombre_apellido}</option>)}
+                                                        </AxSelect>
+                                                    </div>
+                                                    : <div className="md:col-span-3">
+                                                        <AxSelect name="id_empresa" value={formData.id_empresa} label="Empresa" handleChange={handleChange}>
+                                                            {listaEmpresa && listaEmpresa.map((empresa: any) => <option key={empresa.id} value={empresa.id}>{empresa.razon_social}</option>)}
+                                                        </AxSelect>
+                                                    </div>
+                                            }
+
+                                            <div className="md:col-span-3">
+                                                <AxSelect name="id_documento" value={formData.id_documento} label="Documento" handleChange={handleChange}>
+                                                    {listaDocumentoFiltrado && listaDocumentoFiltrado.map((item: any) => <option key={item.id} value={item.id}>{item.numero_documento}</option>)}
+                                                </AxSelect>
+                                            </div>
+                                            <div className="md:col-span-6">
+                                                <AxInput name="motivo" label="Motivo" value={formData.motivo} handleChange={handleChange} />
+                                            </div>
                                             <div className="md:col-span-2">
-                                                <AxSelect name="id_tipo_documento" value={formData.id_tipo_documento} label="Tipo Documento" handleChange={handleChange}>
-                                                    {listaTipoDocumento && listaTipoDocumento.map((tipoDoc: any) => <option key={tipoDoc.id} value={tipoDoc.id}>{tipoDoc.nombre}</option>)}
+                                                <AxInput name="i_total" label="Total a Pagar" value={formData.i_total} handleChange={handleChange} disabled={true} />
+                                            </div>
+
+                                            <div className="md:col-span-4">
+                                                <AxSelect name="id_empleado" value={formData.id_empleado} label="Empleado" handleChange={handleChange} disabled={true}>
+                                                    {listaEmpleado && listaEmpleado.map((item: any) => <option key={item.id} value={item.id}>{item.nombre_apellido}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxSelect name="id_area" value={formData.id_area} label="Area" handleChange={handleChange}>
+                                                <AxSelect name="id_area" value={formData.id_area} label="Area" handleChange={handleChange} disabled={true}>
                                                     {listaArea && listaArea.map((area: any) => <option key={area.id} value={area.id}>{area.nombre}</option>)}
-                                                </AxSelect>
-                                            </div>
-                                            <div className="md:col-span-2">
-                                                <AxSelect name="id_empleado" value={formData.id_empleado} label="Empleado" handleChange={handleChange}>
-                                                    {listaEmpleado && listaEmpleado.map((empleado: any) => <option key={empleado.id} value={empleado.id}>{empleado.nombre}</option>)}
-                                                </AxSelect>
-                                            </div>
-                                            <div className="md:col-span-2">
-                                                <AxSelect name="id_persona" value={formData.id_persona} label="Persona" handleChange={handleChange}>
-                                                    {listaPersona && listaPersona.map((persona: any) => <option key={persona.id} value={persona.id}>{persona.nombre}</option>)}
-                                                </AxSelect>
-                                            </div>
-                                            <div className="md:col-span-2">
-                                                <AxSelect name="id_empresa" value={formData.id_empresa} label="Empresa" handleChange={handleChange}>
-                                                    {listaEmpresa && listaEmpresa.map((empresa: any) => <option key={empresa.id} value={empresa.id}>{empresa.razon_social}</option>)}
                                                 </AxSelect>
                                             </div>
                                             {/* <div className="md:col-span-2">
@@ -179,9 +214,9 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                             <div className="md:col-span-2">
                                                 <AxInput name="fecha_creacion" label="Fecha Registro" value={formData.fecha_creacion} handleChange={handleChange} disabled type="date" />
                                             </div>
-                                            <div className="md:col-span-2">
+                                            {/* <div className="md:col-span-2">
                                                 <AxInput name="fecha_edicion" label="Fecha Edición" value={formData.fecha_edicion} handleChange={handleChange} disabled type="date" />
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                     {/* <fieldset>

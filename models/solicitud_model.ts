@@ -1,5 +1,4 @@
-let yourDate = new Date()
-
+import { default as dayjs } from 'dayjs';
 class SolicitudModel {
     id: number;
     fecha_creacion?: string;
@@ -10,6 +9,7 @@ class SolicitudModel {
     fecha_plazo: string;
     motivo: string;
     tipo_entidad: string;
+    i_total: number;
     id_tipo_documento: number;
     id_documento: number;
     id_area: number;
@@ -18,13 +18,16 @@ class SolicitudModel {
     id_empresa?: number;
 
     constructor() {
+
         this.id = 0;
         this.asunto = "";
         this.numero_documento = "";
-        this.fecha_inicio = yourDate.toISOString().split('T')[0];
+        this.fecha_inicio = dayjs().format("YYYY-MM-DD")
+        this.fecha_creacion = dayjs().format("YYYY-MM-DD")
         this.fecha_plazo = "";
         this.motivo = "";
-        this.tipo_entidad = "PERSONA";
+        this.tipo_entidad = "Natural";
+        this.i_total = 0;
         this.id_tipo_documento = 0;
         this.id_documento = 0;
         this.id_area = 0;

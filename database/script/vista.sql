@@ -50,3 +50,14 @@ inner join empleado as empleado on sol.id_empleado=empleado.id
 inner join area as area on empleado.id_area=area.id
 -- inner join empresa as empresa on sol.id_empresa=empresa.id
 inner join persona as persona on sol.id_persona=persona.id
+
+
+create view v_empleado
+as
+select id,nombre||' '||apellido as nombre_apellido,id_area,email
+from empleado
+
+create view v_persona
+as
+select id,nombre||' '||apellido as nombre_apellido
+from persona

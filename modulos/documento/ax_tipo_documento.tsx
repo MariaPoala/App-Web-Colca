@@ -107,8 +107,8 @@ export default function AxTipoDocumento({ ID, setID, setEstadoEdicion }: TypeFor
             method: tipoEdicion == EnumTipoEdicion.EDITAR ? "PUT" : tipoEdicion == EnumTipoEdicion.ELIMINAR ? "DELETE" : "POST"
         })
 
-        const result: TipoDocumentoModel = await response.json()
-        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.id);
+        const result: any = await response.json()
+        if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result[0].id);
         setIsSubmitting(false);
         setOpen(false);
         if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
@@ -175,7 +175,7 @@ export default function AxTipoDocumento({ ID, setID, setEstadoEdicion }: TypeFor
                                                 <AxInput name="tiempo_entrega" label="Tiempo Entrega" value={formData.tiempo_entrega} handleChange={handleChange} type="number" />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="costo" label="Costo" value={"S/"+formData.costo} handleChange={handleChange} placeholder="0.00" />
+                                                <AxInput name="costo" label="Costo S/" value={formData.costo} handleChange={handleChange} placeholder="0.00" />
                                             </div>
                                             <div className="md:col-span-3">
                                                 <AxSelect name="id_grupo" value={formData.id_grupo} label="Grupo" handleChange={handleChange}>

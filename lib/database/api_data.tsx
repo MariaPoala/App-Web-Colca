@@ -9,12 +9,12 @@ export default async function FnApiData<T>(table: string, method: string, body: 
             let errorRespuesta: any = null;
             if (query && query.inicio) {
                 const { inicio, cantidad } = query;
-                const { data, error } = await supabase.from<T>(table).select().range(inicio, cantidad);
+                const { data, error } = await supabase.from<T>(table).select().range(inicio, cantidad).order('id' as keyof T, { ascending: false })
                 dataRespuesta = data;
                 errorRespuesta = error;
             }
             else {
-                const { data, error } = await supabase.from<T>(table).select()
+                const { data, error } = await supabase.from<T>(table).select().order('id' as keyof T, { ascending: false })
                 dataRespuesta = data;
                 errorRespuesta = error;
             }

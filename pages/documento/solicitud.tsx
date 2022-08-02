@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
 import { CheckCircleIcon, BadgeCheckIcon, RefreshIcon, BanIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
-import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar } from 'components/form';
+import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar, AxBtnEditarLista } from 'components/form';
 import { EnumEstadoEdicion, EnumTipoEdicion } from 'lib/edicion';
 import SolicitudModel from 'models/solicitud_model'
 import AxSolicitud from 'modulos/documento/ax_solicitud';
@@ -46,7 +46,7 @@ export default function AxPageDocumento() {
   const { data: listaPersona } = useSWRImmutable('/api/entidad/persona', fetcherPersona);
   const { data: listaSol } = useSWRImmutable('/api/documento/solicitud/v_solicitud', fetcherVSolicitud);
   const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
-  const { data: listaEmpleado } = useSWRImmutable('/api/entidad/empleado', fetcherEmpleado);
+  const { data: listaEmpleado } = useSWRImmutable('/api/entidad/empleado/v_empleado', fetcherEmpleado);
   const [ID, setID] = useState(-1)
   const [lista, setLista] = useState<SolicitudModel[]>([]);
   const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
@@ -55,13 +55,13 @@ export default function AxPageDocumento() {
   const [listaFiltro, setListaFiltro] = useState<SolicitudModel[]>([]);
   const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
   const [esModalOpen, setEsModalOpen] = useState(false)
-  const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 1 })
+  const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 10 })
 
   useEffect(() => {
     if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
     setIsLoading(true)
     const fetchData = async () => {
-      const response = await fetch(`/api/documento/documento?inicio=${paginacion.inicio}&cantidad=${paginacion.cantidad}`, {
+      const response = await fetch(`/api/documento/solicitud/v_solicitud?inicio=${paginacion.inicio}&cantidad=${paginacion.cantidad}`, {
         method: "GET"
       })
       const result: SolicitudModel[] = await response.json()
@@ -100,12 +100,11 @@ export default function AxPageDocumento() {
       (filtro.id_empresa ? sol.id_empresa == filtro.id_empresa : true) &&
       (filtro.numero_documento ? sol.numero_documento == filtro.numero_documento : true)
     )
-    console.log(filtrado);
     setListaFiltro(filtrado);
   }
 
   function FnLoadMas() {
-    setPaginacion({ inicio: listaSol.length, cantidad: paginacion.cantidad });
+    setPaginacion({ inicio: 0, cantidad: paginacion.cantidad + 10 });
   }
 
   return (
@@ -173,7 +172,7 @@ export default function AxPageDocumento() {
               </p>
             </div>
             <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none ">
-              <AxBtnEditar tipoEdicion={tipoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion}></AxBtnEditar>
+              <AxBtnEditarLista estadoEdicion={ID > 0 ? EnumEstadoEdicion.SELECCIONADO : estadoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
               {/* {tipoEdicion==EnumTipoEdicion.EDITAR && setabrir(true)} */}
               <AxBtnAgregar setEstadoEdicion={setEstadoEdicion} setID={setID} setTipoEdicion={setTipoEdicion}></AxBtnAgregar>
             </div>
@@ -214,8 +213,8 @@ export default function AxPageDocumento() {
                                 else setID(item.id);
                               }}
                               checked={item.id == ID}
-                              type="checkbox"
-                              className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                              type="radio"
+                              className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                             />
                           </td>
                           <td className="px-1 py-3 whitespace-nowrap text-sm text-gray-500 truncate">

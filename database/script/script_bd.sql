@@ -181,6 +181,7 @@ create table solicitud (
   motivo varchar not null,
   -- persona, empresa
   tipo_entidad varchar not null,
+  i_total decimal(13,2) not null default 0
   id_tipo_documento bigint not null references tipo_documento,
   id_documento bigint not null references documento,
   id_area bigint not null references area,
