@@ -12,6 +12,7 @@ import RequisitoModel from 'models/requisito_model'
 // db.app
 export const getServerSideProps = withPageAuthRequired();
 import supabase from "lib/supabase_config";
+import { async } from "@firebase/util";
 
 
 const formReducer = (state: RequisitoModel, event: any): RequisitoModel => {
@@ -31,7 +32,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
     const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
     const [open, setOpen] = useState(false)
     const [uploading, setUploading] = useState(false)
-    const [avatarUrl, setAvatarUrl] = useState(null)
+    const [urlArchivo, setUrlArchivo] = useState("")
 
     useEffect(() => {
         setIsLoading(true)
@@ -91,26 +92,40 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
         return;
     }
 
+    useEffect(() => {
+        const descargarImg = async () => {
+            try {
 
-    // const uploadimage = () => {
-    //     const { data, error } = await supabase.storage
-    //         .from('archivos')
-    //         .upload('public/'+ setImagen.name, setImagen)
-    //     return;
-    // }
+                if (formData.url_imagen) {
+                    // const { data, error } = await supabase.storage.from('archivo-requisito').download(formData.url_imagen)
+                    // if (error) {
+                    //     throw error
+                    // }
+                    // if (data) {
+                    //     const url = URL.createObjectURL(data)
+                    //     console.log(url);
+                    //     setUrlArchivo(url)
+                    // }
+                    console.time()
+                    const { signedURL, error } = await supabase.storage.from('archivo-requisito').createSignedUrl(formData.url_imagen, 60)
+                    if (error) {
+                        throw error
+                    }
+                    if (signedURL) {
+                        // const url = URL.createObjectURL(data)
+                        console.log(signedURL);
+                        setUrlArchivo(signedURL)
+                        console.time()
+                    }
+                }
+            } catch (error: any) {
+                console.log('Error downloading image: ', error.message)
+            }
+        }
+        descargarImg().catch(console.error);
+    }, [formData.url_imagen])
 
-    // useEffect(() => {
-    //     listAll( listaimage).then((response) => {
-    //         response.items.forEach((item) => {
-    //             getDownloadURL(item).then((url) => {
-    //                 setListaimage((prev) => [...prev, url]);
-    //             })
-    //         })
-    //         console.log(response)
-    //     })
-    // }, [imagenupload])
-    //
-    async function uploadAvatar(event: any) {
+    async function subirArchivo(event: any) {
         try {
 
             setUploading(true)
@@ -123,19 +138,14 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
             const fileExt = file.name.split('.').pop()
             const fileName = `${Math.random()}.${fileExt}`
             const filePath = `${fileName}`
-         
-            let { error: uploadError } = await supabase.storage
-                .from('archivo-requisito')
-                .upload(filePath, file)
-            console.log(fileName)
+
+            let { error: uploadError } = await supabase.storage.from('archivo-requisito').upload(filePath, file)
             if (uploadError) {
                 console.log(uploadError)
                 throw uploadError
             }
-           
-            // onUpload(filePath)
-
-
+            console.log(fileName);
+            setFormData({ name: 'url_imagen', value: fileName })
         } catch (error: any) {
             alert(error.message)
         } finally {
@@ -206,12 +216,12 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                     </label>
 
                                     <div>
-                                        {avatarUrl ? (
+                                        {urlArchivo ? (
                                             <img
-                                                src={avatarUrl}
+                                                src={urlArchivo}
                                                 alt="archivo-requisito"
                                                 className="archivo-requisito image"
-                                                style={{ height: 10, width: 10 }}
+                                                style={{ height: 100, width: 100 }}
                                             />
                                         ) : (
                                             <div className="archivo-requisito no-image" style={{ height: 10, width: 10 }} />
@@ -228,7 +238,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                                 type="file"
                                                 id="single"
                                                 accept="image/*"
-                                                onChange={uploadAvatar}
+                                                onChange={subirArchivo}
                                                 disabled={uploading}
                                             />
                                         </div>
@@ -239,7 +249,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                         <ul role="list" className="space-y-12 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 lg:grid-cols-3 lg:gap-x-8">
                                             <li key={formData.id}>
                                                 <div className="space-y-4">
-                                                    <img className="object-cover shadow-lg rounded-lg" src={formData.url_imagen} alt="" />
+                                                    {/* <img className="object-cover shadow-lg rounded-lg" src={formData.url_imagen} alt="" /> */}
                                                 </div>
                                             </li>
                                         </ul>
