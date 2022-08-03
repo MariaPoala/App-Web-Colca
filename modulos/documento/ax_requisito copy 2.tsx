@@ -3,7 +3,7 @@ import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { Dialog, Transition } from "@headlessui/react";
 import { AxInput, AxModalEliminar, AxSubmit, AxBtnEliminar, AxBtnEditar, AxBtnCancelar } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
-import { ChevronLeftIcon, EyeIcon, EyeOffIcon } from "@heroicons/react/outline"
+import { ChevronLeftIcon } from "@heroicons/react/outline"
 
 import * as uuid from 'uuid'
 // import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
@@ -31,17 +31,14 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
     const [isLoading, setIsLoading] = useState(true);
     const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
     const [open, setOpen] = useState(false)
-    const [clic, setclic] = useState(false)
     const [uploading, setUploading] = useState(false)
     const [urlArchivo, setUrlArchivo] = useState("")
 
-
     useEffect(() => {
         setIsLoading(true)
-        setclic(false)
         setTipoEdicion(ID == 0 ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
         if (ID == 0) {
-            setFormData({ FORM_ADD: true })           
+            setFormData({ FORM_ADD: true })
         }
         else {
             const fetchData = async () => {
@@ -53,7 +50,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
         }
         setIsLoading(false)
     }, [ID])
-console.log(ID)
+
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
         setFormData({
@@ -81,31 +78,62 @@ console.log(ID)
         setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
     }
 
-    async function FndescargarImg() {
-        try {
-
-            if (formData.url_imagen) {
-               
-                const { signedURL, error } = await supabase.storage.from('archivo-requisito').createSignedUrl(formData.url_imagen, 60)
-                if (error) {
-                    throw error
-                }
-                if (signedURL) {
-                    setUrlArchivo(signedURL)                  
-                }
-            }
-        } catch (error: any) {
-            console.log('Error downloading image: ', error.message)
-        }
+    //subir archivo
+    const [imagenupload, setImagen] = useState(null);
+    // const storage = getStorage();
+    const [listaimage, setListaimage] = useState<Array<any>>([]);
+    const [imgurl, setImgurl] = useState("")
+    //OBTENIENDO LA IMAGEN
+    const changeImagen = (e: any) => {
+        setImagen(e.target.files[0]);
+        // const { data, error } = await supabase.storage
+        // .from('archivos')
+        // .upload('public/'+ setImagen.name, setImagen)
+        return;
     }
 
+    useEffect(() => {
+        const descargarImg = async () => {
+            try {
+
+                if (formData.url_imagen) {
+                    // const { data, error } = await supabase.storage.from('archivo-requisito').download(formData.url_imagen)
+                    // if (error) {
+                    //     throw error
+                    // }
+                    // if (data) {
+                    //     const url = URL.createObjectURL(data)
+                    //     console.log(url);
+                    //     setUrlArchivo(url)
+                    // }
+                    console.time()
+                    const { signedURL, error } = await supabase.storage.from('archivo-requisito').createSignedUrl(formData.url_imagen, 60)
+                    if (error) {
+                        throw error
+                    }
+                    if (signedURL) {
+                        // const url = URL.createObjectURL(data)
+                        console.log(signedURL);
+                        setUrlArchivo(signedURL)
+                        console.time()
+                    }
+                }
+            } catch (error: any) {
+                console.log('Error downloading image: ', error.message)
+            }
+        }
+        descargarImg().catch(console.error);
+    }, [formData.url_imagen])
 
     async function subirArchivo(event: any) {
         try {
+
             setUploading(true)
+
             if (!event.target.files || event.target.files.length === 0) {
                 throw new Error('You must select an image to upload.')
             }
+
             const file = event.target.files[0]
             const fileExt = file.name.split('.').pop()
             const fileName = `${Math.random()}.${fileExt}`
@@ -175,100 +203,58 @@ console.log(ID)
                                             <div className="md:col-span-2">
                                                 <AxInput name="nombre" label="Nombre" value={formData.nombre} handleChange={handleChange} />
                                             </div>
-                                            <div className="md:col-span-4">
+                                            <div className="hidden md:flex md:col-span-4" />
+                                            <div className="md:col-span-3">
                                                 <AxInput name="descripcion" label="Descripcion" value={formData.descripcion} handleChange={handleChange} />
                                             </div>
-                                            <div className="md:col-span-5">
-                                                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-                                                    <label htmlFor="cover-photo" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                                                        Adjuntar formato de Ejemplo
-                                                    </label>
-
-                                                    <div className="mt-1 sm:mt-0 sm:col-span-2">
-                                                        <div className="max-w-lg flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                                            <div className="space-y-1 text-center">
-                                                                <div>
-                                                                    <div style={{ width: 100 }}>
-                                                                        <label className="button primary block" htmlFor="single">
-                                                                            {uploading ? 'Subiendo archivo ...' : 'Subir Archivo'}
-                                                                        </label>
-                                                                        <p className="text-xs text-gray-500">Jpg, Png, Img</p>
-                                                                        <input
-                                                                            style={{
-                                                                                visibility: 'hidden',
-                                                                                position: 'absolute',
-                                                                            }}
-                                                                            type="file"
-                                                                            id="single"
-                                                                            accept="image/*"
-                                                                            onChange={subirArchivo}
-                                                                            disabled={uploading}
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="md:col-span-1">
-                                                <div className=" sm:border-t sm:border-gray-200 sm:pt-5">
-                                                    {clic == false ?
-                                                        <button type="button"
-                                                            className="ml-3 inline-flex items-center px-3 py-2 border border-green-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500     disabled:bg-green-300"
-                                                            onClick={() => {
-                                                                FndescargarImg()
-                                                                setclic(true)
-                                                            }}
-                                                        >
-                                                            <EyeIcon className="h-8 w-8 text-white "> </EyeIcon>
-                                                            Visualizar Archivo
-                                                        </button>
-                                                        :
-                                                        <button type="button"
-                                                            className="ml-3 inline-flex items-center px-3 py-2 border border-red-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-300     disabled:bg-red-300"
-                                                            onClick={() => {
-                                                                FndescargarImg()
-                                                                setclic(false)
-                                                            }}
-                                                        >
-                                                            <EyeOffIcon className="h-8 w-8 text-white "></EyeOffIcon>
-                                                            Ocultar Archivo
-                                                        </button>
-                                                    }
-                                                </div>
-                                            </div>
-                                            <div className="md:col-span-6">
-                                                {clic == true &&
-                                                    <div className="bg-white">
-                                                        {urlArchivo ? (
-                                                            <div className="">
-                                                                <ul role="list" className="content-start sm:grid sm:grid-cols-1 sm:gap-x-1 sm:gap-y-1 sm:space-y-0 lg:grid-cols-1 lg:gap-x-1">
-                                                                    <li key={urlArchivo}>
-                                                                            <img className="lg:ml-20 md:ml:2 object-cover shadow-lg rounded-lg" src={urlArchivo} alt="" />                                                                       
-                                                                    </li>
-                                                                </ul>
-                                                            </div>)
-                                                            :
-                                                            (
-                                                                <div className="archivo-requisito no-image" style={{ height: 100, width: 100 }} />
-                                                            )}
-
-                                                    </div>
-                                                }
-                                            </div>
                                         </div>
-                                        
-                                      
-                                         
-                                   
-
                                     </div>
                                 </fieldset>
+                                <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                                    <label htmlFor="cover-photo" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                        Adjuntar formato de Ejemplo
+                                    </label>
 
-
-
+                                    <div>
+                                        {urlArchivo ? (
+                                            <img
+                                                src={urlArchivo}
+                                                alt="archivo-requisito"
+                                                className="archivo-requisito image"
+                                                style={{ height: 100, width: 100 }}
+                                            />
+                                        ) : (
+                                            <div className="archivo-requisito no-image" style={{ height: 10, width: 10 }} />
+                                        )}
+                                        <div style={{ width: 10 }}>
+                                            <label className="button primary block" htmlFor="single">
+                                                {uploading ? 'Uploading ...' : 'Upload'}
+                                            </label>
+                                            <input
+                                                style={{
+                                                    visibility: 'hidden',
+                                                    position: 'absolute',
+                                                }}
+                                                type="file"
+                                                id="single"
+                                                accept="image/*"
+                                                onChange={subirArchivo}
+                                                disabled={uploading}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="bg-white">
+                                    <div className="">
+                                        <ul role="list" className="space-y-12 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 lg:grid-cols-3 lg:gap-x-8">
+                                            <li key={formData.id}>
+                                                <div className="space-y-4">
+                                                    {/* <img className="object-cover shadow-lg rounded-lg" src={formData.url_imagen} alt="" /> */}
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                                 {
                                     tipoEdicion != EnumTipoEdicion.VISUALIZAR &&
                                     <div className="pt-5">

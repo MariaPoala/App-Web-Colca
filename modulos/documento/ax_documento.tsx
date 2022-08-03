@@ -5,6 +5,7 @@ import * as uuid from 'uuid'
 import { AxInput, AxSelect, AxSubmit, AxCheck, AxBtnModalCancelar } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
 import DocumentoModel from 'models/documento_model'
+import supabase from "lib/supabase_config";
 // import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
 // import db from "lib/firebase-config";
 // db.app
@@ -37,6 +38,9 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [imagenupload, setImagen] = useState(null);
+    const [clic, setclic] = useState(false)
+    const [uploading, setUploading] = useState(false)
+    const [urlArchivo, setUrlArchivo] = useState("")
     // const storage = getStorage();
     const [listaimage, setListaimage] = useState<Array<any>>([]);
     useEffect(() => {
@@ -93,10 +97,56 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
         })
         const result: DocumentoModel = await response.json()
         if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.id);
-        setIsSubmitting(false);        
+        setIsSubmitting(false);
         if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
         setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
         console.log(result)
+    }
+    async function FndescargarImg() {
+        try {
+
+            if (formData.url_archivo) {
+                
+                const { signedURL, error } = await supabase.storage.from('archivo-documento').createSignedUrl(formData.url_archivo, 60)
+                if (error) {
+                    throw error
+                }
+                if (signedURL) {
+                    console.log(signedURL);
+                    setUrlArchivo(signedURL)
+                    console.time()
+                }
+            }
+        } catch (error: any) {
+            console.log('Error downloading image: ', error.message)
+        }
+    }
+    async function subirArchivo(event: any) {
+        try {
+
+            setUploading(true)
+
+            if (!event.target.files || event.target.files.length === 0) {
+                throw new Error('You must select an image to upload.')
+            }
+
+            const file = event.target.files[0]
+            const fileExt = file.name.split('.').pop()
+            const fileName = `${Math.random()}.${fileExt}`
+            const filePath = `${fileName}`
+
+            let { error: uploadError } = await supabase.storage.from('archivo-documento').upload(filePath, file)
+            if (uploadError) {
+                console.log(uploadError)
+                throw uploadError
+            }
+            console.log(fileName);
+            setFormData({ name: 'url_archivo', value: fileName })
+        } catch (error: any) {
+            alert(error.message)
+        } finally {
+            setUploading(false)
+        }
     }
     return (
         <>
@@ -157,22 +207,28 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                                 Adjuntar formato de Ejemplo
                                             </label>
 
-                                            <div className="sm:mt-0 sm:col-span-2">
+                                            <div className="mt-1 sm:mt-0 sm:col-span-2">
                                                 <div className="max-w-lg flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                                                     <div className="space-y-1 text-center">
                                                         <img className="mx-auto h-12 w-12 text-gray-400" src="/upload-file.svg" alt="Easywire logo" />
-                                                        <div className="flex   text-sm text-center text-gray-600">
-                                                            <label
-                                                                htmlFor="url_archivo"
-                                                                className="relative ml-7 cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
-                                                            >
-                                                                <input className="bg-indigo-200" type="file" name="image" onChange={changeImagen} />
-                                                            </label>
-                                                        </div>
-                                                        <p className="text-xs text-gray-500">Word, Pdf, Img hasta 10MB</p>
-                                                        <button type="button" className="bg-indigo-300 border-2 rounded-md text-white" onClick={uploadimage} > GUARDAR IMAGEN </button>
-                                                        <div className="visibility: hidden">
-                                                            <AxInput name="url_archivo" label="Archivo" value={formData.url_archivo ? formData.url_archivo : ""} handleChange={handleChange} />
+                                                        <div>
+                                                            <div style={{ width: 100 }}>
+                                                                <label className="button primary block" htmlFor="single">
+                                                                    {uploading ? 'Subiendo archivo ...' : 'Subir Archivo'}
+                                                                </label>
+                                                                <p className="text-xs text-gray-500">Jpg, Png, Img</p>
+                                                                <input
+                                                                    style={{
+                                                                        visibility: 'hidden',
+                                                                        position: 'absolute',
+                                                                    }}
+                                                                    type="file"
+                                                                    id="single"
+                                                                    accept="image/*"
+                                                                    onChange={subirArchivo}
+                                                                    disabled={uploading}
+                                                                />
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
