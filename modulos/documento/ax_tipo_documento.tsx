@@ -79,16 +79,6 @@ export default function AxTipoDocumento({ ID, setID, setEstadoEdicion }: TypeFor
                 value: [...formData.tipo_documento_requisito]
             })
         }
-        else if (event.target.name == "nombre") {
-            setFormData({
-                name: "nombre",
-                value: event.target.value
-            })
-            setFormData({
-                name: "codigo",
-                value: formData.nombre.substring(0, 3) + "-" + fecha.getFullYear()
-            })
-        }
         else {
             setFormData({
                 name: event.target.name,
@@ -163,7 +153,7 @@ export default function AxTipoDocumento({ ID, setID, setEstadoEdicion }: TypeFor
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
                                             <div className="col-span-3">
-                                                <AxInput name="codigo" label="Código" value={formData.codigo} handleChange={handleChange} disabled={true} />
+                                                <AxInput name="codigo" label="Código" value={formData.codigo} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
                                                 <AxInput name="nombre" label="Nombre" value={formData.nombre} handleChange={handleChange} />

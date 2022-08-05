@@ -6,6 +6,7 @@ import { AxInput, AxSelect, AxSubmit, AxCheck, AxBtnModalCancelar } from 'compon
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
 import DocumentoModel from 'models/documento_model'
 import supabase from "lib/supabase_config";
+import TipoDocumentoModel from "models/tipo_documento_model";
 // import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
 // import db from "lib/firebase-config";
 // db.app
@@ -33,7 +34,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
     const { data: listaEmpleado } = useSWRImmutable('/api/entidad/empleado', fetcherEmpleado);
     const { data: listaPersona } = useSWRImmutable('/api/entidad/persona', fetcherPersona);
     const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
-    const { data: listaTipoDocumento } = useSWRImmutable('/api/documento/tipo_documento', fetcherDocumento);
+    const { data: listaTipoDocumento } = useSWRImmutable<TipoDocumentoModel[]>('/api/documento/tipo_documento', fetcherDocumento);
     const [formData, setFormData] = useReducer(formReducer, new DocumentoModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -79,11 +80,32 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
 
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
+
         setFormData({
             name: event.target.name,
             value: isCheckbox ? event.target.checked : event.target.value,
         })
+        if (event.target.name == "id_tipo_documento" || event.target.name == "fecha_documento") {
+
+        }
     }
+
+    useEffect(() => {
+        if (formData.fecha_documento != "" && formData.fecha_documento.length == 10) {
+            console.log(1)
+            const tipoDocumento = listaTipoDocumento?.find(item => item.id == formData.id_tipo_documento);
+            if (tipoDocumento) {
+                console.log(tipoDocumento.codigo)
+                console.log(formData.fecha_documento.substring(0, 4))
+                const fetchData = async () => {
+                    const response = await fetch(`/api/documento/documento/fn_documento_numero?codigo=${tipoDocumento.codigo}&year=${formData.fecha_documento.substring(0, 4)}`);
+                    const numero: string = await response.json();
+                    setFormData({ name: "numero_documento", value: numero })
+                }
+                fetchData().catch(console.error);
+            }
+        }
+    }, [formData.fecha_documento, formData.id_tipo_documento])
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
@@ -106,7 +128,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
         try {
 
             if (formData.url_archivo) {
-                
+
                 const { signedURL, error } = await supabase.storage.from('archivo-documento').createSignedUrl(formData.url_archivo, 60)
                 if (error) {
                     throw error
@@ -170,10 +192,10 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="numero_documento" label="NroDocumento" value={formData.numero_documento} handleChange={handleChange} />
+                                                <AxInput name="fecha_documento" label="Fecha Documento" value={formData.fecha_documento} handleChange={handleChange} type="date" />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="fecha_documento" label="Fecha Documento" value={formData.fecha_documento} handleChange={handleChange} type="date" />
+                                                <AxInput name="numero_documento" label="Nro Documento" value={formData.numero_documento} handleChange={handleChange} disabled={true}/>
                                             </div>
                                             <div className="md:col-span-2">
                                                 <AxSelect name="id_empleado" value={formData.id_empleado} label="Empleado" handleChange={handleChange}>

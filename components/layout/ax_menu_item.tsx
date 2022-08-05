@@ -38,12 +38,6 @@ const navigation = [
         ],
     },
     {
-        name: 'Documento', href: '', icon: DocumentTextIcon, current: false,
-        children: [
-            { name: 'Documento', href: '/documento/documento', icon: DocumentReportIcon }
-        ],
-    },
-    {
         name: 'Digitalización', href: '', icon: CloudIcon, current: false,
         children: [
             { name: 'Documentos', href: '/documento/documento', icon: CloudUploadIcon, current: false }
