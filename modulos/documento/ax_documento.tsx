@@ -1,6 +1,7 @@
 import { useEffect, useReducer, useState } from "react";
 import useSWRImmutable from "swr/immutable"
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
+import { default as dayjs } from 'dayjs';
 import * as uuid from 'uuid'
 import { AxInput, AxSelect, AxSubmit, AxCheck, AxBtnModalCancelar } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
@@ -32,8 +33,9 @@ const formReducer = (state: DocumentoModel, event: any): DocumentoModel => {
 }
 
 export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, setOpen }: any) {
-    const { data: listaEmpleado } = useSWRImmutable('/api/entidad/empleado', fetcherEmpleado);
-    const { data: listaPersona } = useSWRImmutable('/api/entidad/persona', fetcherPersona);
+    const { user, error, isLoading: isLoadingUser } = useUser();
+    const { data: listaEmpleado } = useSWRImmutable<any[]>('/api/entidad/empleado/v_empleado', fetcherEmpleado);
+    const { data: listaPersona } = useSWRImmutable('/api/entidad/persona/v_persona', fetcherPersona);
     const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
     const { data: listaTipoDocumento } = useSWRImmutable<TipoDocumentoModel[]>('/api/documento/tipo_documento', fetcherDocumento);
     const [formData, setFormData] = useReducer(formReducer, new DocumentoModel());
@@ -54,12 +56,24 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
             const fetchData = async () => {
                 const response = await fetch(`/api/documento/documento/${ID}`);
                 const data: DocumentoModel = await response.json();
+                data.fecha_creacion = dayjs(data.fecha_creacion).format("YYYY-MM-DD")
+                data.fecha_documento = dayjs(data.fecha_documento).format("YYYY-MM-DD")
+                setFormData({ FORM_DATA: data });
                 setFormData({ FORM_DATA: data });
             }
             fetchData().catch(console.error);
         }
         setIsLoading(false)
     }, [ID])
+
+    useEffect(() => {
+        if (ID == 0) {
+            const empleado = listaEmpleado?.filter(x => x.email == user?.email);
+            if (empleado && empleado[0]) {
+                setFormData({ name: "id_empleado", value: empleado[0].id })
+            }
+        }
+    }, [listaEmpleado])
 
     const changeImagen = (e: any) => {
         setImagen(e.target.files[0]);
@@ -93,11 +107,8 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
 
     useEffect(() => {
         if (formData.fecha_documento != "" && formData.fecha_documento.length == 10) {
-            console.log(1)
             const tipoDocumento = listaTipoDocumento?.find(item => item.id == formData.id_tipo_documento);
             if (tipoDocumento) {
-                console.log(tipoDocumento.codigo)
-                console.log(formData.fecha_documento.substring(0, 4))
                 const fetchData = async () => {
                     const response = await fetch(`/api/documento/documento/fn_documento_numero?codigo=${tipoDocumento.codigo}&year=${formData.fecha_documento.substring(0, 4)}`);
                     const numero: string = await response.json();
@@ -196,31 +207,37 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                                 <AxInput name="fecha_documento" label="Fecha Documento" value={formData.fecha_documento} handleChange={handleChange} type="date" />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="numero_documento" label="Nro Documento" value={formData.numero_documento} handleChange={handleChange} disabled={true}/>
+                                                <AxInput name="numero_documento" label="Nro Documento" value={formData.numero_documento} handleChange={handleChange} disabled={true} />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxSelect name="id_empleado" value={formData.id_empleado} label="Empleado" handleChange={handleChange}>
-                                                    {listaEmpleado && listaEmpleado.map((empleado: any) => <option key={empleado.id} value={empleado.id}>{empleado.nombre}</option>)}
+                                                <AxSelect name="tipo_entidad" value={formData.tipo_entidad} label="Tipo Entidad" handleChange={handleChange}>
+                                                    <option key="Natural" value="Natural">Natural</option>
+                                                    <option key="Juridico" value="Juridico">Juridico</option>
                                                 </AxSelect>
                                             </div>
-                                            <div className="md:col-span-2">
-                                                <AxSelect name="id_persona" value={formData.id_persona} label="Persona" handleChange={handleChange}>
-                                                    {listaPersona && listaPersona.map((persona: any) => <option key={persona.id} value={persona.id}>{persona.nombre}</option>)}
-                                                </AxSelect>
-                                            </div>
-                                            <div className="md:col-span-2">
-                                                <AxSelect name="id_empresa" value={formData.id_empresa} label="Empresa" handleChange={handleChange}>
-                                                    {listaEmpresa && listaEmpresa.map((empresa: any) => <option key={empresa.id} value={empresa.id}>{empresa.razon_social}</option>)}
-                                                </AxSelect>
-                                            </div>
-                                            <div className="md:col-span-2">
+                                            {
+                                                formData.tipo_entidad == "Natural"
+                                                    ? <div className="md:col-span-3">
+                                                        <AxSelect name="id_persona" value={formData.id_persona} label="Persona" handleChange={handleChange}>
+                                                            {listaPersona && listaPersona.map((persona: any) => <option key={persona.id} value={persona.id}>{persona.nombre_apellido}</option>)}
+                                                        </AxSelect>
+                                                    </div>
+                                                    : <div className="md:col-span-3">
+                                                        <AxSelect name="id_empresa" value={formData.id_empresa} label="Empresa" handleChange={handleChange}>
+                                                            {listaEmpresa && listaEmpresa.map((empresa: any) => <option key={empresa.id} value={empresa.id}>{empresa.razon_social}</option>)}
+                                                        </AxSelect>
+                                                    </div>
+                                            }
+                                            <div className="md:col-span-1">
                                                 <AxInput name="fecha_creacion" label="Fecha Registro" value={formData.fecha_creacion} handleChange={handleChange} disabled type="date" />
+                                            </div>
+                                            <div className="md:col-span-2">
+                                                <AxSelect name="id_empleado" value={formData.id_empleado} label="Empleado" handleChange={handleChange} disabled={true}>
+                                                    {listaEmpleado && listaEmpleado.map((item: any) => <option key={item.id} value={item.id}>{item.nombre_apellido}</option>)}
+                                                </AxSelect>
                                             </div>
                                             <div className="md:col-span-4">
                                                 <AxInput name="observacion" label="Observacion" value={formData.observacion} handleChange={handleChange} type="text" />
-                                            </div>
-                                            <div className="md:col-span-2">
-                                                <AxInput name="fecha_edicion" label="Fecha Edición" value={formData.fecha_edicion} handleChange={handleChange} disabled type="date" />
                                             </div>
                                             <div className="md:col-span-5">
                                                 <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
@@ -233,13 +250,13 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                                             <div className="space-y-1 text-center">
                                                                 <div>
                                                                     <div style={{ width: 100 }}>
-                                                                        {formData.url_archivo ?                                                                           
+                                                                        {formData.url_archivo ?
                                                                             <label className="button primary block" htmlFor="single">
                                                                                 {uploading ? 'Actualizando archivo ...' : 'Actualizar Archivo'}
-                                                                            </label>:
-                                                                             <label className="button primary block" htmlFor="single">
-                                                                             {uploading ? 'Subiendo archivo ...' : 'Subir Archivo'}
-                                                                         </label> 
+                                                                            </label> :
+                                                                            <label className="button primary block" htmlFor="single">
+                                                                                {uploading ? 'Subiendo archivo ...' : 'Subir Archivo'}
+                                                                            </label>
                                                                         }
                                                                         <p className="text-xs text-gray-500">Jpg, Png, Img</p>
                                                                         <input
@@ -302,8 +319,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                                                     </li>
                                                                 </ul>
                                                             </div>)
-                                                            :
-                                                            (
+                                                            : (
                                                                 <div className="archivo-requisito no-image" style={{ height: 100, width: 100 }} />
                                                             )}
 
@@ -319,7 +335,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                             </div>
                                             <div className="md:col-span-1" />
                                             <div className="md:col-span-1">
-                                                <AxCheck id="es_anulado" name="EsAnulado" value={formData.es_anulado} label="¿Es anulado?" handleChange={handleChange} />
+                                                <AxCheck id="es_anulado" name="EsAnulado" value={formData.es_anulado} label="¿Es Anulado?" handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-1">
                                                 <AxInput name="fecha_anulacion" label="Fecha Anulación" value={formData.fecha_anulacion} handleChange={handleChange} type="date" />

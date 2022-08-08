@@ -1,8 +1,10 @@
+import { default as dayjs } from 'dayjs';
 class DocumentoModel {
     id: number;
     fecha_creacion?: string;
     fecha_edicion?: string;
     id_tipo_documento: number;
+    tipo_entidad: string;
     numero_documento: string;
     observacion: string;
     fecha_documento: string;
@@ -12,17 +14,18 @@ class DocumentoModel {
     motivo_anulacion?: string;
     id_empleado: number;
     id_empresa?: number;
-    id_persona: number;
-    
+    id_persona?: number;
+
 
     constructor() {
         this.id = 0;
+        this.tipo_entidad = 'Natural';
+        this.fecha_documento = dayjs().format("YYYY-MM-DD")
+        this.fecha_creacion = dayjs().format("YYYY-MM-DD")
         this.numero_documento = "";
         this.observacion = "";
-        this.fecha_documento = "";
         this.es_anulado = false;
         this.id_empleado = 0;
-        this.id_persona = 0;
         this.id_tipo_documento = 0;
     }
 }

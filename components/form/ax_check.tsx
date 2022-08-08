@@ -10,7 +10,7 @@ export default function AxCheck({ id, name, value, label, handleChange }: any) {
             </div>
             <div className="ml-3 text-sm">
                 <label htmlFor="EsActivo" className="font-medium text-gray-700">
-                    ¿Es Activo?
+                    {label}
                 </label>
             </div>
         </div>

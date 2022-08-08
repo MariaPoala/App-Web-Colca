@@ -25,11 +25,13 @@ const fetcherEmpleado = (url: string): Promise<any> =>
 
 const campos = [
   { name: 'Documento' },
-  { name: 'Entidad' },
-  { name: 'F. Documento' },
+  { name: 'N° Documento' },
+  { name: 'Fecha Documento' },
   { name: 'Empleado' },
+  { name: 'Ciudadano' },
   { name: 'Observaciones' },
-  { name: 'F. Registro' }
+  { name: 'Fecha Registro' },
+  { name: '¿Anulado?' },
 ]
 
 type TypeFiltro = {
@@ -99,6 +101,7 @@ export default function AxPageDocumento() {
       (filtro.numero_documento ? doc.numero_documento == filtro.numero_documento : true) &&
       (filtro.fecha_documento ? doc.fecha_documento == filtro.fecha_documento : true)
     )
+    console.log(filtrado);
     setListaFiltro(filtrado);
   }
 
@@ -221,20 +224,17 @@ export default function AxPageDocumento() {
                             ✔
                           </th>
                           {campos.map((item) => (
-                            <th scope="col" key={item.name} className="px-1 py-3 text-center text-sm text-gray-900">
+                            <th key={item.name} className="px-1 py-3 text-center text-sm text-gray-900">
                               {item.name}
                             </th>
                           ))}
-                          <th scope="col" key='anulado' className="py-3 text-center text-sm text-gray-900 relative w-24 px-3">
-                            ¿Anulado?
-                          </th>
                         </tr>
                       </thead>
 
-                      <tbody className="divide-y divide-gray-200 bg-white">
+                      <tbody className="divide-x divide-y overflow-x-auto overflow-y-auto divide-gray-200 bg-white">
                         {(listaFiltro && listaFiltro.map((item: any) => (
                           <tr key={item.id} className={item.id == ID ? "bg-indigo-100 table table-fixed w-full" : "bg-white table table-fixed w-full"}>
-                            <td className="w-16 text-center whitespace-nowrap px-3 text-sm text-gray-500">
+                            <td className="w-16 text-center whitespace-nowrap px-3 py-3 text-sm text-gray-500">
                               <input
                                 onChange={(event) => {
                                   if (!event.target.checked) {
@@ -251,23 +251,20 @@ export default function AxPageDocumento() {
                                 className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                               />
                             </td>
-                            <td className="whitespace-nowrap px-1 py-1 text-sm text-gray-500 truncate">
-                              <div className="text-gray-900">{item.tipo_documento_nombre}</div>
-                              <div className="text-gray-500">{item.numero_documento}</div>
+                            <td className="px-1 py-3 whitespace-nowrap text-sm text-gray-500 truncate">
+                              {item.tipo_documento_nombre}
                             </td>
-                            <td className="whitespace-nowrap px-1 text-center text-sm text-gray-500 truncate">
-                              <div className="text-gray-900">{item.tipo_entidad}</div>
-                              {item.tipo_entidad == "Natural"
-                                ? <div className="text-gray-500">{item.persona_nombre}</div>
-                                : <div className="text-gray-500">{item.empresa_razon_social}</div>
-                              }
+                            <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                              {item.numero_documento}
                             </td>
                             <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                               {item.fecha_documento}
                             </td>
-
-                            <td className="px-1 whitespace-nowrap text-center text-sm text-gray-500 truncate">
+                            <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
                               {item.empleado_nombre}
+                            </td>
+                            <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
+                              {item.persona_nombre}
                             </td>
                             <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
                               {item.observacion}
@@ -275,10 +272,11 @@ export default function AxPageDocumento() {
                             <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                               {item.fecha_creacion}
                             </td>
-                            <td className="px-1 w-24 text-center whitespace-nowrap text-sm text-gray-500 truncate">                              
+                            <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                               {item.es_anulado == true ?
-                                <BanIcon className='pl-5 h-6 w-6  text-center  text-red-400'></BanIcon> :
-                                <BadgeCheckIcon className='h-6 w-6  text-center text-green-400 '></BadgeCheckIcon>
+
+                                <BanIcon className='h-6 w-6    text-red-400'></BanIcon> :
+                                <BadgeCheckIcon className='h-6 w-6  text-green-400 '></BadgeCheckIcon>
                               }
                             </td>
                           </tr>
