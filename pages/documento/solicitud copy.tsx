@@ -1,23 +1,28 @@
 
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
-import { CheckCircleIcon, LinkIcon, RefreshIcon, XIcon, EyeOffIcon, EyeIcon } from '@heroicons/react/outline';
+import { CheckCircleIcon, LinkIcon, RefreshIcon, XIcon, ExclamationCircleIcon, EyeOffIcon, EyeIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
-import { AxSelectFiltro, AxBtnAgregar, AxBtnEditarLista, AxSelect } from 'components/form';
+import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar, AxBtnEditarLista, AxSelect } from 'components/form';
 import { EnumEstadoEdicion, EnumTipoEdicion } from 'lib/edicion';
 import SolicitudModel from 'models/solicitud_model'
 import AxSolicitud from 'modulos/documento/ax_solicitud';
 import AxSolicitudEstado from 'modulos/documento/ax_solicitud_estado';
 import AxSubirArchivo from 'modulos/documento/ax_subir_archivo';
+import Link from 'next/link';
 import supabase from "lib/supabase_config";
-import { setUncaughtExceptionCaptureCallback } from 'process';
+import PSPDFKit from 'pspdfkit';
 
 
 const fetcherVSolicitud = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
+const fetcherTipoDocumento = (url: string): Promise<any> =>
+  fetch(url, { method: "GET" }).then(r => r.json());
 const fetcherPersona = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
 const fetcherEmpresa = (url: string): Promise<any> =>
+  fetch(url, { method: "GET" }).then(r => r.json());
+const fetcherEmpleado = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
 
 const campos = [
@@ -44,9 +49,11 @@ type TypeFiltro = {
 }
 
 export default function AxPageDocumento() {
+  const { data: listaTipoDocumento } = useSWRImmutable<any[]>('/api/documento/tipo_documento', fetcherTipoDocumento);
   const { data: listaPersona } = useSWRImmutable('/api/entidad/persona', fetcherPersona);
   const { data: listaSol } = useSWRImmutable('/api/documento/solicitud/v_solicitud', fetcherVSolicitud);
   const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
+  const { data: listaEmpleado } = useSWRImmutable('/api/entidad/empleado/v_empleado', fetcherEmpleado);
   const [ID, setID] = useState(-1)
   const [lista, setLista] = useState<SolicitudModel[]>([]);
   const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
@@ -60,12 +67,11 @@ export default function AxPageDocumento() {
   const [archivo, setArchivo] = useState("")
   const [clic, setclic] = useState(false)
   const [subirNuevoArchivo, setSubirNuevoArchivo] = useState(false)
-  const [verArchivo, setVerArchivo] = useState(false)
+  const [modalArchivoSol, setModalArchivoSol] = useState(false)
 
   const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 10 })
 
   useEffect(() => {
-    
     if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
     setIsLoading(true)
     const fetchData = async () => {
@@ -83,6 +89,13 @@ export default function AxPageDocumento() {
     FnFiltrarLista();
   }, [lista])
 
+  const resultado = Array.from(new Set(lista.map(s => s.id_tipo_documento)))
+    .map(id => {
+      return {
+        id: id
+      }
+    });
+
   const handleChange = (event: any) => {
     if (event.target.name == "FiltroGrupo") {
       const indexAnterior = filtro.id_tipo_documento.indexOf(event.target.value);
@@ -95,7 +108,7 @@ export default function AxPageDocumento() {
     }
   }
 
-  function FnFiltrarLista() {   
+  function FnFiltrarLista() {
     let filtrado = listaSol && listaSol.filter((sol: any) =>
       (filtro.id_persona ? sol.id_persona == filtro.id_persona : true) ||
       (filtro.id_empresa ? sol.id_empresa == filtro.id_empresa : true)
@@ -106,9 +119,27 @@ export default function AxPageDocumento() {
   function FnLoadMas() {
     setPaginacion({ inicio: 0, cantidad: paginacion.cantidad + 10 });
   }
+
+  // const containerRef = useRef(null);
+  // function FnFuncion() {
+  //   let instance, PSPDFKit:any;
+  //   (async function() {
+  //     PSPDFKit = await import("pspdfkit");
+  //     instance = await PSPDFKit.load({
+  //       container: containerRef.current,
+  //       document: archivo,
+  //       baseUrl: `${window.location.protocol}//${window.location.host}/`
+  //     });
+  //   })();
+
+  //   return () => PSPDFKit && PSPDFKit.unload(containerRef.current);
+  // }
+
   async function FndescargarImg() {
     try {
+
       if (archivo) {
+
         const { signedURL, error } = await supabase.storage.from('archivo-documento').createSignedUrl(archivo, 60)
         if (error) {
           throw error
@@ -191,14 +222,32 @@ export default function AxPageDocumento() {
               </p>
             </div>
             <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none ">
-              <AxBtnEditarLista  setVerArchivo={setVerArchivo}  setSubirNuevoArchivo={setSubirNuevoArchivo} estadoEdicion={ID > 0 ? EnumEstadoEdicion.SELECCIONADO : estadoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
-              <AxBtnAgregar  setVerArchivo={setVerArchivo}  setSubirNuevoArchivo={setSubirNuevoArchivo}  setEstadoEdicion={setEstadoEdicion} setID={setID} setTipoEdicion={setTipoEdicion}></AxBtnAgregar>
+              <AxBtnEditarLista estadoEdicion={ID > 0 ? EnumEstadoEdicion.SELECCIONADO : estadoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
+              {/* {tipoEdicion==EnumTipoEdicion.EDITAR && setabrir(true)} */}
+              <AxBtnAgregar setEstadoEdicion={setEstadoEdicion} setID={setID} setTipoEdicion={setTipoEdicion}></AxBtnAgregar>
             </div>
           </div>
+
+
+
+
+          {/* <div ref={containerRef} style={{ height: "100vh"}}/> */}
+
+
+
+
           <div className="hidden sm:block">
             <div className="mx-auto px-14 sm:px-16 lg:px-8">
               <div className="flex flex-col mt-2">
                 <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg ">
+                  {/* {filtro.id_tipo_documento.length == 0 ?
+                    // <dd className="mt-10 gap-2 p-10 flex items-center text-sm text-gray-500 font-medium sm:mr-6 sm:mt-0 capitalize">
+                    //   <ExclamationCircleIcon
+                    //     className="flex-shrink-0 mr-0 h-5 w-5 text-orange-500"
+                    //     aria-hidden="true"
+                    //   />
+                    //   ¡Seleccionar un Documento!
+                    // </dd> : */}
                   <table className="flex flex-col w-full h-[calc(100vh-23rem)] divide-gray-300">
                     <thead className='bg-indigo-200'>
                       <tr className='table table-fixed w-full divide-x divide-y divide-gray-200'>
@@ -212,6 +261,7 @@ export default function AxPageDocumento() {
                         ))}
                       </tr>
                     </thead>
+
                     <tbody className="divide-x divide-y overflow-x-auto overflow-y-auto divide-gray-200 bg-white">
                       {(listaSol && listaSol.map((item: any) => (
                         <tr key={item.id} className={item.id == ID ? "bg-indigo-100 table table-fixed w-full" : "bg-white table table-fixed w-full"}>
@@ -251,61 +301,86 @@ export default function AxPageDocumento() {
                             {item.fecha_plazo}
                           </td>
                           <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                            <button type="button"
-                              onClick={() => {
-                                setTipoEdicion(EnumTipoEdicion.EDITAR);
-                                setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
-                                setEsModalEstado(true)
-                                setID(item.id)
-                              }}
-                              className={" inline-flex items-center px-3 py-2 border disabled:bg-indigo-300  border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 " + (item.estado == "Registrado" ?
-                                "bg-red-500 hover:bg-red-600 focus:ring-red-500 " : item.estado == "Validado" ? "bg-green-500 hover:bg-green-600 focus:ring-green-500 " :
-                                  "bg-indigo-500 hover:bg-indigo-600 focus:ring-indigo-500 ")
-                              }
-                            >
-                              {item.estado}
-                            </button>
+                            {/* {item.estado} */}
+                            {item.estado == "Registrado" ?
+                              <button type="button"
+                                onClick={() => {
+                                  setTipoEdicion(EnumTipoEdicion.EDITAR);
+                                  setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
+                                  setEsModalEstado(true)
+                                  setID(item.id)
+                                }}
+                                className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500     disabled:bg-indigo-300"
+                              >
+                                {item.estado}
+                              </button> :
+                              item.estado == "Validado" ?
+                                <button type="button"
+                                  onClick={() => {
+                                    setTipoEdicion(EnumTipoEdicion.EDITAR);
+                                    setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
+                                    setEsModalEstado(true)
+                                    setID(item.id)
+                                  }}
+
+                                  className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500     disabled:bg-indigo-300"
+                                >
+                                  {item.estado}
+                                </button> :
+                                <button type="button"
+                                  onClick={() => {
+                                    setTipoEdicion(EnumTipoEdicion.EDITAR);
+                                    setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
+                                    setEsModalEstado(true)
+                                    setID(item.id)
+                                  }}
+
+                                  className="inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
+                                >
+                                  {item.estado}
+                                </button>
+                            }
                           </td>
                           <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                             {item.archivo &&
                               <button type="button"
                                 onClick={() => {
                                   setArchivo(item.archivo)
-                                  setTipoEdicion(EnumTipoEdicion.EDITAR);
-                                  setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
                                   setID(item.id)
-                                  setEsModalEstado(false)
-                                  setSubirNuevoArchivo(true);
-                                  setVerArchivo(true);
                                 }}
                                 className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500     disabled:bg-indigo-300"
                               >
                                 <LinkIcon className='h-4 w-4 text-white'></LinkIcon>
                               </button>
                             }
+
                           </td>
                           <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
 
                             <button type="button"
                               onClick={() => {
+                                // setArchivo(item.url_archivo_solicitud)
+                              
                                 setID(item.id)
                                 setTipoEdicion(EnumTipoEdicion.EDITAR);
                                 setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
-                                setSubirNuevoArchivo(true);
-                                setEsModalEstado(false)
-                                item.forma_entrega == "directo" ? setVerArchivo(true) : setVerArchivo(false);
-                                setArchivo(item.archivo)
+                                setSubirNuevoArchivo(true)
                               }}
                               className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
                             >
-                              {item.url_archivo ? "subir" : item.forma_entrega == "impreso" ? "ver impreso" : "Ver directo"}
+                              {item.url_archivo_solicitud ? "Ver" : "Subir"}
                             </button>
+
+
                           </td>
                         </tr>
                       )))}
                     </tbody>
                   </table>
+                  {/* } */}
                 </div>
+                <div className="container"></div>
+
                 <div className="md:col-span-1">
                   <div className=" sm:border-t sm:border-gray-200 sm:pt-5">
                     {clic == false ?
@@ -347,6 +422,7 @@ export default function AxPageDocumento() {
                         (
                           <div className="archivo-requisito no-image" style={{ height: 100, width: 100 }} />
                         )}
+
                     </div>
                   }
                 </div>
@@ -404,9 +480,11 @@ export default function AxPageDocumento() {
                     <AxSolicitudEstado ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSolicitudEstado>
                     :
                     subirNuevoArchivo == true ?
-                      <AxSubirArchivo verArchivo={verArchivo} archivo={archivo} ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSubirArchivo>
+                      <AxSubirArchivo ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSubirArchivo>
                       :
                       <AxSolicitud ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSolicitud>
+
+
                   }
                 </Dialog.Panel>
               </Transition.Child>

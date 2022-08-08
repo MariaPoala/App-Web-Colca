@@ -164,10 +164,16 @@ export default function AxTipoDocumento({ ID, setID, setEstadoEdicion }: TypeFor
                                             <div className="md:col-span-3">
                                                 <AxInput name="tiempo_entrega" label="Tiempo Entrega" value={formData.tiempo_entrega} handleChange={handleChange} type="number" />
                                             </div>
-                                            <div className="md:col-span-3">
+                                            <div className="md:col-span-2">
                                                 <AxInput name="costo" label="Costo S/" value={formData.costo} handleChange={handleChange} placeholder="0.00" />
                                             </div>
-                                            <div className="md:col-span-3">
+                                            <div className="md:col-span-2">
+                                                <AxSelect name="forma_entrega" value={formData.forma_entrega} label="Forma Entrega" handleChange={handleChange}>
+                                                    <option>directo</option>
+                                                    <option>impreso</option>
+                                                </AxSelect>
+                                            </div>
+                                            <div className="md:col-span-2">
                                                 <AxSelect name="id_grupo" value={formData.id_grupo} label="Grupo" handleChange={handleChange}>
                                                     {listaGrupo && listaGrupo.map((grupo: any) => <option key={grupo.id} value={grupo.id}>{grupo.nombre}</option>)}
                                                 </AxSelect>

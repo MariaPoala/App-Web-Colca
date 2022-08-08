@@ -14,7 +14,8 @@ const navigation = [
     {
         name: 'Seguridad', href: '', icon: FingerPrintIcon, current: false,
         children: [
-            { name: 'Roles', href: '/administracion/rol', icon: IdentificationIcon, current: false }
+            { name: 'Roles', href: '/administracion/rol', icon: IdentificationIcon, current: false },
+            { name: 'Area', href: '/administracion/area', icon: LibraryIcon, current: false },
         ],
     },
     {
@@ -32,9 +33,8 @@ const navigation = [
         children: [
             { name: 'Grupo', href: '/administracion/grupo', icon: DuplicateIcon, current: false },
             { name: 'Consideraciones', href: '/documento/consideracion', icon: ClipboardListIcon, current: false },
-            { name: 'Tipo Documento', href: '/documento/tipo_documento', icon: DocumentDuplicateIcon, current: false },
-            { name: 'Area', href: '/administracion/area', icon: LibraryIcon, current: false },
-            { name: 'Requisitos', href: '/documento/requisito', icon: ClipboardCheckIcon, current: false }
+            { name: 'Requisitos', href: '/documento/requisito', icon: ClipboardCheckIcon, current: false },
+            { name: 'Tipo Documento', href: '/documento/tipo_documento', icon: DocumentDuplicateIcon, current: false }      
         ],
     },
     {

@@ -10,6 +10,8 @@ import { ChevronLeftIcon } from "@heroicons/react/outline";
 export const getServerSideProps = withPageAuthRequired();
 const fetcherDistrito = (url: string): Promise<any> =>
     fetch(url, { method: "GET" }).then(r => r.json());
+    const fetcherAnexo = (url: string): Promise<any> =>
+    fetch(url, { method: "GET" }).then(r => r.json());
 
 const formReducer = (state: EmpresaModel, event: any): EmpresaModel => {
     if (event.FORM_DATA) {
@@ -23,6 +25,8 @@ const formReducer = (state: EmpresaModel, event: any): EmpresaModel => {
 
 export default function AxEmpresa({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
     const { data: listaDistrito } = useSWRImmutable('/api/entidad/distrito', fetcherDistrito);
+    
+    const { data: listaAnexo } = useSWRImmutable('/api/entidad/anexo', fetcherAnexo); 
     const [formData, setFormData] = useReducer(formReducer, new EmpresaModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -65,7 +69,6 @@ export default function AxEmpresa({ ID, setID, setEstadoEdicion }: TypeFormulari
         })
 
         const result: EmpresaModel = await response.json()
-        console.log(result);
         if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.id);
         setIsSubmitting(false);
         setOpen(false);
@@ -158,7 +161,7 @@ export default function AxEmpresa({ ID, setID, setEstadoEdicion }: TypeFormulari
                                             </div>
                                             <div className="md:col-span-3">
                                                 <AxSelect name="id_anexo" value={formData.id_anexo} label="Anexo" handleChange={handleChange}>
-                                                    {listaDistrito && listaDistrito.map((anexo: any) => <option key={anexo.id} value={anexo.id}>{anexo.nombre}</option>)}
+                                                    {listaAnexo && listaAnexo.map((anexo: any) => <option key={anexo.id} value={anexo.id}>{anexo.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-4">

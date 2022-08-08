@@ -14,6 +14,7 @@ class EmpleadoModel {
     estado: boolean;
     url_imagen?: string;
     id_distrito: number;
+    id_anexo?: number;
     id_area: number;
     id_rol: number;
     constructor() {
