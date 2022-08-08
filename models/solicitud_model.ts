@@ -17,6 +17,7 @@ class SolicitudModel {
     id_empleado: number;
     id_persona: number;
     id_empresa?: number;
+    url_archivo_solicitud?: string;
 
     constructor() {
 

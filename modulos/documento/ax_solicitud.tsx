@@ -7,6 +7,7 @@ import { AxInput, AxSelect, AxSubmit, AxCheck, AxBtnModalCancelar, AxRadio } fro
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
 import SolicitudModel from 'models/solicitud_model'
 import DocumentoModel from "models/documento_model";
+import supabase from "lib/supabase_config";
 // import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
 // import db from "lib/firebase-config";
 // db.app
@@ -47,6 +48,8 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [imagenupload, setImagen] = useState(null);
+    const [urlArchivo, setUrlArchivo] = useState("")
+    const [archivo, setArchivo] = useState("")
     // const storage = getStorage();
     const [listaimage, setListaimage] = useState<Array<any>>([]);
     useEffect(() => {
@@ -133,6 +136,24 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
         setIsSubmitting(false);
         if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
         setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
+    }
+
+    async function FndescargarImg() {
+        try {
+
+            if (archivo) {
+
+                const { signedURL, error } = await supabase.storage.from('archivo-documento').createSignedUrl(archivo, 60)
+                if (error) {
+                    throw error
+                }
+                if (signedURL) {
+                    setUrlArchivo(signedURL)
+                }
+            }
+        } catch (error: any) {
+            console.log('Error downloading image: ', error.message)
+        }
     }
     return (
         <>
@@ -224,6 +245,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                                 <AxInput name="fecha_edicion" label="Fecha Edición" value={formData.fecha_edicion} handleChange={handleChange} disabled type="date" />
                                             </div> */}
                                         </div>
+                                        
                                     </div>
                                     {/* <fieldset>
                                         <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">

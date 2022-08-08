@@ -8,6 +8,7 @@ import { EnumEstadoEdicion, EnumTipoEdicion } from 'lib/edicion';
 import SolicitudModel from 'models/solicitud_model'
 import AxSolicitud from 'modulos/documento/ax_solicitud';
 import AxSolicitudEstado from 'modulos/documento/ax_solicitud_estado';
+import AxSubirArchivo from 'modulos/documento/ax_subir_archivo';
 import Link from 'next/link';
 import supabase from "lib/supabase_config";
 import PSPDFKit from 'pspdfkit';
@@ -29,13 +30,13 @@ const campos = [
   { name: 'N° Documento' },
   { name: 'Entidad' },
   { name: 'Documento' },
-  { name: 'Motivo' },
   { name: 'I Total' },
   { name: 'Empleado' },
   { name: 'Fecha Inicio' },
   { name: 'Fecha Plazo' },
   { name: 'Estado' },
-  { name: 'Archivo' },
+  { name: 'Ver' },
+  { name: 'Subir' },
 ]
 
 type TypeFiltro = {
@@ -65,6 +66,8 @@ export default function AxPageDocumento() {
   const [urlArchivo, setUrlArchivo] = useState("")
   const [archivo, setArchivo] = useState("")
   const [clic, setclic] = useState(false)
+  const [subirNuevoArchivo, setSubirNuevoArchivo] = useState(false)
+  const [modalArchivoSol, setModalArchivoSol] = useState(false)
 
   const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 10 })
 
@@ -149,7 +152,6 @@ export default function AxPageDocumento() {
       console.log('Error downloading image: ', error.message)
     }
   }
-
   return (
     <>
       <main className="flex-1 pb-8">
@@ -286,9 +288,6 @@ export default function AxPageDocumento() {
                           <td className="px-1 py-3 whitespace-nowrap text-sm text-gray-500 truncate">
                             {item.nombre_documento}
                           </td>
-                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                            {item.motivo}
-                          </td>
                           <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
                             {item.i_total}
                           </td>
@@ -309,7 +308,7 @@ export default function AxPageDocumento() {
                                   setTipoEdicion(EnumTipoEdicion.EDITAR);
                                   setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
                                   setEsModalEstado(true)
-
+                                  setID(item.id)
                                 }}
                                 className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500     disabled:bg-indigo-300"
                               >
@@ -321,6 +320,7 @@ export default function AxPageDocumento() {
                                     setTipoEdicion(EnumTipoEdicion.EDITAR);
                                     setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
                                     setEsModalEstado(true)
+                                    setID(item.id)
                                   }}
 
                                   className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500     disabled:bg-indigo-300"
@@ -332,6 +332,7 @@ export default function AxPageDocumento() {
                                     setTipoEdicion(EnumTipoEdicion.EDITAR);
                                     setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
                                     setEsModalEstado(true)
+                                    setID(item.id)
                                   }}
 
                                   className="inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
@@ -345,13 +346,31 @@ export default function AxPageDocumento() {
                               <button type="button"
                                 onClick={() => {
                                   setArchivo(item.archivo)
-                                  
+                                  setID(item.id)
                                 }}
                                 className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500     disabled:bg-indigo-300"
                               >
                                 <LinkIcon className='h-4 w-4 text-white'></LinkIcon>
                               </button>
                             }
+
+                          </td>
+                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+
+                            <button type="button"
+                              onClick={() => {
+                                // setArchivo(item.url_archivo_solicitud)
+                              
+                                setID(item.id)
+                                setTipoEdicion(EnumTipoEdicion.EDITAR);
+                                setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
+                                setSubirNuevoArchivo(true)
+                              }}
+                              className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
+                            >
+                              {item.url_archivo_solicitud ? "Ver" : "Subir"}
+                            </button>
+
 
                           </td>
                         </tr>
@@ -460,7 +479,12 @@ export default function AxPageDocumento() {
                   {esModalEstado == true ?
                     <AxSolicitudEstado ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSolicitudEstado>
                     :
-                    <AxSolicitud ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSolicitud>
+                    subirNuevoArchivo == true ?
+                      <AxSubirArchivo ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSubirArchivo>
+                      :
+                      <AxSolicitud ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSolicitud>
+
+
                   }
                 </Dialog.Panel>
               </Transition.Child>
