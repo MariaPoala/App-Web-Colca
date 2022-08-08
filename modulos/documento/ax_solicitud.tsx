@@ -56,11 +56,6 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
         setIsLoading(true)
         if (ID == 0) {
             setFormData({ FORM_ADD: true })
-            const empleado = listaEmpleado?.filter(x => x.email == user?.email);
-            if (empleado && empleado[0]) {
-                setFormData({ name: "id_empleado", value: empleado[0].id })
-                setFormData({ name: "id_area", value: empleado[0].id_area, })
-            }
         }
         else {
             const fetchData = async () => {
@@ -76,6 +71,16 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
         }
         setIsLoading(false)
     }, [ID])
+
+    useEffect(() => {
+        if (ID == 0) {
+            const empleado = listaEmpleado?.filter(x => x.email == user?.email);
+            if (empleado && empleado[0]) {
+                setFormData({ name: "id_empleado", value: empleado[0].id })
+                setFormData({ name: "id_area", value: empleado[0].id_area, })
+            }
+        }
+    }, [listaEmpleado])
 
     useEffect(() => {
         if (ID > 0) {
