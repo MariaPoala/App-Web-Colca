@@ -3,7 +3,7 @@ import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { Dialog, Transition } from "@headlessui/react";
 import { AxInput, AxModalEliminar, AxSubmit, AxBtnEliminar, AxBtnEditar, AxBtnCancelar } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
-import { ChevronLeftIcon, EyeIcon, EyeOffIcon } from "@heroicons/react/outline"
+import { ChevronLeftIcon, EyeIcon, EyeOffIcon, PlusCircleIcon } from "@heroicons/react/outline"
 
 import * as uuid from 'uuid'
 // import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
@@ -41,7 +41,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
         setclic(false)
         setTipoEdicion(ID == 0 ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
         if (ID == 0) {
-            setFormData({ FORM_ADD: true })           
+            setFormData({ FORM_ADD: true })
         }
         else {
             const fetchData = async () => {
@@ -53,7 +53,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
         }
         setIsLoading(false)
     }, [ID])
-console.log(ID)
+    console.log(ID)
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
         setFormData({
@@ -85,13 +85,13 @@ console.log(ID)
         try {
 
             if (formData.url_imagen) {
-               
+
                 const { signedURL, error } = await supabase.storage.from('archivo-requisito').createSignedUrl(formData.url_imagen, 60)
                 if (error) {
                     throw error
                 }
                 if (signedURL) {
-                    setUrlArchivo(signedURL)                  
+                    setUrlArchivo(signedURL)
                 }
             }
         } catch (error: any) {
@@ -185,13 +185,18 @@ console.log(ID)
                                                     </label>
 
                                                     <div className="mt-1 sm:mt-0 sm:col-span-2">
-                                                        <div className="max-w-lg flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                                        <div className="max-w-lg flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md border-gray-300">
                                                             <div className="space-y-1 text-center">
                                                                 <div>
                                                                     <div style={{ width: 100 }}>
-                                                                        <label className="button primary block" htmlFor="single">
-                                                                            {uploading ? 'Subiendo archivo ...' : 'Subir Archivo'}
-                                                                        </label>
+                                                                        {formData.url_imagen ?                                                                           
+                                                                            <label className="button primary block" htmlFor="single">
+                                                                                {uploading ? 'Actualizando archivo ...' : 'Actualizar Archivo'}
+                                                                            </label>:
+                                                                             <label className="button primary block" htmlFor="single">
+                                                                             {uploading ? 'Subiendo archivo ...' : 'Subir Archivo'}
+                                                                         </label> 
+                                                                        }
                                                                         <p className="text-xs text-gray-500">Jpg, Png, Img</p>
                                                                         <input
                                                                             style={{
@@ -214,28 +219,31 @@ console.log(ID)
                                             </div>
                                             <div className="md:col-span-1">
                                                 <div className=" sm:border-t sm:border-gray-200 sm:pt-5">
-                                                    {clic == false ?
-                                                        <button type="button"
-                                                            className="ml-3 inline-flex items-center px-3 py-2 border border-green-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500     disabled:bg-green-300"
-                                                            onClick={() => {
-                                                                FndescargarImg()
-                                                                setclic(true)
-                                                            }}
-                                                        >
-                                                            <EyeIcon className="h-8 w-8 text-white "> </EyeIcon>
-                                                            Visualizar Archivo
-                                                        </button>
+                                                    {formData.url_imagen ?
+                                                        clic == false ?
+                                                            <button type="button"
+                                                                className="ml-3 inline-flex items-center px-3 py-2 border border-green-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500     disabled:bg-green-300"
+                                                                onClick={() => {
+                                                                    FndescargarImg()
+                                                                    setclic(true)
+                                                                }}
+                                                            >
+                                                                <EyeIcon className="h-8 w-8 text-white "> </EyeIcon>
+                                                                Visualizar Archivo
+                                                            </button>
+                                                            :
+                                                            <button type="button"
+                                                                className="ml-3 inline-flex items-center px-3 py-2 border border-blue-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-300     disabled:bg-blue-300"
+                                                                onClick={() => {
+                                                                    FndescargarImg()
+                                                                    setclic(false)
+                                                                }}
+                                                            >
+                                                                <EyeOffIcon className="h-8 w-8 text-white "></EyeOffIcon>
+                                                                Ocultar Archivo
+                                                            </button>
                                                         :
-                                                        <button type="button"
-                                                            className="ml-3 inline-flex items-center px-3 py-2 border border-red-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-300     disabled:bg-red-300"
-                                                            onClick={() => {
-                                                                FndescargarImg()
-                                                                setclic(false)
-                                                            }}
-                                                        >
-                                                            <EyeOffIcon className="h-8 w-8 text-white "></EyeOffIcon>
-                                                            Ocultar Archivo
-                                                        </button>
+                                                        <p className="text-red-500 border-4 border-red-400 text-center">Sin Archivo</p>
                                                     }
                                                 </div>
                                             </div>
@@ -246,7 +254,7 @@ console.log(ID)
                                                             <div className="">
                                                                 <ul role="list" className="content-start sm:grid sm:grid-cols-1 sm:gap-x-1 sm:gap-y-1 sm:space-y-0 lg:grid-cols-1 lg:gap-x-1">
                                                                     <li key={urlArchivo}>
-                                                                            <img className="lg:ml-20 md:ml:2 object-cover shadow-lg rounded-lg" src={urlArchivo} alt="" />                                                                       
+                                                                        <img className="lg:ml-20 md:ml:2 object-cover shadow-lg rounded-lg" src={urlArchivo} alt="" />
                                                                     </li>
                                                                 </ul>
                                                             </div>)
@@ -259,10 +267,10 @@ console.log(ID)
                                                 }
                                             </div>
                                         </div>
-                                        
-                                      
-                                         
-                                   
+
+
+
+
 
                                     </div>
                                 </fieldset>

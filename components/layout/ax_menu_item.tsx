@@ -2,7 +2,7 @@ import {
     CogIcon, FingerPrintIcon, DocumentReportIcon, XIcon,
     HomeIcon, UserIcon, UserGroupIcon, DocumentDuplicateIcon, OfficeBuildingIcon,
     CloudUploadIcon, DocumentTextIcon, DuplicateIcon, DatabaseIcon, CloudIcon,
-    UsersIcon, BadgeCheckIcon, IdentificationIcon, LibraryIcon, ClipboardCheckIcon, ClipboardListIcon,
+    UsersIcon, DocumentSearchIcon, IdentificationIcon, LibraryIcon, ClipboardCheckIcon, ClipboardListIcon,
     DesktopComputerIcon, PaperClipIcon
 } from '@heroicons/react/outline'
 // const fetcherGrupo = (url: string): Promise<any> =>
@@ -47,13 +47,7 @@ const navigation = [
         name: 'Tramites', href: '', icon: DesktopComputerIcon, current: false,
         children: [
             
-            {    name: 'Solicitud' , href: '/documento/solicitud', icon: PaperClipIcon, current: false },
-        ],
-    },
-    {
-        name: 'Seguimiento', href: '', icon: BadgeCheckIcon, current: false,
-        children: [
-            { name: 'seguimiento', href: '/documento/segimiento', icon: BadgeCheckIcon, current: false },
+            {    name: 'Solicitud' , href: '/documento/solicitud', icon: DocumentSearchIcon, current: false },
         ],
     },
     {

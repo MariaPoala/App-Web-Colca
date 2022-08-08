@@ -5,7 +5,9 @@ import { ChevronDownIcon, SearchIcon } from '@heroicons/react/solid'
 import { UserCircleIcon } from '@heroicons/react/outline'
 import Link from 'next/link'
 import { useUser } from '@auth0/nextjs-auth0';
-
+import useSWRImmutable from "swr/immutable"
+const fetcherEmpleado = (url: string): Promise<any> =>
+    fetch(url, { method: "GET" }).then(r => r.json());
 interface IMenuUsuario {
     name: string,
     text: string,
@@ -25,6 +27,7 @@ interface IProps {
 
 export default function AxHeader({ setIsSidebarOpen }: IProps) {
     const { user, error, isLoading } = useUser();
+    const { data: listaEmpleado } = useSWRImmutable('/api/entidad/empleado', fetcherEmpleado);
     if (isLoading) return <div>Loading...</div>;
 
     return <>
@@ -64,15 +67,19 @@ export default function AxHeader({ setIsSidebarOpen }: IProps) {
                     <Menu as="div" className="ml-3 relative">
                         <div>
                             <Menu.Button className="max-w-xs bg-indigo-400 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 lg:p-2 lg:rounded-md lg:hover:bg-indigo-500">
-                                {user
-                                    ? <>
+
+                                {user ?
+                                         <>
                                         <img className="h-8 w-8 rounded-full" src={user.picture || ""} alt="" />
                                         <span className="hidden ml-3 text-white text-sm font-medium lg:block">
                                             <span className="sr-only">Open user menu for </span>{user.email || ""}
                                         </span>
                                     </>
-                                    : <UserCircleIcon className="h-8 w-8 rounded-full"></UserCircleIcon>
+                                        :
+
+                                        <UserCircleIcon className="h-8 w-8 rounded-full"></UserCircleIcon>
                                 }
+
                                 <ChevronDownIcon className="hidden flex-shrink-0 ml-1 h-5 w-5 text-indigo-600 lg:block" aria-hidden="true" />
                             </Menu.Button>
                         </div>

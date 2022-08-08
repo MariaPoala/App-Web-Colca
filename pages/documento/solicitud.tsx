@@ -1,13 +1,17 @@
 
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
-import { CheckCircleIcon, BadgeCheckIcon, RefreshIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
+import { CheckCircleIcon, LinkIcon, RefreshIcon, XIcon, ExclamationCircleIcon, EyeOffIcon, EyeIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
-import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar, AxBtnEditarLista } from 'components/form';
+import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar, AxBtnEditarLista, AxSelect } from 'components/form';
 import { EnumEstadoEdicion, EnumTipoEdicion } from 'lib/edicion';
 import SolicitudModel from 'models/solicitud_model'
 import AxSolicitud from 'modulos/documento/ax_solicitud';
+import AxSolicitudEstado from 'modulos/documento/ax_solicitud_estado';
 import Link from 'next/link';
+import supabase from "lib/supabase_config";
+import PSPDFKit from 'pspdfkit';
+
 
 const fetcherVSolicitud = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
@@ -31,6 +35,7 @@ const campos = [
   { name: 'Fecha Inicio' },
   { name: 'Fecha Plazo' },
   { name: 'Estado' },
+  { name: 'Archivo' },
 ]
 
 type TypeFiltro = {
@@ -38,7 +43,8 @@ type TypeFiltro = {
   id_persona: number,
   fecha_documento: string,
   id_tipo_documento: number[],
-  id_empresa: 0
+  id_empresa: 0,
+  tipo_entidad: string
 }
 
 export default function AxPageDocumento() {
@@ -51,10 +57,15 @@ export default function AxPageDocumento() {
   const [lista, setLista] = useState<SolicitudModel[]>([]);
   const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
   const [isLoading, setIsLoading] = useState(true);
-  const [filtro, setFiltro] = useState<TypeFiltro>({ numero_documento: "", id_persona: 0, fecha_documento: "", id_tipo_documento: [], id_empresa: 0 });
+  const [filtro, setFiltro] = useState<TypeFiltro>({ numero_documento: "", id_persona: 0, fecha_documento: "", id_tipo_documento: [], id_empresa: 0, tipo_entidad: "Natural" });
   const [listaFiltro, setListaFiltro] = useState<SolicitudModel[]>([]);
   const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
   const [esModalOpen, setEsModalOpen] = useState(false)
+  const [esModalEstado, setEsModalEstado] = useState(false)
+  const [urlArchivo, setUrlArchivo] = useState("")
+  const [archivo, setArchivo] = useState("")
+  const [clic, setclic] = useState(false)
+
   const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 10 })
 
   useEffect(() => {
@@ -96,15 +107,47 @@ export default function AxPageDocumento() {
 
   function FnFiltrarLista() {
     let filtrado = listaSol && listaSol.filter((sol: any) =>
-      (filtro.id_persona ? sol.id_persona == filtro.id_persona : true) &&
-      (filtro.id_empresa ? sol.id_empresa == filtro.id_empresa : true) &&
-      (filtro.numero_documento ? sol.numero_documento == filtro.numero_documento : true)
+      (filtro.id_persona ? sol.id_persona == filtro.id_persona : true) ||
+      (filtro.id_empresa ? sol.id_empresa == filtro.id_empresa : true)
     )
     setListaFiltro(filtrado);
   }
 
   function FnLoadMas() {
     setPaginacion({ inicio: 0, cantidad: paginacion.cantidad + 10 });
+  }
+
+  // const containerRef = useRef(null);
+  // function FnFuncion() {
+  //   let instance, PSPDFKit:any;
+  //   (async function() {
+  //     PSPDFKit = await import("pspdfkit");
+  //     instance = await PSPDFKit.load({
+  //       container: containerRef.current,
+  //       document: archivo,
+  //       baseUrl: `${window.location.protocol}//${window.location.host}/`
+  //     });
+  //   })();
+
+  //   return () => PSPDFKit && PSPDFKit.unload(containerRef.current);
+  // }
+
+  async function FndescargarImg() {
+    try {
+
+      if (archivo) {
+
+        const { signedURL, error } = await supabase.storage.from('archivo-documento').createSignedUrl(archivo, 60)
+        if (error) {
+          throw error
+        }
+        if (signedURL) {
+          setUrlArchivo(signedURL)
+        }
+      }
+    } catch (error: any) {
+      console.log('Error downloading image: ', error.message)
+    }
   }
 
   return (
@@ -123,20 +166,25 @@ export default function AxPageDocumento() {
                 </dd>
                 <div className="mt-2 grid ml-14 grid-cols-1   gap-y-6 gap-x-4 md:grid-cols-6">
                   <div className="md:col-span-1">
-                    <AxSelectFiltro name={"id_persona" && "id_empresa"} value={filtro.id_persona} filtro={true} label="Persona" handleChange={handleChange}>
+                    <AxSelect name="tipo_entidad" value={filtro.tipo_entidad} label="Tipo Entidad" handleChange={handleChange}>
+                      <option key="Natural" value="Natural">Natural</option>
+                      <option key="Juridico" value="Juridico">Juridico</option>
+                    </AxSelect>
+                  </div>
+                  {filtro.tipo_entidad == "Natural" ? <div className="md:col-span-2">
+                    <AxSelectFiltro name={"id_persona"} value={filtro.id_persona} filtro={true} label="Persona" handleChange={handleChange}>
                       {listaPersona && listaPersona.map((ciudadano: any) =>
                         <option key={ciudadano.id} value={ciudadano.id}>{ciudadano.nombre}</option>)}
                     </AxSelectFiltro>
-                  </div>
-                  <div className="md:col-span-2">
-                    <AxSelectFiltro name={"id_persona" && "id_empresa"} value={filtro.id_empresa} filtro={true} label="Empresa" handleChange={handleChange}>
-                      {listaEmpresa && listaEmpresa.map((empresa: any) =>
-                        <option key={empresa.id} value={empresa.id}>{empresa.razon_social}</option>)}
-                    </AxSelectFiltro>
-                  </div>
-                  <div className="md:col-span-1">
-                    <AxInput name="numero_documento" handleChange={handleChange} label="Nro Documento" type="text" filtro={true} />
-                  </div>
+                  </div> :
+
+                    <div className="md:col-span-2">
+                      <AxSelectFiltro name={"id_empresa"} value={filtro.id_empresa} filtro={true} label="Empresa" handleChange={handleChange}>
+                        {listaEmpresa && listaEmpresa.map((empresa: any) =>
+                          <option key={empresa.id} value={empresa.id}>{empresa.razon_social}</option>)}
+                      </AxSelectFiltro>
+                    </div>
+                  }
                   <div className="md:col-span-2">
                     <button type="button"
                       onClick={() => FnFiltrarLista()}
@@ -177,6 +225,15 @@ export default function AxPageDocumento() {
               <AxBtnAgregar setEstadoEdicion={setEstadoEdicion} setID={setID} setTipoEdicion={setTipoEdicion}></AxBtnAgregar>
             </div>
           </div>
+
+
+
+
+          {/* <div ref={containerRef} style={{ height: "100vh"}}/> */}
+
+
+
+
           <div className="hidden sm:block">
             <div className="mx-auto px-14 sm:px-16 lg:px-8">
               <div className="flex flex-col mt-2">
@@ -246,22 +303,109 @@ export default function AxPageDocumento() {
                           </td>
                           <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                             {/* {item.estado} */}
-                            <button type="button"
-                              disabled={tipoEdicion == EnumTipoEdicion.EDITAR || tipoEdicion == EnumTipoEdicion.AGREGAR}
-                              onClick={() => {
+                            {item.estado == "Registrado" ?
+                              <button type="button"
+                                onClick={() => {
+                                  setTipoEdicion(EnumTipoEdicion.EDITAR);
+                                  setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
+                                  setEsModalEstado(true)
 
-                              }}
-                              className="ml-3 inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500     disabled:bg-indigo-300"
-                            >
-                              <RefreshIcon className='h-4 w-4 mr-2'></RefreshIcon>
-                              Actualizar
-                            </button>
+                                }}
+                                className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500     disabled:bg-indigo-300"
+                              >
+                                {item.estado}
+                              </button> :
+                              item.estado == "Validado" ?
+                                <button type="button"
+                                  onClick={() => {
+                                    setTipoEdicion(EnumTipoEdicion.EDITAR);
+                                    setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
+                                    setEsModalEstado(true)
+                                  }}
+
+                                  className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500     disabled:bg-indigo-300"
+                                >
+                                  {item.estado}
+                                </button> :
+                                <button type="button"
+                                  onClick={() => {
+                                    setTipoEdicion(EnumTipoEdicion.EDITAR);
+                                    setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
+                                    setEsModalEstado(true)
+                                  }}
+
+                                  className="inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
+                                >
+                                  {item.estado}
+                                </button>
+                            }
+                          </td>
+                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                            {item.archivo &&
+                              <button type="button"
+                                onClick={() => {
+                                  setArchivo(item.archivo)
+                                  
+                                }}
+                                className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500     disabled:bg-indigo-300"
+                              >
+                                <LinkIcon className='h-4 w-4 text-white'></LinkIcon>
+                              </button>
+                            }
+
                           </td>
                         </tr>
                       )))}
                     </tbody>
                   </table>
                   {/* } */}
+                </div>
+                <div className="container"></div>
+
+                <div className="md:col-span-1">
+                  <div className=" sm:border-t sm:border-gray-200 sm:pt-5">
+                    {clic == false ?
+                      <button type="button"
+                        className="ml-3 inline-flex items-center px-3 py-2 border border-green-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500     disabled:bg-green-300"
+                        onClick={() => {
+                          FndescargarImg()
+                          setclic(true)
+                        }}
+                      >
+                        <EyeIcon className="h-8 w-8 text-white "> </EyeIcon>
+                        Visualizar Archivo
+                      </button>
+                      :
+                      <button type="button"
+                        className="ml-3 inline-flex items-center px-3 py-2 border border-red-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-300     disabled:bg-red-300"
+                        onClick={() => {
+                          setclic(false)
+                        }}
+                      >
+                        <EyeOffIcon className="h-8 w-8 text-white "></EyeOffIcon>
+                        Ocultar Archivo
+                      </button>
+                    }
+                  </div>
+                </div>
+                <div className="md:col-span-6">
+                  {clic == true &&
+                    <div className="bg-white">
+                      {urlArchivo ? (
+                        <div className="">
+                          <ul role="list" className="content-start sm:grid sm:grid-cols-1 sm:gap-x-1 sm:gap-y-1 sm:space-y-0 lg:grid-cols-1 lg:gap-x-1">
+                            <li key={urlArchivo}>
+                              <img className="lg:ml-20 md:ml:2 object-cover shadow-lg rounded-lg" src={urlArchivo} alt="" />
+                            </li>
+                          </ul>
+                        </div>)
+                        :
+                        (
+                          <div className="archivo-requisito no-image" style={{ height: 100, width: 100 }} />
+                        )}
+
+                    </div>
+                  }
                 </div>
               </div>
             </div>
@@ -313,7 +457,11 @@ export default function AxPageDocumento() {
                       </div>
                     </div>
                   </div>
-                  <AxSolicitud ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSolicitud>
+                  {esModalEstado == true ?
+                    <AxSolicitudEstado ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSolicitudEstado>
+                    :
+                    <AxSolicitud ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSolicitud>
+                  }
                 </Dialog.Panel>
               </Transition.Child>
             </div>
