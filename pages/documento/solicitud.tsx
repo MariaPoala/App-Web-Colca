@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
 import { CheckCircleIcon, LinkIcon, RefreshIcon, XIcon, EyeOffIcon, EyeIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
-import { AxSelectFiltro, AxBtnAgregar, AxBtnEditarLista, AxSelect } from 'components/form';
+import { AxSelectFiltro, AxBtnAgregarArchivoSolicitud, AxBtnEditarSolicitud, AxSelect } from 'components/form';
 import { EnumEstadoEdicion, EnumTipoEdicion } from 'lib/edicion';
 import SolicitudModel from 'models/solicitud_model'
 import AxSolicitud from 'modulos/documento/ax_solicitud';
@@ -191,8 +191,8 @@ export default function AxPageDocumento() {
               </p>
             </div>
             <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none ">
-              <AxBtnEditarLista  setVerArchivo={setVerArchivo}  setSubirNuevoArchivo={setSubirNuevoArchivo} estadoEdicion={ID > 0 ? EnumEstadoEdicion.SELECCIONADO : estadoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
-              <AxBtnAgregar  setVerArchivo={setVerArchivo}  setSubirNuevoArchivo={setSubirNuevoArchivo}  setEstadoEdicion={setEstadoEdicion} setID={setID} setTipoEdicion={setTipoEdicion}></AxBtnAgregar>
+              <AxBtnEditarSolicitud  setVerArchivo={setVerArchivo}  setSubirNuevoArchivo={setSubirNuevoArchivo} estadoEdicion={ID > 0 ? EnumEstadoEdicion.SELECCIONADO : estadoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
+              <AxBtnAgregarArchivoSolicitud  setVerArchivo={setVerArchivo}  setSubirNuevoArchivo={setSubirNuevoArchivo}  setEstadoEdicion={setEstadoEdicion} setID={setID} setTipoEdicion={setTipoEdicion}></AxBtnAgregarArchivoSolicitud>
             </div>
           </div>
           <div className="hidden sm:block">

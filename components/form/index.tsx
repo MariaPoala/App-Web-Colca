@@ -13,12 +13,14 @@ import AxBtnCancelar from 'components/form/ax_btn_cancelar'
 import AxModalEliminar from 'components/form/modal/ax_modal_eliminar'
 import AxBtnAgregar from 'components/form/ax_btn_agregar'
 import AxPagination from 'components/form/ax_pagination'
+import AxBtnEditarSolicitud from 'components/form/ax_btn_editar_solicitud'
+import AxBtnAgregarArchivoSolicitud from 'components/form/ax_btn_agregar_archivo_solicitud'
 
 export {
     AxCheck, AxRadio,
     AxInput,
     AxSelect, AxSelectFiltro, AxSelectMultiple,
     AxSubmit, AxBtnSubmitEliminar, AxBtnEliminar, AxBtnEditar, AxBtnEditarLista,
-    AxBtnModalCancelar, AxBtnCancelar, AxModalEliminar, AxBtnAgregar,
+    AxBtnModalCancelar, AxBtnCancelar, AxModalEliminar, AxBtnAgregar, AxBtnEditarSolicitud,AxBtnAgregarArchivoSolicitud,
     AxPagination
 }

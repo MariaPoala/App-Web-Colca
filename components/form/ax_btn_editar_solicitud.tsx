@@ -1,7 +1,9 @@
 import { EnumTipoEdicion, EnumEstadoEdicion } from 'lib/edicion'
-export default function AxBtnEditarLista({ estadoEdicion, setTipoEdicion, setEstadoEdicion}: any) {
+export default function AxBtnEditarSolicitud({ estadoEdicion, setTipoEdicion, setEstadoEdicion,setVerArchivo,  setSubirNuevoArchivo }: any) {
     return <button type="button"
         onClick={() => {
+            setVerArchivo(false)
+            setSubirNuevoArchivo(false)
             setTipoEdicion(EnumTipoEdicion.EDITAR);
             setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
         }}
