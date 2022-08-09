@@ -1,9 +1,9 @@
 Empleado
-	- Quitar Anexo
+	- Quitar Anexo ***FINALIZADO
 Persona
-	- Seleccionar Anexo
+	- Seleccionar Anexo ***FINALIZADO
 Empresa
-	- Seleccionar Anexo
+	- Seleccionar Anexo ***FINALIZADO
 Requisito
 	- Color del boton visualizar
 	- Tamaño del boton

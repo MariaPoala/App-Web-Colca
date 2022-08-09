@@ -33,7 +33,7 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
     const { data: listaDistrito } = useSWRImmutable('/api/entidad/distrito', fetcherDistrito);
     const { data: listaRol } = useSWRImmutable('/api/administracion/rol', fetcherRol);
     const { data: listaArea } = useSWRImmutable('/api/administracion/area', fetcherArea);
-    const { data: listaAnexo } = useSWRImmutable('/api/entidad/anexo', fetcherAnexo);    
+    const { data: listaAnexo } = useSWRImmutable<any[]>('/api/entidad/anexo', fetcherAnexo);
     const [formData, setFormData] = useReducer(formReducer, new EmpleadoModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -57,11 +57,7 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
     }, [ID])
 
     const handleChange = (event: any) => {
-        const isCheckbox = event.target.type === 'checkbox';
-        // if (event.target.name == "id_distrito") {
-        //     const filtrado = listaAnexo?.filter(x => x.id_distrito == event.target.value && x.id == formData.id_tipo_documento);
-        //     if (filtrado) setListaDocumentoFiltrado(filtrado);
-        // }
+        const isCheckbox = event.target.type === 'checkbox';        
         setFormData({
             name: event.target.name,
             value: isCheckbox ? event.target.checked : event.target.value,
@@ -190,22 +186,22 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
                                                     {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.id} value={distrito.id}>{distrito.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
-                                            <div className="md:col-span-2">
+                                            {/* <div className="md:col-span-2">
                                                 <AxSelect name="id_anexo" value={formData.id_anexo} label="Anexo" handleChange={handleChange}>
                                                     {listaAnexo && listaAnexo.map((anexo: any) => <option key={anexo.id} value={anexo.id}>{anexo.nombre}</option>)}
                                                 </AxSelect>
-                                            </div>
+                                            </div> */}
                                             <div className="md:col-span-2">
                                                 <AxSelect name="id_rol" value={formData.id_rol} label="Rol" handleChange={handleChange}>
                                                     {listaRol && listaRol.map((rol: any) => <option key={rol.id} value={rol.id}>{rol.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
-                                            <div className="md:col-span-3">
+                                            <div className="md:col-span-2">
                                                 <AxSelect name="id_area" value={formData.id_area} label="Area" handleChange={handleChange}>
                                                     {listaArea && listaArea.map((area: any) => <option key={area.id} value={area.id}>{area.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
-                                            <div className="md:col-span-3">
+                                            <div className="md:col-span-6">
                                                 <AxInput name="direccion" label="Dirección" value={formData.direccion} handleChange={handleChange} />
                                             </div>
                                         </div>

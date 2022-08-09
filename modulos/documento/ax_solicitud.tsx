@@ -246,6 +246,9 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                                     <option key="Validado" value="Validado">Validado</option>
                                                 </AxSelect>
                                             </div>
+                                            <div className="md:col-span-8">
+                                                <AxInput name="asunto" label="Observaciones" value={formData.asunto} handleChange={handleChange} />
+                                            </div>
                                             {/* <div className="md:col-span-2">
                                                 <AxInput name="fecha_edicion" label="Fecha Edición" value={formData.fecha_edicion} handleChange={handleChange} disabled type="date" />
                                             </div> */}
