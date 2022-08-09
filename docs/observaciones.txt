@@ -1,0 +1,23 @@
+Empleado
+	- Quitar Anexo
+Persona
+	- Seleccionar Anexo
+Empresa
+	- Seleccionar Anexo
+Requisito
+	- Color del boton visualizar
+	- Tamaño del boton
+Tipo de documento
+	- Forma Entrega en mayuscula
+Documentos
+	- Tipo de Entidad en mayuscula
+	- Agregar Filtro Tipo de Entidad
+	- Agregar Filtro Persona, Entidad
+	- Filtro por año
+	- Los combos tienen que ser las vistas
+Solicitud
+	- Ordenar Grid
+	- Tipo de Entidad en mayuscula
+	- Filtro - los combos tienen que ser las vistas
+	
+RESPONSIVO
