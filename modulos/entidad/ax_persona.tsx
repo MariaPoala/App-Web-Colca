@@ -25,7 +25,7 @@ const formReducer = (state: PersonaModel, event: any): PersonaModel => {
 
 export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
     const { data: listaDistrito } = useSWRImmutable('/api/entidad/distrito', fetcherDistrito);
-    const { data: listaAnexo } = useSWRImmutable('/api/entidad/anexo', fetcherAnexo);
+    const { data: listaAnexo } = useSWRImmutable<any[]>('/api/entidad/anexo', fetcherAnexo);
     const [formData, setFormData] = useReducer(formReducer, new PersonaModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -51,6 +51,12 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
 
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
+        if (event.target.name == "id_anexo") {
+            const item = listaAnexo?.filter(x => x.id == event.target.value);
+            if (item && item[0]) {
+                setFormData({ name: "id_distrito", value: item[0].id_distrito })
+            }
+        }
         setFormData({
             name: event.target.name,
             value: isCheckbox ? event.target.checked : event.target.value,
@@ -152,13 +158,13 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
                                                 <AxInput name="numero_documento" label="DNI" value={formData.numero_documento} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxSelect name="id_distrito" value={formData.id_distrito} label="Distrito" handleChange={handleChange}>
-                                                    {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.id} value={distrito.id}>{distrito.nombre}</option>)}
+                                                <AxSelect name="id_anexo" value={formData.id_anexo} label="Anexo" handleChange={handleChange}>
+                                                    {listaAnexo && listaAnexo.map((anexo: any) => <option key={anexo.id} value={anexo.id}>{anexo.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxSelect name="id_anexo" value={formData.id_anexo} label="Anexo" handleChange={handleChange}>
-                                                    {listaAnexo && listaAnexo.map((anexo: any) => <option key={anexo.id} value={anexo.id}>{anexo.nombre}</option>)}
+                                                <AxSelect name="id_distrito" value={formData.id_distrito} label="Distrito" handleChange={handleChange} disabled={true}>
+                                                    {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.id} value={distrito.id}>{distrito.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
@@ -180,22 +186,22 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
                                                 <AxInput name="celular" label="Nro Celular" value={formData.celular} handleChange={handleChange} />
                                             </div>
                                             <div className="pt-8">
-                                            <div>
-                                                <h3 className="text-lg leading-6 font-medium text-gray-900">Condiciones</h3>
-                                            </div>
-                                            <div className="mt-6">
-                                                <fieldset>
-                                                    <div className="text-base font-medium text-gray-900" aria-hidden="true">
-                                                        Estado
-                                                    </div>
-                                                    <div className="mt-4 space-y-4">
-                                                        <AxCheck id="estado" name="estado" value={formData.estado} label="¿Es Activo?" handleChange={handleChange} />
-                                                    </div>
-                                                </fieldset>
+                                                <div>
+                                                    <h3 className="text-lg leading-6 font-medium text-gray-900">Condiciones</h3>
+                                                </div>
+                                                <div className="mt-6">
+                                                    <fieldset>
+                                                        <div className="text-base font-medium text-gray-900" aria-hidden="true">
+                                                            Estado
+                                                        </div>
+                                                        <div className="mt-4 space-y-4">
+                                                            <AxCheck id="estado" name="estado" value={formData.estado} label="¿Es Activo?" handleChange={handleChange} />
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
                                             </div>
                                         </div>
-                                        </div>
-                                        
+
                                     </div>
                                 </fieldset>
                                 {

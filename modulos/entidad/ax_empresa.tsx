@@ -10,7 +10,7 @@ import { ChevronLeftIcon } from "@heroicons/react/outline";
 export const getServerSideProps = withPageAuthRequired();
 const fetcherDistrito = (url: string): Promise<any> =>
     fetch(url, { method: "GET" }).then(r => r.json());
-    const fetcherAnexo = (url: string): Promise<any> =>
+const fetcherAnexo = (url: string): Promise<any> =>
     fetch(url, { method: "GET" }).then(r => r.json());
 
 const formReducer = (state: EmpresaModel, event: any): EmpresaModel => {
@@ -25,8 +25,7 @@ const formReducer = (state: EmpresaModel, event: any): EmpresaModel => {
 
 export default function AxEmpresa({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
     const { data: listaDistrito } = useSWRImmutable('/api/entidad/distrito', fetcherDistrito);
-    
-    const { data: listaAnexo } = useSWRImmutable('/api/entidad/anexo', fetcherAnexo); 
+    const { data: listaAnexo } = useSWRImmutable<any[]>('/api/entidad/anexo', fetcherAnexo);
     const [formData, setFormData] = useReducer(formReducer, new EmpresaModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -52,6 +51,12 @@ export default function AxEmpresa({ ID, setID, setEstadoEdicion }: TypeFormulari
 
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
+        if (event.target.name == "id_anexo") {
+            const item = listaAnexo?.filter(x => x.id == event.target.value);
+            if (item && item[0]) {
+                setFormData({ name: "id_distrito", value: item[0].id_distrito })
+            }
+        }
         setFormData({
             name: event.target.name,
             value: isCheckbox ? event.target.checked : event.target.value,
@@ -149,29 +154,29 @@ export default function AxEmpresa({ ID, setID, setEstadoEdicion }: TypeFormulari
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
                                             <div className="md:col-span-4">
-                                                <AxInput name="razon_social" label="razon_social" value={formData.razon_social} handleChange={handleChange} />
+                                                <AxInput name="razon_social" label="Razón Social" value={formData.razon_social} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="numero_ruc" label="numero_ruc" value={formData.numero_ruc} handleChange={handleChange} />
-                                            </div>
-                                            <div className="md:col-span-3">
-                                                <AxSelect name="id_distrito" value={formData.id_distrito} label="Distrito" handleChange={handleChange}>
-                                                    {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.id} value={distrito.id}>{distrito.nombre}</option>)}
-                                                </AxSelect>
+                                                <AxInput name="numero_ruc" label="Numero RUC" value={formData.numero_ruc} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
                                                 <AxSelect name="id_anexo" value={formData.id_anexo} label="Anexo" handleChange={handleChange}>
                                                     {listaAnexo && listaAnexo.map((anexo: any) => <option key={anexo.id} value={anexo.id}>{anexo.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
+                                            <div className="md:col-span-3">
+                                                <AxSelect name="id_distrito" value={formData.id_distrito} label="Distrito" handleChange={handleChange}>
+                                                    {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.id} value={distrito.id}>{distrito.nombre}</option>)}
+                                                </AxSelect>
+                                            </div>
                                             <div className="md:col-span-4">
-                                                <AxInput name="direccion" label="direccion" value={formData.direccion} handleChange={handleChange} />
+                                                <AxInput name="email" label="Correo Electronico" value={formData.email} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="celular" label="celular" value={formData.celular} handleChange={handleChange} />
+                                                <AxInput name="celular" label="Celular" value={formData.celular} handleChange={handleChange} />
                                             </div>
-                                            <div className="md:col-span-5">
-                                                <AxInput name="email" label="Correo Electronico" value={formData.email} handleChange={handleChange} />
+                                            <div className="md:col-span-6">
+                                                <AxInput name="direccion" label="Direccion" value={formData.direccion} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-6">
                                                 <div className="pt-8">
