@@ -8,7 +8,7 @@ export default function AxInput({ name, value, label, handleChange, type, filtro
             {filtro == true ?
                 <input type={type || "text"}
                     name={name}
-                   
+                    value={value || ""}
                     onChange={handleChange}
                     placeholder={placeholder}
                     disabled={disabled}

@@ -195,7 +195,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                 <fieldset disabled={tipoEdicion == EnumTipoEdicion.VISUALIZAR} className="space-y-8 divide-y divide-gray-200">
                                     <div className="">
                                         <div>
-                                            <h3 className="text-lg leading-6 font-medium text-gray-900">Información Personal </h3>
+                                            <h3 className="text-lg leading-6 font-medium text-gray-900">Información </h3>
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
                                             <div className="md:col-span-2">
@@ -242,7 +242,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                             <div className="md:col-span-5">
                                                 <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                                                     <label htmlFor="cover-photo" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-                                                        Adjuntar formato de Ejemplo
+                                                        Adjuntar formato
                                                     </label>
 
                                                     <div className="mt-1 sm:mt-0 sm:col-span-2">

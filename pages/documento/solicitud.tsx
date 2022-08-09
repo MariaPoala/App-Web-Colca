@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
 import { CheckCircleIcon, LinkIcon, RefreshIcon, XIcon, EyeOffIcon, EyeIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
-import { AxSelectFiltro, AxBtnAgregarArchivoSolicitud, AxBtnEditarSolicitud, AxSelect } from 'components/form';
+import { AxSelectFiltro, AxBtnAgregarArchivoSolicitud, AxBtnEditarSolicitud, AxSelect, AxInput } from 'components/form';
 import { EnumEstadoEdicion, EnumTipoEdicion } from 'lib/edicion';
 import SolicitudModel from 'models/solicitud_model'
 import AxSolicitud from 'modulos/documento/ax_solicitud';
@@ -11,6 +11,7 @@ import AxSolicitudEstado from 'modulos/documento/ax_solicitud_estado';
 import AxSubirArchivo from 'modulos/documento/ax_subir_archivo';
 import supabase from "lib/supabase_config";
 import { setUncaughtExceptionCaptureCallback } from 'process';
+import { ChevronDoubleRightIcon } from '@heroicons/react/solid';
 
 
 const fetcherVSolicitud = (url: string): Promise<any> =>
@@ -34,12 +35,11 @@ const campos = [
 ]
 
 type TypeFiltro = {
-  numero_documento: string,
-  id_persona: number,
-  fecha_documento: string,
-  id_tipo_documento: number[],
-  id_empresa: 0,
   tipo_entidad: string
+  id_persona: number,
+  id_empresa: number,
+  year_mes: string,
+  id_tipo_documento: number[],
 }
 
 export default function AxPageDocumento() {
@@ -50,7 +50,7 @@ export default function AxPageDocumento() {
   const [lista, setLista] = useState<SolicitudModel[]>([]);
   const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
   const [isLoading, setIsLoading] = useState(true);
-  const [filtro, setFiltro] = useState<TypeFiltro>({ numero_documento: "", id_persona: 0, fecha_documento: "", id_tipo_documento: [], id_empresa: 0, tipo_entidad: "Natural" });
+  const [filtro, setFiltro] = useState<TypeFiltro>({ tipo_entidad: "NATURAL", id_persona: 0, id_empresa: 0, year_mes: '2022-08', id_tipo_documento: [] });
   const [listaFiltro, setListaFiltro] = useState<SolicitudModel[]>([]);
   const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
   const [esModalOpen, setEsModalOpen] = useState(false)
@@ -95,9 +95,12 @@ export default function AxPageDocumento() {
   }
 
   function FnFiltrarLista() {
-    let filtrado = listaSol && listaSol.filter((sol: any) =>
-      (filtro.id_persona ? sol.id_persona == filtro.id_persona : true) ||
-      (filtro.id_empresa ? sol.id_empresa == filtro.id_empresa : true)
+    let filtrado = listaSol && listaSol.filter((item: any) =>
+      (filtro.tipo_entidad == item.tipo_entidad) &&
+      (filtro.id_persona != 0 ? item.id_persona == filtro.id_persona : true) &&
+      (filtro.id_empresa != 0 ? item.id_empresa == filtro.id_empresa : true) &&
+      // (filtro.id_tipo_documento.indexOf(item.id_tipo_documento) != -1) &&
+      (filtro.year_mes ? (item.fecha_inicio.substring(6, 10) + '-' + item.fecha_inicio.substring(3, 5)) == filtro.year_mes : true)
     )
     setListaFiltro(filtrado);
   }
@@ -142,25 +145,29 @@ export default function AxPageDocumento() {
                 </dd>
                 <div className="mt-2 grid ml-14 grid-cols-1   gap-y-6 gap-x-4 md:grid-cols-6">
                   <div className="md:col-span-1">
-                    <AxSelect name="tipo_entidad" value={filtro.tipo_entidad} label="Tipo Entidad" handleChange={handleChange}>
-                      <option key="Natural" value="Natural">Natural</option>
-                      <option key="Juridico" value="Juridico">Juridico</option>
-                    </AxSelect>
-                  </div>
-                  {filtro.tipo_entidad == "Natural" ? <div className="md:col-span-2">
-                    <AxSelectFiltro name={"id_persona"} value={filtro.id_persona} filtro={true} label="Persona" handleChange={handleChange}>
-                      {listaPersona && listaPersona.map((ciudadano: any) =>
-                        <option key={ciudadano.id} value={ciudadano.id}>{ciudadano.nombre_apellido}</option>)}
+                    <AxSelectFiltro name="tipo_entidad" value={filtro.tipo_entidad} label="Tipo Entidad" handleChange={handleChange} incluirTodos={false}>
+                      <option key="NATURAL" value="NATURAL">NATURAL</option>
+                      <option key="JURIDICO" value="JURIDICO">JURIDICO</option>
                     </AxSelectFiltro>
-                  </div> :
-
-                    <div className="md:col-span-2">
-                      <AxSelectFiltro name={"id_empresa"} value={filtro.id_empresa} filtro={true} label="Empresa" handleChange={handleChange}>
-                        {listaEmpresa && listaEmpresa.map((empresa: any) =>
-                          <option key={empresa.id} value={empresa.id}>{empresa.razon_social}</option>)}
-                      </AxSelectFiltro>
-                    </div>
+                  </div>
+                  {
+                    filtro.tipo_entidad == "NATURAL"
+                      ? <div className="md:col-span-2">
+                        <AxSelectFiltro name={"id_persona"} value={filtro.id_persona} filtro={true} label="Persona" handleChange={handleChange}>
+                          {listaPersona && listaPersona.map((ciudadano: any) =>
+                            <option key={ciudadano.id} value={ciudadano.id}>{ciudadano.nombre_apellido}</option>)}
+                        </AxSelectFiltro>
+                      </div>
+                      : <div className="md:col-span-2">
+                        <AxSelectFiltro name={"id_empresa"} value={filtro.id_empresa} filtro={true} label="Empresa" handleChange={handleChange}>
+                          {listaEmpresa && listaEmpresa.map((empresa: any) =>
+                            <option key={empresa.id} value={empresa.id}>{empresa.razon_social}</option>)}
+                        </AxSelectFiltro>
+                      </div>
                   }
+                  <div className="md:col-span-1">
+                    <AxInput name="year_mes" value={filtro.year_mes} label="Periodo" handleChange={handleChange} filtro={true} type="month" />
+                  </div>
                   <div className="md:col-span-2">
                     <button type="button"
                       onClick={() => FnFiltrarLista()}
@@ -218,7 +225,7 @@ export default function AxPageDocumento() {
                       </tr>
                     </thead>
                     <tbody className="divide-x divide-y overflow-x-auto overflow-y-auto divide-gray-200 bg-white">
-                      {(listaSol && listaSol.map((item: any) => (
+                      {(listaFiltro && listaFiltro.map((item: any) => (
                         <tr key={item.id} className={item.id == ID ? "bg-indigo-100 table table-fixed w-full" : "bg-white table table-fixed w-full"}>
                           <td className="w-16 text-center whitespace-nowrap px-3 py-3 text-sm text-gray-500">
                             <input
@@ -240,7 +247,7 @@ export default function AxPageDocumento() {
                           </td>
                           <td className="whitespace-nowrap px-1 text-center text-sm text-gray-500 truncate">
                             <div className="text-gray-900">{item.tipo_entidad}</div>
-                            {item.tipo_entidad == "Natural"
+                            {item.tipo_entidad == "NATURAL"
                               ? <div className="text-gray-500">{item.persona_nombre}</div>
                               : <div className="text-gray-500">{item.razon_social}</div>
                             }

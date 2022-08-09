@@ -11,6 +11,7 @@ import PersonaModel from 'models/persona_model'
 import EmpresaModel from 'models/empresa_model'
 import DocumentoModel from 'models/documento_model'
 import AxDocumento from 'modulos/documento/ax_documento';
+import ConsideracionModel from 'models/consideracion_model';
 
 const fetcherVDocumento = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
@@ -33,25 +34,23 @@ const campos = [
 ]
 
 type TypeFiltro = {
-  numero_documento: string,
-  id_persona: number,
-  fecha_documento: string,
-  id_tipo_documento: number[],
-  id_empresa: 0,
   tipo_entidad: string
+  id_persona: number,
+  id_empresa: number,
+  year: string,
+  id_tipo_documento: number[]
 }
 
 export default function AxPageDocumento() {
   const { data: listaTipoDocumento } = useSWRImmutable<any[]>('/api/documento/tipo_documento', fetcherTipoDocumento);
   const { data: listaPersona } = useSWRImmutable('/api/entidad/persona/v_persona', fetcherPersona);
-  const { data: listaDoc } = useSWRImmutable('/api/documento/documento/v_documento', fetcherVDocumento);
   const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
-  const { data: listaEmpleado } = useSWRImmutable('/api/entidad/empleado', fetcherEmpleado);
+  const { data: listaDoc } = useSWRImmutable('/api/documento/documento/v_documento', fetcherVDocumento);
   const [ID, setID] = useState(-1)
   const [lista, setLista] = useState<DocumentoModel[]>([]);
   const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
   const [isLoading, setIsLoading] = useState(true);
-  const [filtro, setFiltro] = useState<TypeFiltro>({ numero_documento: "", id_persona: 0, fecha_documento: "", id_tipo_documento: [], id_empresa: 0, tipo_entidad: "NATURAL"  });
+  const [filtro, setFiltro] = useState<TypeFiltro>({ tipo_entidad: "NATURAL", id_persona: 0, id_empresa: 0, year: "", id_tipo_documento: [] });
   const [listaFiltro, setListaFiltro] = useState<DocumentoModel[]>([]);
   const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
   const [esModalOpen, setEsModalOpen] = useState(false)
@@ -92,14 +91,16 @@ export default function AxPageDocumento() {
     else {
       setFiltro({ ...filtro, [event.target.name]: event.target.value });
     }
+    console.log(filtro)
   }
 
   function FnFiltrarLista() {
     let filtrado = listaDoc && listaDoc.filter((doc: any) =>
+      (filtro.tipo_entidad == doc.tipo_entidad) &&
+      (filtro.id_persona != 0 ? doc.id_persona == filtro.id_persona : true) &&
+      (filtro.id_empresa != 0 ? doc.id_empresa == filtro.id_empresa : true) &&
       (filtro.id_tipo_documento.indexOf(doc.id_tipo_documento) != -1) &&
-      (filtro.id_persona ? doc.id_persona == filtro.id_persona : true) &&
-      (filtro.id_empresa ? doc.id_empresa == filtro.id_empresa : true) &&
-      (filtro.fecha_documento ? doc.fecha_documento == filtro.fecha_documento : true)
+      (filtro.year ? doc.fecha_documento.indexOf("/" + filtro.year) != -1 : true)
     )
     setListaFiltro(filtrado);
   }
@@ -108,8 +109,8 @@ export default function AxPageDocumento() {
     setPaginacion({ inicio: 0, cantidad: paginacion.cantidad + 10 });
   }
   useEffect(() => {
-    if(filtro.id_persona>0){  filtro.id_persona=0}
-    else if (filtro.id_empresa>0){ filtro.id_empresa=0}   
+    if (filtro.id_persona > 0) { filtro.id_persona = 0 }
+    else if (filtro.id_empresa > 0) { filtro.id_empresa = 0 }
   }, [filtro.tipo_entidad])
   return (
     <>
@@ -126,15 +127,15 @@ export default function AxPageDocumento() {
                   Filtrar Por:
                 </dd>
                 <div className="mt-2 grid ml-14 grid-cols-1   gap-y-6 gap-x-4 md:grid-cols-6">
-                <div className="md:col-span-1">
-                    <AxSelect name="tipo_entidad" value={filtro.tipo_entidad} label="Tipo Entidad" handleChange={handleChange}>
+                  <div className="md:col-span-1">
+                    <AxSelectFiltro name="tipo_entidad" value={filtro.tipo_entidad} label="Tipo Entidad" handleChange={handleChange} incluirTodos={false}>
                       <option key="NATURAL" value="NATURAL">NATURAL</option>
                       <option key="JURIDICO" value="JURIDICO">JURIDICO</option>
-                    </AxSelect>
+                    </AxSelectFiltro>
                   </div>
                   {filtro.tipo_entidad == "NATURAL" ? <div className="md:col-span-2">
                     <AxSelectFiltro name={"id_persona"} value={filtro.id_persona} filtro={true} label="Persona" handleChange={handleChange}>
-                      {listaPersona && listaPersona.map((ciudadano: any) =>                      
+                      {listaPersona && listaPersona.map((ciudadano: any) =>
                         <option key={ciudadano.id} value={ciudadano.id}>{ciudadano.nombre_apellido}</option>)}
                     </AxSelectFiltro>
                   </div> :
@@ -145,9 +146,9 @@ export default function AxPageDocumento() {
                           <option key={empresa.id} value={empresa.id}>{empresa.razon_social}</option>)}
                       </AxSelectFiltro>
                     </div>
-                  }                  
+                  }
                   <div className="md:col-span-1">
-                    <AxInput name="fecha_documento" label="Fec Documento" handleChange={handleChange} filtro={true} type="date" />
+                    <AxInput name="year" label="Año" handleChange={handleChange} filtro={true} type="text" />
                   </div>
                   <div className="md:col-span-2">
                     <button type="button"
@@ -182,7 +183,7 @@ export default function AxPageDocumento() {
               {/* Card */}
               {(listaTipoDocumento && listaTipoDocumento.map((item: any) =>
               (resultado.map(s => s.id == item.id &&
-                < ul key={item.id} className="bg-indigo-400 overflow-hidden shadow rounded-lg hover:bg-indigo-700"
+                <ul key={item.id} className="bg-indigo-400 cursor-pointer overflow-hidden shadow rounded-lg hover:bg-indigo-700"
                   onClick={() => {
                     handleChange({ target: { name: "FiltroGrupo", value: item.id } });
                     FnFiltrarLista();
@@ -265,7 +266,7 @@ export default function AxPageDocumento() {
                                 }}
                                 checked={item.id == ID}
                                 type="radio"
-                                className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
+                                className="focus:ring-indigo-500 h-4 w-4 cursor-pointer text-indigo-600 border-gray-300"
                               />
                             </td>
                             <td className="whitespace-nowrap px-1 py-1 text-sm text-gray-500 truncate">
@@ -274,7 +275,7 @@ export default function AxPageDocumento() {
                             </td>
                             <td className="whitespace-nowrap px-1 text-center text-sm text-gray-500 truncate">
                               <div className="text-gray-900">{item.tipo_entidad}</div>
-                              {item.tipo_entidad == "Natural"
+                              {item.tipo_entidad == "NATURAL"
                                 ? <div className="text-gray-500">{item.persona_nombre}</div>
                                 : <div className="text-gray-500">{item.empresa_razon_social}</div>
                               }
@@ -292,7 +293,7 @@ export default function AxPageDocumento() {
                             <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                               {item.fecha_creacion}
                             </td>
-                            <td className="px-1 w-24 text-center whitespace-nowrap text-sm text-gray-500 truncate">                              
+                            <td className="px-1 w-24 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                               {item.es_anulado == true ?
                                 <BanIcon className='pl-5 h-6 w-6  text-center  text-red-400'></BanIcon> :
                                 <BadgeCheckIcon className='h-6 w-6  text-center text-green-400 '></BadgeCheckIcon>

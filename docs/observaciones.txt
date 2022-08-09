@@ -1,9 +1,9 @@
 Empleado
 	- Quitar Anexo (TERMINADO)
 Persona
-	- Seleccionar Anexo 
+	- Seleccionar Anexo  (TERMINADO)
 Empresa
-	- Seleccionar Anexo
+	- Seleccionar Anexo (TERMINADO)
 Requisito
 	- Color del boton visualizar (TERMINADO)
 	- Tamaño del boton (TERMINADO)"
@@ -12,8 +12,8 @@ Tipo de documento
 Documentos
 	- Tipo de Entidad en mayuscula (TERMINADO)
 	- Agregar Filtro Tipo de Entidad (TERMINADO)
-	- Agregar Filtro Persona, Entidad (MEDIO)
-	- Filtro por año ()
+	- Agregar Filtro Persona, Entidad  (TERMINADO)
+	- Filtro por año  (TERMINADO)
 	- Los combos tienen que ser las vistas (TERMINADO)
 Solicitud
 	- Ordenar Grid
