@@ -1,7 +1,7 @@
 
 import { Fragment, useEffect, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
-import { CheckCircleIcon, LinkIcon, RefreshIcon, XIcon, EyeOffIcon, EyeIcon } from '@heroicons/react/outline';
+import { CheckCircleIcon, LinkIcon, RefreshIcon, XIcon, EyeOffIcon, EyeIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
 import { AxSelectFiltro, AxBtnAgregarArchivoSolicitud, AxBtnEditarSolicitud, AxSelect, AxInput } from 'components/form';
 import { EnumEstadoEdicion, EnumTipoEdicion } from 'lib/edicion';
@@ -19,6 +19,8 @@ const fetcherVSolicitud = (url: string): Promise<any> =>
 const fetcherPersona = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
 const fetcherEmpresa = (url: string): Promise<any> =>
+  fetch(url, { method: "GET" }).then(r => r.json());
+const fetcherTipoDocumento = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
 
 const campos = [
@@ -43,6 +45,7 @@ type TypeFiltro = {
 }
 
 export default function AxPageDocumento() {
+  const { data: listaTipoDocumento } = useSWRImmutable<any[]>('/api/documento/tipo_documento', fetcherTipoDocumento);
   const { data: listaPersona } = useSWRImmutable('/api/entidad/persona/v_persona', fetcherPersona);
   const { data: listaSol } = useSWRImmutable('/api/documento/solicitud/v_solicitud', fetcherVSolicitud);
   const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
@@ -93,13 +96,18 @@ export default function AxPageDocumento() {
       setFiltro({ ...filtro, [event.target.name]: event.target.value });
     }
   }
-
+  const resultado = Array.from(new Set(lista.map(s => s.id_tipo_documento)))
+    .map(id => {
+      return {
+        id: id
+      }
+    });
   function FnFiltrarLista() {
     let filtrado = listaSol && listaSol.filter((item: any) =>
       (filtro.tipo_entidad == item.tipo_entidad) &&
       (filtro.id_persona != 0 ? item.id_persona == filtro.id_persona : true) &&
       (filtro.id_empresa != 0 ? item.id_empresa == filtro.id_empresa : true) &&
-      // (filtro.id_tipo_documento.indexOf(item.id_tipo_documento) != -1) &&
+      (filtro.id_tipo_documento.indexOf(item.id_tipo_documento) != -1) &&
       (filtro.year_mes ? (item.fecha_inicio.substring(6, 10) + '-' + item.fecha_inicio.substring(3, 5)) == filtro.year_mes : true)
     )
     setListaFiltro(filtrado);
@@ -197,10 +205,34 @@ export default function AxPageDocumento() {
         <div className="mt-4">
           <div className="sm:flex sm:items-center px-16 mt-4">
             <div className="sm:flex-auto">
-              <h1 className="text-xl font-semibold text-gray-900">Lista De</h1>
-              <p className="mt-2 text-sm text-gray-700">
-                Solicitudes
-              </p>
+              <h1 className="text-xl font-semibold text-gray-900">Lista De Solicitudes</h1>
+              <div className="mt-2 grid  gap-5 grid-cols-1 sm:grid-cols-2  md:grid-cols-3  lg:grid-cols-5">
+                {/* Card */}
+                {(listaTipoDocumento && listaTipoDocumento.map((item: any) =>
+                (resultado.map(s => s.id == item.id &&
+                  <ul key={item.id} className="bg-indigo-400 cursor-pointer overflow-hidden shadow rounded-lg hover:bg-indigo-700"
+                    onClick={() => {
+                      handleChange({ target: { name: "FiltroGrupo", value: item.id } });
+                      FnFiltrarLista();
+                    }}>
+
+                    <div className={(filtro.id_tipo_documento.indexOf(item.id) != -1 ? "bg-indigo-600" : "bg-indigo-400") + " p-2"}>
+                      <div className="flex items-center">
+                        <div className="ml-2 w-10 flex-1">
+                          <dl>
+                            <dt className="text-sm font-medium text-white truncate uppercase">{item.nombre}</dt>
+                            {/* <dd>
+                            <div className="text-sm font-medium text-indigo-100">{item.Descripcion}</div>
+                          </dd> */}
+                          </dl>
+                        </div>
+                      </div>
+                    </div>
+                  </ul>
+                )))
+                )
+                }
+              </div>
             </div>
             <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none ">
               <AxBtnEditarSolicitud setVerArchivo={setVerArchivo} setSubirNuevoArchivo={setSubirNuevoArchivo} estadoEdicion={ID > 0 ? EnumEstadoEdicion.SELECCIONADO : estadoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
@@ -211,114 +243,122 @@ export default function AxPageDocumento() {
             <div className="mx-auto px-14 sm:px-16 lg:px-8">
               <div className="flex flex-col mt-2">
                 <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg ">
-                  <table className="flex flex-col w-full h-[calc(100vh-23rem)] divide-gray-300">
-                    <thead className='bg-indigo-200'>
-                      <tr className='table table-fixed w-full divide-x divide-y divide-gray-200'>
-                        <th scope="col" className="relative w-16 px-3">
-                          ✔
-                        </th>
-                        {campos.map((item) => (
-                          <th key={item.name} className="px-1 py-3 text-center text-sm text-gray-900">
-                            {item.name}
+                  {filtro.id_tipo_documento.length == 0 ?
+                    <dd className="mt-10 gap-2 p-10 flex items-center text-sm text-gray-500 font-medium sm:mr-6 sm:mt-0 capitalize">
+                      <ExclamationCircleIcon
+                        className="flex-shrink-0 mr-0 h-5 w-5 text-orange-500"
+                        aria-hidden="true"
+                      />
+                      ¡Seleccionar un Documento!
+                    </dd> :
+                    <table className="flex flex-col w-full h-[calc(100vh-23rem)] divide-gray-300">
+                      <thead className='bg-indigo-200'>
+                        <tr className='table table-fixed w-full divide-x divide-y divide-gray-200'>
+                          <th scope="col" className="relative w-16 px-3">
+                            ✔
                           </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="divide-x divide-y overflow-x-auto overflow-y-auto divide-gray-200 bg-white">
-                      {(listaFiltro && listaFiltro.map((item: any) => (
-                        <tr key={item.id} className={item.id == ID ? "bg-indigo-100 table table-fixed w-full" : "bg-white table table-fixed w-full"}>
-                          <td className="w-16 text-center whitespace-nowrap px-3 py-3 text-sm text-gray-500">
-                            <input
-                              onChange={(event) => {
-                                if (!event.target.checked) setID(-1);
-                                else setID(item.id);
-                              }}
-                              checked={item.id == ID}
-                              type="radio"
-                              className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
-                            />
-                          </td>
-                          <td className="whitespace-nowrap px-1 py-1 text-sm text-gray-500 truncate">
-                            <div className="text-gray-900">{item.tipo_documento_nombre}</div>
-                            <div className="text-gray-500">{item.nombre_documento}</div>
-                          </td>
-                          <td className="px-1 py-3 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                            {item.numero_documento}
-                          </td>
-                          <td className="whitespace-nowrap px-1 text-center text-sm text-gray-500 truncate">
-                            <div className="text-gray-900">{item.tipo_entidad}</div>
-                            {item.tipo_entidad == "NATURAL"
-                              ? <div className="text-gray-500">{item.persona_nombre}</div>
-                              : <div className="text-gray-500">{item.razon_social}</div>
-                            }
-                          </td>
-                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                            {item.i_total}
-                          </td>
-                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                            {item.empleado_nombre}
-                          </td>
-                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                            {item.fecha_inicio}
-                          </td>
-                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                            {item.fecha_plazo}
-                          </td>
-                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                            <button type="button"
-                              onClick={() => {
-                                setTipoEdicion(EnumTipoEdicion.EDITAR);
-                                setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
-                                setEsModalEstado(true)
-                                setID(item.id)
-                              }}
-                              className={" inline-flex items-center px-3 py-2 border disabled:bg-indigo-300  border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 " + (item.estado == "Registrado" ?
-                                "bg-red-500 hover:bg-red-600 focus:ring-red-500 " : item.estado == "Validado" ? "bg-green-500 hover:bg-green-600 focus:ring-green-500 " :
-                                  "bg-indigo-500 hover:bg-indigo-600 focus:ring-indigo-500 ")
+                          {campos.map((item) => (
+                            <th key={item.name} className="px-1 py-3 text-center text-sm text-gray-900">
+                              {item.name}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody className="divide-x divide-y overflow-x-auto overflow-y-auto divide-gray-200 bg-white">
+                        {(listaFiltro && listaFiltro.map((item: any) => (
+                          <tr key={item.id} className={item.id == ID ? "bg-indigo-100 table table-fixed w-full" : "bg-white table table-fixed w-full"}>
+                            <td className="w-16 text-center whitespace-nowrap px-3 py-3 text-sm text-gray-500">
+                              <input
+                                onChange={(event) => {
+                                  if (!event.target.checked) setID(-1);
+                                  else setID(item.id);
+                                }}
+                                checked={item.id == ID}
+                                type="radio"
+                                className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
+                              />
+                            </td>
+                            <td className="whitespace-nowrap px-1 py-1 text-sm text-gray-500 truncate">
+                              <div className="text-gray-900">{item.tipo_documento_nombre}</div>
+                              <div className="text-gray-500">{item.nombre_documento}</div>
+                            </td>
+                            <td className="px-1 py-3 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                              {item.numero_documento}
+                            </td>
+                            <td className="whitespace-nowrap px-1 text-center text-sm text-gray-500 truncate">
+                              <div className="text-gray-900">{item.tipo_entidad}</div>
+                              {item.tipo_entidad == "NATURAL"
+                                ? <div className="text-gray-500">{item.persona_nombre}</div>
+                                : <div className="text-gray-500">{item.razon_social}</div>
                               }
-                            >
-                              {item.estado}
-                            </button>
-                          </td>
-                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                            {item.archivo &&
+                            </td>
+                            <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                              {item.i_total}
+                            </td>
+                            <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                              {item.empleado_nombre}
+                            </td>
+                            <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                              {item.fecha_inicio}
+                            </td>
+                            <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                              {item.fecha_plazo}
+                            </td>
+                            <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                               <button type="button"
                                 onClick={() => {
-                                  setArchivo(item.archivo)
                                   setTipoEdicion(EnumTipoEdicion.EDITAR);
                                   setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
+                                  setEsModalEstado(true)
                                   setID(item.id)
-                                  setEsModalEstado(false)
-                                  setSubirNuevoArchivo(true);
-                                  setVerArchivo(true);
                                 }}
-                                className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500     disabled:bg-indigo-300"
+                                className={" inline-flex items-center px-3 py-2 border disabled:bg-indigo-300  border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 " + (item.estado == "Registrado" ?
+                                  "bg-red-500 hover:bg-red-600 focus:ring-red-500 " : item.estado == "Validado" ? "bg-green-500 hover:bg-green-600 focus:ring-green-500 " :
+                                    "bg-indigo-500 hover:bg-indigo-600 focus:ring-indigo-500 ")
+                                }
                               >
-                                <LinkIcon className='h-4 w-4 text-white'></LinkIcon>
+                                {item.estado}
                               </button>
-                            }
-                          </td>
-                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                            </td>
+                            <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                              {item.archivo &&
+                                <button type="button"
+                                  onClick={() => {
+                                    setArchivo(item.archivo)
+                                    setTipoEdicion(EnumTipoEdicion.EDITAR);
+                                    setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
+                                    setID(item.id)
+                                    setEsModalEstado(false)
+                                    setSubirNuevoArchivo(true);
+                                    setVerArchivo(true);
+                                  }}
+                                  className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500     disabled:bg-indigo-300"
+                                >
+                                  <LinkIcon className='h-4 w-4 text-white'></LinkIcon>
+                                </button>
+                              }
+                            </td>
+                            <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
 
-                            <button type="button"
-                              onClick={() => {
-                                setID(item.id)
-                                setTipoEdicion(EnumTipoEdicion.EDITAR);
-                                setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
-                                setSubirNuevoArchivo(true);
-                                setEsModalEstado(false)
-                                item.forma_entrega == "DIRECTO" ? setVerArchivo(true) : setVerArchivo(false);
-                                setArchivo(item.archivo)
-                              }}
-                              className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
-                            >
-                              {item.url_archivo ? "subir" : item.forma_entrega == "IMPRESO" ? "ver impreso" : "Ver directo"}
-                            </button>
-                          </td>
-                        </tr>
-                      )))}
-                    </tbody>
-                  </table>
+                              <button type="button"
+                                onClick={() => {
+                                  setID(item.id)
+                                  setTipoEdicion(EnumTipoEdicion.EDITAR);
+                                  setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
+                                  setSubirNuevoArchivo(true);
+                                  setEsModalEstado(false)
+                                  item.forma_entrega == "DIRECTO" ? setVerArchivo(true) : setVerArchivo(false);
+                                  setArchivo(item.archivo)
+                                }}
+                                className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
+                              >
+                                {item.url_archivo ? "subir" : item.forma_entrega == "IMPRESO" ? "ver impreso" : "Ver directo"}
+                              </button>
+                            </td>
+                          </tr>
+                        )))}
+                      </tbody>
+                    </table>}
                 </div>
                 <div className="md:col-span-1">
                   <div className=" sm:border-t sm:border-gray-200 sm:pt-5">
