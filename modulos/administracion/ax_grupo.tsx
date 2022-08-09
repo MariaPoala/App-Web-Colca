@@ -117,8 +117,7 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                             <div className="md:col-span-2">
                                                 <AxInput name="nombre" label="Nombre" value={formData.nombre} handleChange={handleChange} />
                                             </div>
-                                            <div className="hidden md:flex md:col-span-4" />
-                                            <div className="md:col-span-3">
+                                            <div className="md:col-span-4">
                                                 <AxInput name="descripcion" label="Descripcion" value={formData.descripcion} handleChange={handleChange} />
                                             </div>
                                         </div>

@@ -186,13 +186,13 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                                             <div className="space-y-1 text-center">
                                                                 <div>
                                                                     <div style={{ width: 100 }}>
-                                                                        {formData.url_imagen ?                                                                           
+                                                                        {formData.url_imagen ?
                                                                             <label className="button primary block" htmlFor="single">
                                                                                 {uploading ? 'Actualizando archivo ...' : 'Actualizar Archivo'}
-                                                                            </label>:
-                                                                             <label className="button primary block" htmlFor="single">
-                                                                             {uploading ? 'Subiendo archivo ...' : 'Subir Archivo'}
-                                                                         </label> 
+                                                                            </label> :
+                                                                            <label className="button primary block" htmlFor="single">
+                                                                                {uploading ? 'Subiendo archivo ...' : 'Subir Archivo'}
+                                                                            </label>
                                                                         }
                                                                         <p className="text-xs text-gray-500">Jpg, Png, Img</p>
                                                                         <input
@@ -219,28 +219,28 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                                     {formData.url_imagen ?
                                                         clic == false ?
                                                             <button type="button"
-                                                                className="ml-3 inline-flex items-center px-3 py-2 border border-green-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500     disabled:bg-green-300"
+                                                                className="ml-3 h-2 text-xs w-36 inline-flex items-center px-3 py-2 border border-indigo-300 shadow-sm  leading-4 font-sm rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
                                                                 onClick={() => {
                                                                     FndescargarImg()
                                                                     setclic(true)
                                                                 }}
                                                             >
-                                                                <EyeIcon className="h-8 w-8 text-white "> </EyeIcon>
+                                                                <EyeIcon className="h-5 w-5 mr-1 text-white "> </EyeIcon>
                                                                 Visualizar Archivo
                                                             </button>
                                                             :
                                                             <button type="button"
-                                                                className="ml-3 inline-flex items-center px-3 py-2 border border-blue-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-300     disabled:bg-blue-300"
+                                                                className="ml-3 h-2 text-xs w-36 inline-flex items-center px-3 py-2 border border-indigo-300 shadow-sm  leading-4 font-sm rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
                                                                 onClick={() => {
                                                                     FndescargarImg()
                                                                     setclic(false)
                                                                 }}
                                                             >
-                                                                <EyeOffIcon className="h-8 w-8 text-white "></EyeOffIcon>
+                                                                <EyeOffIcon className="h-5 w-5 mr-1 text-white "></EyeOffIcon>
                                                                 Ocultar Archivo
                                                             </button>
                                                         :
-                                                        <p className="text-red-500 border-4 border-red-400 text-center">Sin Archivo</p>
+                                                        <p className="ml-3 h-2 text-md w-32 inline-flex items-center text-center px-3 py-2 border border-red-300 shadow-sm  leading-4 font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500     disabled:bg-red-300">Sin Archivo</p>
                                                     }
                                                 </div>
                                             </div>

@@ -152,7 +152,7 @@ export default function AxTipoDocumento({ ID, setID, setEstadoEdicion }: TypeFor
                                             <h3 className="text-lg leading-6 font-medium text-gray-900">Información Personal </h3>
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
-                                            <div className="col-span-3">
+                                            <div className="md:col-span-3">
                                                 <AxInput name="codigo" label="Código" value={formData.codigo} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
@@ -169,8 +169,8 @@ export default function AxTipoDocumento({ ID, setID, setEstadoEdicion }: TypeFor
                                             </div>
                                             <div className="md:col-span-2">
                                                 <AxSelect name="forma_entrega" value={formData.forma_entrega} label="Forma Entrega" handleChange={handleChange}>
-                                                    <option>directo</option>
-                                                    <option>impreso</option>
+                                                    <option>DIRECTO</option>
+                                                    <option>IMPRESO</option>
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">

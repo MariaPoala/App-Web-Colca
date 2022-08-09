@@ -211,12 +211,12 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                             </div>
                                             <div className="md:col-span-2">
                                                 <AxSelect name="tipo_entidad" value={formData.tipo_entidad} label="Tipo Entidad" handleChange={handleChange}>
-                                                    <option key="Natural" value="Natural">Natural</option>
-                                                    <option key="Juridico" value="Juridico">Juridico</option>
+                                                    <option key="NATURAL" value="NATURAL">NATURAL</option>
+                                                    <option key="JURIDICO" value="JURIDICO">JURIDICO</option>
                                                 </AxSelect>
                                             </div>
                                             {
-                                                formData.tipo_entidad == "Natural"
+                                                formData.tipo_entidad == "NATURAL"
                                                     ? <div className="md:col-span-3">
                                                         <AxSelect name="id_persona" value={formData.id_persona} label="Persona" handleChange={handleChange}>
                                                             {listaPersona && listaPersona.map((persona: any) => <option key={persona.id} value={persona.id}>{persona.nombre_apellido}</option>)}
@@ -283,28 +283,28 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                                     {formData.url_archivo ?
                                                         clic == false ?
                                                             <button type="button"
-                                                                className="ml-3 inline-flex items-center px-3 py-2 border border-green-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500     disabled:bg-green-300"
+                                                                className="ml-3 h-2 text-xs w-36 inline-flex items-center px-3 py-2 border border-indigo-300 shadow-sm  leading-4 font-sm rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
                                                                 onClick={() => {
                                                                     FndescargarImg()
                                                                     setclic(true)
                                                                 }}
                                                             >
-                                                                <EyeIcon className="h-8 w-8 text-white "> </EyeIcon>
+                                                                <EyeIcon className="h-5 w-5 mr-1 text-white "> </EyeIcon>
                                                                 Visualizar Archivo
                                                             </button>
                                                             :
                                                             <button type="button"
-                                                                className="ml-3 inline-flex items-center px-3 py-2 border border-blue-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-300     disabled:bg-blue-300"
+                                                                className="ml-3 h-2 text-xs w-36 inline-flex items-center px-3 py-2 border border-indigo-300 shadow-sm  leading-4 font-sm rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
                                                                 onClick={() => {
                                                                     FndescargarImg()
                                                                     setclic(false)
                                                                 }}
                                                             >
-                                                                <EyeOffIcon className="h-8 w-8 text-white "></EyeOffIcon>
+                                                                <EyeOffIcon className="h-5 w-5 mr-1 text-white "></EyeOffIcon>
                                                                 Ocultar Archivo
                                                             </button>
                                                         :
-                                                        <p className="text-red-500 border-4 border-red-400 text-center">Sin Archivo</p>
+                                                        <p className="ml-3 h-2 text-md w-32 inline-flex items-center text-center px-3 py-2 border border-red-300 shadow-sm  leading-4 font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500     disabled:bg-red-300">Sin Archivo</p>
                                                     }
                                                 </div>
                                             </div>

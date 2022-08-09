@@ -162,7 +162,11 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
                                             <div className="md:col-span-2">
                                                 <AxInput name="numero_documento" label="DNI" value={formData.numero_documento} handleChange={handleChange} />
                                             </div>
-                                            <div className="hidden md:flex md:col-span-4" />
+                                            <div className="md:col-span-2">
+                                                <AxSelect name="id_distrito" value={formData.id_distrito} label="Distrito" handleChange={handleChange}>
+                                                    {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.id} value={distrito.id}>{distrito.nombre}</option>)}
+                                                </AxSelect>
+                                            </div>
                                             <div className="md:col-span-3">
                                                 <AxInput name="nombre" label="Nombres" value={formData.nombre} handleChange={handleChange} />
                                             </div>
@@ -185,22 +189,13 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
                                                 <AxInput name="celular" label="Nro Celular" value={formData.celular} handleChange={handleChange} />
                                             </div>
 
-                                            <div className="md:col-span-2">
-                                                <AxSelect name="id_distrito" value={formData.id_distrito} label="Distrito" handleChange={handleChange}>
-                                                    {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.id} value={distrito.id}>{distrito.nombre}</option>)}
-                                                </AxSelect>
-                                            </div>
-                                            <div className="md:col-span-2">
-                                                <AxSelect name="id_anexo" value={formData.id_anexo} label="Anexo" handleChange={handleChange}>
-                                                    {listaAnexo && listaAnexo.map((anexo: any) => <option key={anexo.id} value={anexo.id}>{anexo.nombre}</option>)}
-                                                </AxSelect>
-                                            </div>
-                                            <div className="md:col-span-2">
+                                            
+                                            <div className="md:col-span-1">
                                                 <AxSelect name="id_rol" value={formData.id_rol} label="Rol" handleChange={handleChange}>
                                                     {listaRol && listaRol.map((rol: any) => <option key={rol.id} value={rol.id}>{rol.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
-                                            <div className="md:col-span-3">
+                                            <div className="md:col-span-2">
                                                 <AxSelect name="id_area" value={formData.id_area} label="Area" handleChange={handleChange}>
                                                     {listaArea && listaArea.map((area: any) => <option key={area.id} value={area.id}>{area.nombre}</option>)}
                                                 </AxSelect>

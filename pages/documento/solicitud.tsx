@@ -24,7 +24,6 @@ const campos = [
   { name: 'Tipo Documento' },
   { name: 'N° Documento' },
   { name: 'Entidad' },
-  { name: 'Documento' },
   { name: 'I Total' },
   { name: 'Empleado' },
   { name: 'Fecha Inicio' },
@@ -44,7 +43,7 @@ type TypeFiltro = {
 }
 
 export default function AxPageDocumento() {
-  const { data: listaPersona } = useSWRImmutable('/api/entidad/persona', fetcherPersona);
+  const { data: listaPersona } = useSWRImmutable('/api/entidad/persona/v_persona', fetcherPersona);
   const { data: listaSol } = useSWRImmutable('/api/documento/solicitud/v_solicitud', fetcherVSolicitud);
   const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
   const [ID, setID] = useState(-1)
@@ -65,7 +64,7 @@ export default function AxPageDocumento() {
   const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 10 })
 
   useEffect(() => {
-    
+
     if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
     setIsLoading(true)
     const fetchData = async () => {
@@ -95,7 +94,7 @@ export default function AxPageDocumento() {
     }
   }
 
-  function FnFiltrarLista() {   
+  function FnFiltrarLista() {
     let filtrado = listaSol && listaSol.filter((sol: any) =>
       (filtro.id_persona ? sol.id_persona == filtro.id_persona : true) ||
       (filtro.id_empresa ? sol.id_empresa == filtro.id_empresa : true)
@@ -121,6 +120,12 @@ export default function AxPageDocumento() {
       console.log('Error downloading image: ', error.message)
     }
   }
+
+
+  useEffect(() => {
+    if (filtro.id_persona > 0) { filtro.id_persona = 0 }
+    else if (filtro.id_empresa > 0) { filtro.id_empresa = 0 }
+  }, [filtro.tipo_entidad])
   return (
     <>
       <main className="flex-1 pb-8">
@@ -145,7 +150,7 @@ export default function AxPageDocumento() {
                   {filtro.tipo_entidad == "Natural" ? <div className="md:col-span-2">
                     <AxSelectFiltro name={"id_persona"} value={filtro.id_persona} filtro={true} label="Persona" handleChange={handleChange}>
                       {listaPersona && listaPersona.map((ciudadano: any) =>
-                        <option key={ciudadano.id} value={ciudadano.id}>{ciudadano.nombre}</option>)}
+                        <option key={ciudadano.id} value={ciudadano.id}>{ciudadano.nombre_apellido}</option>)}
                     </AxSelectFiltro>
                   </div> :
 
@@ -191,8 +196,8 @@ export default function AxPageDocumento() {
               </p>
             </div>
             <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none ">
-              <AxBtnEditarSolicitud  setVerArchivo={setVerArchivo}  setSubirNuevoArchivo={setSubirNuevoArchivo} estadoEdicion={ID > 0 ? EnumEstadoEdicion.SELECCIONADO : estadoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
-              <AxBtnAgregarArchivoSolicitud  setVerArchivo={setVerArchivo}  setSubirNuevoArchivo={setSubirNuevoArchivo}  setEstadoEdicion={setEstadoEdicion} setID={setID} setTipoEdicion={setTipoEdicion}></AxBtnAgregarArchivoSolicitud>
+              <AxBtnEditarSolicitud setVerArchivo={setVerArchivo} setSubirNuevoArchivo={setSubirNuevoArchivo} estadoEdicion={ID > 0 ? EnumEstadoEdicion.SELECCIONADO : estadoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
+              <AxBtnAgregarArchivoSolicitud setVerArchivo={setVerArchivo} setSubirNuevoArchivo={setSubirNuevoArchivo} setEstadoEdicion={setEstadoEdicion} setID={setID} setTipoEdicion={setTipoEdicion}></AxBtnAgregarArchivoSolicitud>
             </div>
           </div>
           <div className="hidden sm:block">
@@ -226,28 +231,30 @@ export default function AxPageDocumento() {
                               className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                             />
                           </td>
-                          <td className="px-1 py-3 whitespace-nowrap text-sm text-gray-500 truncate">
-                            {item.tipo_documento_nombre}
+                          <td className="whitespace-nowrap px-1 py-1 text-sm text-gray-500 truncate">
+                            <div className="text-gray-900">{item.tipo_documento_nombre}</div>
+                            <div className="text-gray-500">{item.nombre_documento}</div>
                           </td>
-                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                          <td className="px-1 py-3 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                             {item.numero_documento}
                           </td>
+                          <td className="whitespace-nowrap px-1 text-center text-sm text-gray-500 truncate">
+                            <div className="text-gray-900">{item.tipo_entidad}</div>
+                            {item.tipo_entidad == "Natural"
+                              ? <div className="text-gray-500">{item.persona_nombre}</div>
+                              : <div className="text-gray-500">{item.razon_social}</div>
+                            }
+                          </td>
                           <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                            {item.persona_nombre}
-                          </td>
-                          <td className="px-1 py-3 whitespace-nowrap text-sm text-gray-500 truncate">
-                            {item.nombre_documento}
-                          </td>
-                          <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
                             {item.i_total}
                           </td>
                           <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                             {item.empleado_nombre}
                           </td>
-                          <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
+                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                             {item.fecha_inicio}
                           </td>
-                          <td className="px-1 whitespace-nowrap text-sm text-gray-500 truncate">
+                          <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                             {item.fecha_plazo}
                           </td>
                           <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
@@ -293,12 +300,12 @@ export default function AxPageDocumento() {
                                 setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
                                 setSubirNuevoArchivo(true);
                                 setEsModalEstado(false)
-                                item.forma_entrega == "directo" ? setVerArchivo(true) : setVerArchivo(false);
+                                item.forma_entrega == "DIRECTO" ? setVerArchivo(true) : setVerArchivo(false);
                                 setArchivo(item.archivo)
                               }}
                               className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
                             >
-                              {item.url_archivo ? "subir" : item.forma_entrega == "impreso" ? "ver impreso" : "Ver directo"}
+                              {item.url_archivo ? "subir" : item.forma_entrega == "IMPRESO" ? "ver impreso" : "Ver directo"}
                             </button>
                           </td>
                         </tr>

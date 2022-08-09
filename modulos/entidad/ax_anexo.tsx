@@ -127,7 +127,7 @@ export default function AxDistrito({ ID, setID, setEstadoEdicion }: TypeFormular
                                                     {listaDistrito && listaDistrito.map((item: any) => <option key={item.id} value={item.id}>{item.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
-                                            <div className="md:col-span-4">
+                                            <div className="md:col-span-6">
                                                 <AxInput name="descripcion" label="Descripcion" value={formData.descripcion} handleChange={handleChange} />
                                             </div>
                                         </div>

@@ -19,7 +19,7 @@ class TipoDocumentoModel {
         this.descripcion = "";
         this.tiempo_entrega = 0;
         this.costo = 0;
-        this.forma_entrega="directo"
+        this.forma_entrega="DIRECTO"
         this.id_grupo = 0;
         this.tipo_documento_consideracion = []
         this.tipo_documento_requisito = []

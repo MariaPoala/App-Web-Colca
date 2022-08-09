@@ -192,8 +192,8 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                             </div>
                                             <div className="md:col-span-2">
                                                 <AxSelect name="tipo_entidad" value={formData.tipo_entidad} label="Tipo Entidad" handleChange={handleChange}>
-                                                    <option key="Natural" value="Natural">Natural</option>
-                                                    <option key="Juridico" value="Juridico">Juridico</option>
+                                                    <option key="NATURAL" value="NATURAL">NATURAL</option>
+                                                    <option key="JURIDICO" value="JURIDICO">JURIDICO</option>
                                                 </AxSelect>
                                             </div>
                                             {
@@ -242,8 +242,8 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                             </div>
                                             <div className="md:col-span-2">
                                                 <AxSelect name="estado" value={formData.estado} label="Estado" handleChange={handleChange}>
-                                                    <option key="Registrado" value="Registrado">Registrado</option>
-                                                    <option key="Validado" value="Validado">Validado</option>
+                                                    <option key="REGISTRADO" value="REGISTRADO">REGISTRADO</option>
+                                                    <option key="VALIDADO" value="VALIDADO">VALIDADO</option>
                                                 </AxSelect>
                                             </div>
                                             {/* <div className="md:col-span-2">

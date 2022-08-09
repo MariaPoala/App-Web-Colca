@@ -19,7 +19,7 @@ class DocumentoModel {
 
     constructor() {
         this.id = 0;
-        this.tipo_entidad = 'Natural';
+        this.tipo_entidad = 'NATURAL';
         this.fecha_documento = dayjs().format("YYYY-MM-DD")
         this.fecha_creacion = dayjs().format("YYYY-MM-DD")
         this.numero_documento = "";

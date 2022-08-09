@@ -1,23 +1,24 @@
 Empleado
-	- Quitar Anexo
+	- Quitar Anexo (TERMINADO)
 Persona
-	- Seleccionar Anexo
+	- Seleccionar Anexo 
 Empresa
 	- Seleccionar Anexo
 Requisito
-	- Color del boton visualizar
-	- Tamaño del boton
+	- Color del boton visualizar (TERMINADO)
+	- Tamaño del boton (TERMINADO)
 Tipo de documento
-	- Forma Entrega en mayuscula
+	- Forma Entrega en mayuscula (TERMINADO)
 Documentos
-	- Tipo de Entidad en mayuscula
-	- Agregar Filtro Tipo de Entidad
-	- Agregar Filtro Persona, Entidad
-	- Filtro por año
-	- Los combos tienen que ser las vistas
+	- Tipo de Entidad en mayuscula (TERMINADO)
+	- Agregar Filtro Tipo de Entidad (TERMINADO)
+	- Agregar Filtro Persona, Entidad (MEDIO)
+	- Filtro por año ()
+	- Los combos tienen que ser las vistas (TERMINADO)
 Solicitud
 	- Ordenar Grid
-	- Tipo de Entidad en mayuscula
-	- Filtro - los combos tienen que ser las vistas
+	- Tipo de Entidad en mayuscula (TERMINADO)
+	- Filtro - los combos tienen que ser las vistas (TERMINADO)
 	
 RESPONSIVO
+-TIPO DOCUMENTO

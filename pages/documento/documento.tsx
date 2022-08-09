@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
 import { CheckCircleIcon, BadgeCheckIcon, RefreshIcon, BanIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
-import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar, AxBtnEditarLista } from 'components/form';
+import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar, AxBtnEditarLista, AxSelect } from 'components/form';
 import { EnumEstadoEdicion, EnumTipoEdicion } from 'lib/edicion';
 import TipoDocumentoModel from 'models/tipo_documento_model'
 import EmpleadoModel from 'models/empleado_model'
@@ -36,12 +36,14 @@ type TypeFiltro = {
   numero_documento: string,
   id_persona: number,
   fecha_documento: string,
-  id_tipo_documento: number[]
+  id_tipo_documento: number[],
+  id_empresa: 0,
+  tipo_entidad: string
 }
 
 export default function AxPageDocumento() {
   const { data: listaTipoDocumento } = useSWRImmutable<any[]>('/api/documento/tipo_documento', fetcherTipoDocumento);
-  const { data: listaPersona } = useSWRImmutable('/api/entidad/persona', fetcherPersona);
+  const { data: listaPersona } = useSWRImmutable('/api/entidad/persona/v_persona', fetcherPersona);
   const { data: listaDoc } = useSWRImmutable('/api/documento/documento/v_documento', fetcherVDocumento);
   const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
   const { data: listaEmpleado } = useSWRImmutable('/api/entidad/empleado', fetcherEmpleado);
@@ -49,7 +51,7 @@ export default function AxPageDocumento() {
   const [lista, setLista] = useState<DocumentoModel[]>([]);
   const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
   const [isLoading, setIsLoading] = useState(true);
-  const [filtro, setFiltro] = useState<TypeFiltro>({ numero_documento: "", id_persona: 0, fecha_documento: "", id_tipo_documento: [] });
+  const [filtro, setFiltro] = useState<TypeFiltro>({ numero_documento: "", id_persona: 0, fecha_documento: "", id_tipo_documento: [], id_empresa: 0, tipo_entidad: "NATURAL"  });
   const [listaFiltro, setListaFiltro] = useState<DocumentoModel[]>([]);
   const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
   const [esModalOpen, setEsModalOpen] = useState(false)
@@ -96,7 +98,7 @@ export default function AxPageDocumento() {
     let filtrado = listaDoc && listaDoc.filter((doc: any) =>
       (filtro.id_tipo_documento.indexOf(doc.id_tipo_documento) != -1) &&
       (filtro.id_persona ? doc.id_persona == filtro.id_persona : true) &&
-      (filtro.numero_documento ? doc.numero_documento == filtro.numero_documento : true) &&
+      (filtro.id_empresa ? doc.id_empresa == filtro.id_empresa : true) &&
       (filtro.fecha_documento ? doc.fecha_documento == filtro.fecha_documento : true)
     )
     setListaFiltro(filtrado);
@@ -105,7 +107,10 @@ export default function AxPageDocumento() {
   function FnLoadMas() {
     setPaginacion({ inicio: 0, cantidad: paginacion.cantidad + 10 });
   }
-
+  useEffect(() => {
+    if(filtro.id_persona>0){  filtro.id_persona=0}
+    else if (filtro.id_empresa>0){ filtro.id_empresa=0}   
+  }, [filtro.tipo_entidad])
   return (
     <>
       <main className="flex-1 pb-8">
@@ -121,14 +126,26 @@ export default function AxPageDocumento() {
                   Filtrar Por:
                 </dd>
                 <div className="mt-2 grid ml-14 grid-cols-1   gap-y-6 gap-x-4 md:grid-cols-6">
-                  <div className="md:col-span-2">
-                    <AxSelectFiltro name="id_persona" value={filtro.id_persona} filtro={true} label="Ciudadanos" handleChange={handleChange}>
-                      {listaPersona && listaPersona.map((ciudadano: any) => <option key={ciudadano.id} value={ciudadano.id}>{ciudadano.nombre}</option>)}
+                <div className="md:col-span-1">
+                    <AxSelect name="tipo_entidad" value={filtro.tipo_entidad} label="Tipo Entidad" handleChange={handleChange}>
+                      <option key="NATURAL" value="NATURAL">NATURAL</option>
+                      <option key="JURIDICO" value="JURIDICO">JURIDICO</option>
+                    </AxSelect>
+                  </div>
+                  {filtro.tipo_entidad == "NATURAL" ? <div className="md:col-span-2">
+                    <AxSelectFiltro name={"id_persona"} value={filtro.id_persona} filtro={true} label="Persona" handleChange={handleChange}>
+                      {listaPersona && listaPersona.map((ciudadano: any) =>                      
+                        <option key={ciudadano.id} value={ciudadano.id}>{ciudadano.nombre_apellido}</option>)}
                     </AxSelectFiltro>
-                  </div>
-                  <div className="md:col-span-1">
-                    <AxInput name="numero_documento" handleChange={handleChange} label="Nro Documento" type="text" filtro={true} />
-                  </div>
+                  </div> :
+
+                    <div className="md:col-span-2">
+                      <AxSelectFiltro name={"id_empresa"} value={filtro.id_empresa} filtro={true} label="Empresa" handleChange={handleChange}>
+                        {listaEmpresa && listaEmpresa.map((empresa: any) =>
+                          <option key={empresa.id} value={empresa.id}>{empresa.razon_social}</option>)}
+                      </AxSelectFiltro>
+                    </div>
+                  }                  
                   <div className="md:col-span-1">
                     <AxInput name="fecha_documento" label="Fec Documento" handleChange={handleChange} filtro={true} type="date" />
                   </div>

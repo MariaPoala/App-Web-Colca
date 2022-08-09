@@ -72,3 +72,7 @@ dis.id,
 an.id_distrito,an.nombre as nombre
 from distrito as dis
 inner join anexo as an on dis.id=an.id_distrito
+
+create view v_persona
+as
+SELECT CONCAT(nombre, ' ' , apellido) as nombre_apellido FROM persona;
