@@ -31,14 +31,14 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
     const [isLoading, setIsLoading] = useState(true);
     const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
     const [open, setOpen] = useState(false)
-    const [clic, setclic] = useState(false)
+    const [clicVisualizarArchivo, setClicVisualizarArchivo] = useState(false)
     const [uploading, setUploading] = useState(false)
     const [urlArchivo, setUrlArchivo] = useState("")
 
 
     useEffect(() => {
         setIsLoading(true)
-        setclic(false)
+        setClicVisualizarArchivo(false)
         setTipoEdicion(ID == 0 ? EnumTipoEdicion.AGREGAR : EnumTipoEdicion.VISUALIZAR);
         if (ID == 0) {
             setFormData({ FORM_ADD: true })
@@ -214,38 +214,27 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="md:col-span-1">
-                                                <div className=" sm:border-t sm:border-gray-200 sm:pt-5">
-                                                    {formData.url_imagen ?
-                                                        clic == false ?
-                                                            <button type="button"
-                                                                className="ml-3 h-2 text-xs w-36 inline-flex items-center px-3 py-2 border border-indigo-300 shadow-sm  leading-4 font-sm rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
+                                            <legend>
+                                                <div className="md:col-span-1">
+                                                    <div className=" sm:border-t sm:border-gray-200 sm:pt-5">
+                                                        {formData.url_imagen ?
+                                                            <i className="ml-3 cursor-pointer h-2 text-xs w-36 inline-flex items-center px-3 py-2 border border-indigo-300 shadow-sm  leading-4 font-sm rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500    "
                                                                 onClick={() => {
                                                                     FndescargarImg()
-                                                                    setclic(true)
+                                                                    setClicVisualizarArchivo(!clicVisualizarArchivo)
                                                                 }}
                                                             >
-                                                                <EyeIcon className="h-5 w-5 mr-1 text-white "> </EyeIcon>
-                                                                Visualizar Archivo
-                                                            </button>
-                                                            :
-                                                            <button type="button"
-                                                                className="ml-3 h-2 text-xs w-36 inline-flex items-center px-3 py-2 border border-indigo-300 shadow-sm  leading-4 font-sm rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
-                                                                onClick={() => {
-                                                                    FndescargarImg()
-                                                                    setclic(false)
-                                                                }}
-                                                            >
-                                                                <EyeOffIcon className="h-5 w-5 mr-1 text-white "></EyeOffIcon>
-                                                                Ocultar Archivo
-                                                            </button>
-                                                        :
-                                                        <p className="ml-3 h-2 text-md w-32 inline-flex items-center text-center px-3 py-2 border border-red-300 shadow-sm  leading-4 font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500     disabled:bg-red-300">Sin Archivo</p>
-                                                    }
+                                                                {clicVisualizarArchivo == false
+                                                                    ? <><EyeIcon className="h-5 w-5 mr-1 text-white "> </EyeIcon>Visualizar Archivo</>
+                                                                    : <><EyeOffIcon className="h-5 w-5 mr-1 text-white "></EyeOffIcon>Ocultar Archivo</>}
+                                                            </i>
+                                                            : <p className="ml-3 h-2 text-md w-32 inline-flex items-center text-center px-3 py-2 border border-red-300 shadow-sm  leading-4 font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500     disabled:bg-red-300">Sin Archivo</p>
+                                                        }
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </legend>
                                             <div className="md:col-span-6">
-                                                {clic == true &&
+                                                {clicVisualizarArchivo == true &&
                                                     <div className="bg-white">
                                                         {urlArchivo ? (
                                                             <div className="">

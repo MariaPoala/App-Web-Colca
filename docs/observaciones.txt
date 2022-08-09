@@ -6,7 +6,7 @@ Empresa
 	- Seleccionar Anexo
 Requisito
 	- Color del boton visualizar (TERMINADO)
-	- Tamaño del boton (TERMINADO)
+	- Tamaño del boton (TERMINADO)"
 Tipo de documento
 	- Forma Entrega en mayuscula (TERMINADO)
 Documentos
