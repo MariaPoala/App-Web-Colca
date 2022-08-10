@@ -22,3 +22,21 @@ Solicitud
 	
 RESPONSIVO
 -TIPO DOCUMENTO
+
+en la solicitud el numero seria este (SOL-ACTNAC-2022-00001)
+
+soli i-total total
+
+cuando se haga click en el numero, se puede imprimir
+
+adjuntar
+ver archivo
+
+entregado verde
+validado amarillo
+
+mostrar requisitos y concideracion
+
+validado
+finalizado
+entregado

@@ -53,7 +53,6 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
         }
         setIsLoading(false)
     }, [ID])
-    console.log(ID)
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
         setFormData({
@@ -113,10 +112,8 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
 
             let { error: uploadError } = await supabase.storage.from('archivo-requisito').upload(filePath, file)
             if (uploadError) {
-                console.log(uploadError)
                 throw uploadError
             }
-            console.log(fileName);
             setFormData({ name: 'url_imagen', value: fileName })
         } catch (error: any) {
             alert(error.message)

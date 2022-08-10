@@ -91,7 +91,6 @@ export default function AxPageDocumento() {
     else {
       setFiltro({ ...filtro, [event.target.name]: event.target.value });
     }
-    console.log(filtro)
   }
 
   function FnFiltrarLista() {

@@ -97,25 +97,12 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
             try {
 
                 if (formData.url_imagen) {
-                    // const { data, error } = await supabase.storage.from('archivo-requisito').download(formData.url_imagen)
-                    // if (error) {
-                    //     throw error
-                    // }
-                    // if (data) {
-                    //     const url = URL.createObjectURL(data)
-                    //     console.log(url);
-                    //     setUrlArchivo(url)
-                    // }
-                    console.time()
                     const { signedURL, error } = await supabase.storage.from('archivo-requisito').createSignedUrl(formData.url_imagen, 60)
                     if (error) {
                         throw error
                     }
                     if (signedURL) {
-                        // const url = URL.createObjectURL(data)
-                        console.log(signedURL);
                         setUrlArchivo(signedURL)
-                        console.time()
                     }
                 }
             } catch (error: any) {
@@ -141,10 +128,8 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
 
             let { error: uploadError } = await supabase.storage.from('archivo-requisito').upload(filePath, file)
             if (uploadError) {
-                console.log(uploadError)
                 throw uploadError
             }
-            console.log(fileName);
             setFormData({ name: 'url_imagen', value: fileName })
         } catch (error: any) {
             alert(error.message)

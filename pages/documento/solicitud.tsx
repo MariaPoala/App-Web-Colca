@@ -24,7 +24,6 @@ const fetcherTipoDocumento = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
 
 const campos = [
-  { name: 'Tipo Documento' },
   { name: 'N° Documento' },
   { name: 'Entidad' },
   { name: 'I Total' },
@@ -32,8 +31,7 @@ const campos = [
   { name: 'Fecha Inicio' },
   { name: 'Fecha Plazo' },
   { name: 'Estado' },
-  { name: 'Ver' },
-  { name: 'Subir' },
+  { name: 'Subir' }
 ]
 
 type TypeFiltro = {
@@ -56,14 +54,10 @@ export default function AxPageDocumento() {
   const [listaFiltro, setListaFiltro] = useState<SolicitudModel[]>([]);
   const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
   const [esModalOpen, setEsModalOpen] = useState(false)
-  const [esModalEstado, setEsModalEstado] = useState(false)
   const [urlArchivo, setUrlArchivo] = useState("")
   const [archivo, setArchivo] = useState("")
   const [clic, setclic] = useState(false)
-  const [subirNuevoArchivo, setSubirNuevoArchivo] = useState(false)
-  const [verArchivo, setVerArchivo] = useState(false)
   const [tipoModal, setTipoModal] = useState<string>('EDICION')
-
   const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 10 })
 
   useEffect(() => {
@@ -260,6 +254,9 @@ export default function AxPageDocumento() {
                           <th scope="col" className="relative w-16 px-3">
                             ✔
                           </th>
+                          <th scope="col" key='doc' className="py-3 text-center text-sm text-gray-900 relative w-40 px-3">
+                            Tipo Documento
+                          </th>
                           {campos.map((item) => (
                             <th key={item.name} className="px-1 py-3 text-center text-sm text-gray-900">
                               {item.name}
@@ -281,9 +278,14 @@ export default function AxPageDocumento() {
                                 className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                               />
                             </td>
-                            <td className="whitespace-nowrap px-1 py-1 text-sm text-gray-500 truncate">
+                            <td className="px-1 w-40 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                               <div className="text-gray-900">{item.tipo_documento_nombre}</div>
-                              <div className="text-gray-500">{item.nombre_documento}</div>
+                              <div className="text-gray-500">
+                                <span onClick={() => {
+                                  setArchivo(item.archivo);
+                                  FndescargarImg();
+                                }} className={item.archivo ? "cursor-pointer  whitespace-nowrap flex-shrink-0 inline-block px-2 py-0.5 text-blue-800 text-xs font-medium bg-blue-100 rounded-full hover:bg-blue-300" : "text-xs"}>{item.nombre_documento}</span>
+                              </div>
                             </td>
                             <td className="px-1 py-3 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                               {item.numero_documento}
@@ -310,96 +312,46 @@ export default function AxPageDocumento() {
                             <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                               <button type="button"
                                 onClick={() => {
-                                  // setTipoEdicion(EnumTipoEdicion.EDITAR);
-                                  // setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
-                                  // setEsModalEstado(true)
-                                  // setID(item.id)
                                   setTipoEdicion(EnumTipoEdicion.EDITAR);
                                   setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
                                   setTipoModal('ESTADO')
                                   setID(item.id)
                                 }}
-                                className={" inline-flex items-center px-3 py-2 border disabled:bg-indigo-300  border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 " + (item.estado == "Registrado" ?
-                                  "bg-red-500 hover:bg-red-600 focus:ring-red-500 " : item.estado == "Validado" ? "bg-green-500 hover:bg-green-600 focus:ring-green-500 " :
-                                    "bg-indigo-500 hover:bg-indigo-600 focus:ring-indigo-500 ")
+                                className={" inline-flex items-center w-24 h-5 text-xs px-3 py-2 border disabled:bg-indigo-300  border-gray-300 shadow-sm leading-4 font-medium rounded-md text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 " +
+                                  (item.estado == "REGISTRADO"
+                                    ? "bg-indigo-500 hover:bg-indigo-600 focus:ring-indigo-500 "
+                                    : item.estado == "RECHAZADO"
+                                      ? "bg-red-500 hover:bg-red-600 focus:ring-red-500"
+                                      : item.estado == "VALIDADO"
+                                        ? "bg-blue-500 hover:bg-blue-600 focus:ring-blue-500 " :
+                                        item.estado == "FINALIZADO"
+                                          ? "bg-zinc-500 hover:bg-zinc-600 focus:ring-zinc-500 " :
+                                          "bg-green-500 hover:bg-green-600 focus:ring-green-500 ")
                                 }
                               >
                                 {item.estado}
                               </button>
                             </td>
-                            {/* <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.archivo &&
+                            <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                              {item.url_archivo_solicitud &&
                                 <button type="button"
                                   onClick={() => {
-                                    setArchivo(item.archivo)
+                                    setTipoModal('ARCHIVO');
+                                    setID(item.id)
                                     setTipoEdicion(EnumTipoEdicion.EDITAR);
                                     setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
-                                    setID(item.id)
-                                    setTipoModal('ARCHIVO')
-                                    setSubirNuevoArchivo(true);
-                                    setVerArchivo(true);
-                                    // setArchivo(item.archivo)
-                                    // setTipoEdicion(EnumTipoEdicion.EDITAR);
-                                    // setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
-                                    // setID(item.id)
-                                    // setTipoModal('ESTADO')
-                                    // setSubirNuevoArchivo(true);
-                                    // setVerArchivo(true);
+                                    setArchivo(item.url_archivo_solicitud);
                                   }}
-                                  className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500     disabled:bg-indigo-300"
+                                  className=" inline-flex items-center px-3 py-2 border  h-6 font-mono italic border-gray-300 shadow-sm text-xs leading-4 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
                                 >
-                                  <LinkIcon className='h-4 w-4 text-white'></LinkIcon>
+                                  Subir archivo
                                 </button>
                               }
-                            </td> */}
-                            <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-
-                              <button type="button"
-                                onClick={() => {
-                                  setID(item.id)
-                                  setTipoEdicion(EnumTipoEdicion.EDITAR);
-                                  setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
-                                  setSubirNuevoArchivo(true);
-                                  setEsModalEstado(false)
-                                  setTipoModal('ARCHIVO')
-                                  item.forma_entrega == "DIRECTO" ? setVerArchivo(true) : setVerArchivo(false);
-                                  setArchivo(item.archivo)
-                                }}
-                                className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
-                              >
-                                {item.url_archivo ? "subir" : item.forma_entrega == "IMPRESO" ? "ver impreso" : "Ver directo"}
-                              </button>
                             </td>
                           </tr>
                         )))}
                       </tbody>
                     </table>}
-                </div>
-                <div className="md:col-span-1">
-                  <div className=" sm:border-t sm:border-gray-200 sm:pt-5">
-                    {clic == false ?
-                      <button type="button"
-                        className="ml-3 inline-flex items-center px-3 py-2 border border-green-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500     disabled:bg-green-300"
-                        onClick={() => {
-                          FndescargarImg()
-                          setclic(true)
-                        }}
-                      >
-                        <EyeIcon className="h-8 w-8 text-white "> </EyeIcon>
-                        Visualizar Archivo
-                      </button>
-                      :
-                      <button type="button"
-                        className="ml-3 inline-flex items-center px-3 py-2 border border-red-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-300     disabled:bg-red-300"
-                        onClick={() => {
-                          setclic(false)
-                        }}
-                      >
-                        <EyeOffIcon className="h-8 w-8 text-white "></EyeOffIcon>
-                        Ocultar Archivo
-                      </button>
-                    }
-                  </div>
                 </div>
                 <div className="md:col-span-6">
                   {clic == true &&
@@ -424,65 +376,66 @@ export default function AxPageDocumento() {
           </div>
         </div>
       </main >
+      {tipoModal != "NINGUNO" &&
+        <Transition.Root show={estadoEdicion == EnumEstadoEdicion.EDITANDO} as={Fragment}>
 
-      <Transition.Root show={estadoEdicion == EnumEstadoEdicion.EDITANDO} as={Fragment}>
+          <Dialog as="div" className="relative z-10 " onClose={setEsModalOpen}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+            </Transition.Child>
 
-        <Dialog as="div" className="relative z-10 " onClose={setEsModalOpen}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-          </Transition.Child>
+            <div className="fixed z-10 inset-0 overflow-y-auto">
 
-          <div className="fixed z-10 inset-0 overflow-y-auto">
+              <div className="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0">
 
-            <div className="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                  enterTo="opacity-100 translate-y-0 sm:scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                  leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                >
+                  <Dialog.Panel className="relative bg-white  rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:p-6 ">
+                    <div className="px-4 sm:px-6">
+                      <div className="flex items-start justify-between">
+                        <Dialog.Title className="text-lg font-medium text-gray-900">
+                          {
+                            tipoModal == "ESTADO" ? "Estado de la Solicitud" : "Registro de Solicitud [" + { tipoEdicion } + "]"
+                          }
 
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-              >
-                <Dialog.Panel className="relative bg-white  rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:p-6 ">
-                  <div className="px-4 sm:px-6">
-                    <div className="flex items-start justify-between">
-                      <Dialog.Title className="text-lg font-medium text-gray-900">
-                        {
-                          tipoModal == "ESTADO" ? "Estado de la Solicitud" : "Registro de Solicitud [" + { tipoEdicion } + "]"
-                        }
-
-                      </Dialog.Title>
-                      <div className="ml-3 flex h-7 items-center">
-                        <button
-                          type="button"
-                          className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                          onClick={() => setEstadoEdicion(EnumEstadoEdicion.CANCELADO)}
-                        >
-                          <span className="sr-only">Close panel</span>
-                          <XIcon className="h-6 w-6" aria-hidden="true" />
-                        </button>
+                        </Dialog.Title>
+                        <div className="ml-3 flex h-7 items-center">
+                          <button
+                            type="button"
+                            className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            onClick={() => setEstadoEdicion(EnumEstadoEdicion.CANCELADO)}
+                          >
+                            <span className="sr-only">Close panel</span>
+                            <XIcon className="h-6 w-6" aria-hidden="true" />
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  {tipoModal == "EDICION" && <AxSolicitud ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSolicitud>}
-                  {tipoModal == "ESTADO" && <AxSolicitudEstado ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSolicitudEstado>}
-                  {tipoModal == "ARCHIVO" && <AxSubirArchivo verArchivo={verArchivo} archivo={archivo} ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSubirArchivo>}
-                </Dialog.Panel>
-              </Transition.Child>
+                    {tipoModal == "EDICION" && <AxSolicitud ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSolicitud>}
+                    {tipoModal == "ESTADO" && <AxSolicitudEstado ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSolicitudEstado>}
+                    {tipoModal == "ARCHIVO" && <AxSubirArchivo archivo={archivo} ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSubirArchivo>}
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
             </div>
-          </div>
-        </Dialog>
-      </Transition.Root>
+          </Dialog>
+        </Transition.Root>
+      }
     </>
   )
 }

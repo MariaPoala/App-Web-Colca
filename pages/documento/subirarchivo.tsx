@@ -18,7 +18,6 @@ export default function ModalEmpresa() {
     //OBTENIENDO LA IMAGEN
     const changeImagen = (e: any) => {
         setImagen(e.target.files[0]);
-        console.log(imagenupload);
     }
     const igameListRef = ref(storage, "images/")
     const uploadimage = () => {
@@ -39,7 +38,6 @@ export default function ModalEmpresa() {
                     setListaimage((prev) => [...prev, url]);
                 })
             })
-            console.log(response)
         })
     }, [setImagen])
 

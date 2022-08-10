@@ -85,33 +85,6 @@ export default function AxGrupo({ ID, setID, setEstadoEdicion }: TypeFormularioP
         setImagen(e.target.files[0]);
 
     }
-
-   
-    // const uploadimage = () => {
-    //     if (imagenupload == null) return;
-    //     const imageRef = ref(storage, `archivorequisito/${setImagen.name + uuid.v4()}`)
-    //     uploadBytes(imageRef, imagenupload).then((snapshot) => {
-    //         alert('Uploaded a blob or file!');
-    //         getDownloadURL(snapshot.ref).then((url) => {
-    //             setListaimage((prev) => [...prev, url]);
-    //             console.log(url)
-    //             formData.url_imagen = (url)
-    //         })
-    //     });
-    //     return;
-    // }
-
-    // useEffect(() => {
-    //     listAll( listaimage).then((response) => {
-    //         response.items.forEach((item) => {
-    //             getDownloadURL(item).then((url) => {
-    //                 setListaimage((prev) => [...prev, url]);
-    //             })
-    //         })
-    //         console.log(response)
-    //     })
-    // }, [imagenupload])
-    // // subir archivo
     return (
         <>
             <nav className="flex items-start pb-1 sm:hidden" aria-label="Breadcrumb">

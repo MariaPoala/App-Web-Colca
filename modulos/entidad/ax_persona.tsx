@@ -74,7 +74,6 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
         })
 
         const result: PersonaModel = await response.json()
-        console.log(result);
         if (tipoEdicion == EnumTipoEdicion.AGREGAR) setID(result.id);
         setIsSubmitting(false);
         setOpen(false);

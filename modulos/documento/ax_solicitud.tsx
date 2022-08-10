@@ -88,25 +88,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
             if (filtrado) setListaDocumentoFiltrado(filtrado);
         }
     }, [listaDocumento, formData.id_persona])
-
-    const changeImagen = (e: any) => {
-        setImagen(e.target.files[0]);
-
-    }
-    const uploadimage = () => {
-        // if (imagenupload == null) return;
-        // const imageRef = ref(storage, `archivodocumento/${setImagen.name + uuid.v4()}`)
-        // uploadBytes(imageRef, imagenupload).then((snapshot) => {
-        //     alert('Uploaded a blob or file!');
-        //     getDownloadURL(snapshot.ref).then((url) => {
-        //         setListaimage((prev) => [...prev, url]);
-        //         console.log(url)
-        //         formData.url_archivo = (url)
-        //     })
-        // });
-        // return;
-    }
-
+    
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
         if (event.target.name == "id_tipo_documento") {
@@ -197,7 +179,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                                 </AxSelect>
                                             </div>
                                             {
-                                                formData.tipo_entidad == "Natural"
+                                                formData.tipo_entidad == "NATURAL"
                                                     ? <div className="md:col-span-3">
                                                         <AxSelect name="id_persona" value={formData.id_persona} label="Persona" handleChange={handleChange}>
                                                             {listaPersona && listaPersona.map((persona: any) => <option key={persona.id} value={persona.id}>{persona.nombre_apellido}</option>)}

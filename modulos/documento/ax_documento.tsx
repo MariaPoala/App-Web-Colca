@@ -123,7 +123,6 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
         event.preventDefault();
         setIsSubmitting(true);
         const dataEnvio = JSON.stringify(formData);
-        console.log(dataEnvio)
         const response = await fetch('/api/documento/documento', {
             body: dataEnvio,
             headers: { 'Content-Type': 'application/json', },
@@ -134,7 +133,6 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
         setIsSubmitting(false);
         if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
         setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
-        console.log(result)
     }
     async function FndescargarImg() {
         try {
@@ -146,9 +144,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                     throw error
                 }
                 if (signedURL) {
-                    console.log(signedURL);
                     setUrlArchivo(signedURL)
-                    console.time()
                 }
             }
         } catch (error: any) {
@@ -171,10 +167,8 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
 
             let { error: uploadError } = await supabase.storage.from('archivo-documento').upload(filePath, file)
             if (uploadError) {
-                console.log(uploadError)
                 throw uploadError
             }
-            console.log(fileName);
             setFormData({ name: 'url_archivo', value: fileName })
         } catch (error: any) {
             alert(error.message)

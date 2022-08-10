@@ -101,7 +101,6 @@ export default function AxPageDocumento() {
       (filtro.numero_documento ? doc.numero_documento == filtro.numero_documento : true) &&
       (filtro.fecha_documento ? doc.fecha_documento == filtro.fecha_documento : true)
     )
-    console.log(filtrado);
     setListaFiltro(filtrado);
   }
 
