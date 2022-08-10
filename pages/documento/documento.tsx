@@ -180,7 +180,6 @@ export default function AxPageDocumento() {
           <div className="max-w-6xl mx-16 px-2 sm:px-2 ">
             <h2 className="text-lg leading-6 font-medium text-gray-900">Documentos</h2>
             <div className="mt-2 grid  gap-5 grid-cols-1 sm:grid-cols-2  md:grid-cols-3  lg:grid-cols-5">
-              {/* Card */}
               {(listaTipoDocumento && listaTipoDocumento.map((item: any) =>
               (resultado.map(s => s.id == item.id &&
                 <ul key={item.id} className="bg-indigo-400 cursor-pointer overflow-hidden shadow rounded-lg hover:bg-indigo-700"
