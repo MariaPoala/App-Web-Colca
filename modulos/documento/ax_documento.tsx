@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useState } from "react";
 import useSWRImmutable from "swr/immutable"
+import useSWR from "swr"
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { default as dayjs } from 'dayjs';
 import * as uuid from 'uuid'
@@ -37,7 +38,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
     const { data: listaEmpleado } = useSWRImmutable<any[]>('/api/entidad/empleado/v_empleado', fetcherEmpleado);
     const { data: listaPersona } = useSWRImmutable('/api/entidad/persona/v_persona', fetcherPersona);
     const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
-    const { data: listaTipoDocumento } = useSWRImmutable<TipoDocumentoModel[]>('/api/documento/tipo_documento', fetcherDocumento);
+    const { data: listaTipoDocumento } = useSWR<TipoDocumentoModel[]>('/api/documento/tipo_documento', fetcherDocumento);
     const [formData, setFormData] = useReducer(formReducer, new DocumentoModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);

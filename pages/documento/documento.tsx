@@ -45,7 +45,6 @@ export default function AxPageDocumento() {
   const { data: listaTipoDocumento } = useSWRImmutable<any[]>('/api/documento/tipo_documento', fetcherTipoDocumento);
   const { data: listaPersona } = useSWRImmutable('/api/entidad/persona/v_persona', fetcherPersona);
   const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
-  const { data: listaDoc } = useSWRImmutable('/api/documento/documento/v_documento', fetcherVDocumento);
   const [ID, setID] = useState(-1)
   const [lista, setLista] = useState<DocumentoModel[]>([]);
   const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
@@ -60,11 +59,11 @@ export default function AxPageDocumento() {
     if (estadoEdicion != EnumEstadoEdicion.LISTAR && estadoEdicion != EnumEstadoEdicion.GUARDADO) return;
     setIsLoading(true)
     const fetchData = async () => {
-      const response = await fetch(`/api/documento/documento?inicio=${paginacion.inicio}&cantidad=${paginacion.cantidad}`, {
+      const response = await fetch(`/api/documento/documento/v_documento?inicio=${paginacion.inicio}&cantidad=${paginacion.cantidad}`, {
         method: "GET"
       })
       const result: DocumentoModel[] = await response.json()
-      setLista([...lista, ...result]);
+      setLista(result);
       setIsLoading(false)
     }
     fetchData().catch(console.error);
@@ -94,7 +93,7 @@ export default function AxPageDocumento() {
   }
 
   function FnFiltrarLista() {
-    let filtrado = listaDoc && listaDoc.filter((doc: any) =>
+    let filtrado = lista && lista.filter((doc: any) =>
       (filtro.tipo_entidad == doc.tipo_entidad) &&
       (filtro.id_persona != 0 ? doc.id_persona == filtro.id_persona : true) &&
       (filtro.id_empresa != 0 ? doc.id_empresa == filtro.id_empresa : true) &&

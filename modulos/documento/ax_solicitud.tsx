@@ -87,8 +87,8 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
             const filtrado = listaDocumento?.filter(x => x.id_persona == formData.id_persona && x.id_tipo_documento == formData.id_tipo_documento);
             if (filtrado) setListaDocumentoFiltrado(filtrado);
         }
-    }, [listaDocumento, formData.id_persona])
-    
+    }, [listaDocumento, formData.id_tipo_documento, formData.id_persona])
+
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
         if (event.target.name == "id_tipo_documento") {
@@ -98,6 +98,8 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                 setFormData({ name: "fecha_plazo", value: fechaFinal })
                 setFormData({ name: "i_total", value: item[0].costo })
             }
+            const filtrado = listaDocumento?.filter(x => x.id_persona == formData.id_persona && x.id_tipo_documento == event.target.value);
+            if (filtrado) setListaDocumentoFiltrado(filtrado);
         }
         else if (event.target.name == "id_persona") {
             const filtrado = listaDocumento?.filter(x => x.id_persona == event.target.value && x.id_tipo_documento == formData.id_tipo_documento);
@@ -235,7 +237,7 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                                 <AxInput name="fecha_edicion" label="Fecha Edición" value={formData.fecha_edicion} handleChange={handleChange} disabled type="date" />
                                             </div> */}
                                         </div>
-                                        
+
                                     </div>
                                     {/* <fieldset>
                                         <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
