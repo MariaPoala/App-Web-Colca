@@ -47,7 +47,6 @@ type TypeFiltro = {
 export default function AxPageDocumento() {
   const { data: listaTipoDocumento } = useSWRImmutable<any[]>('/api/documento/tipo_documento', fetcherTipoDocumento);
   const { data: listaPersona } = useSWRImmutable('/api/entidad/persona/v_persona', fetcherPersona);
-  const { data: listaSol } = useSWRImmutable('/api/documento/solicitud/v_solicitud', fetcherVSolicitud);
   const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
   const [ID, setID] = useState(-1)
   const [lista, setLista] = useState<SolicitudModel[]>([]);
@@ -63,6 +62,7 @@ export default function AxPageDocumento() {
   const [clic, setclic] = useState(false)
   const [subirNuevoArchivo, setSubirNuevoArchivo] = useState(false)
   const [verArchivo, setVerArchivo] = useState(false)
+  const [tipoModal, setTipoModal] = useState<string>('EDICION')
 
   const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 10 })
 
@@ -75,7 +75,7 @@ export default function AxPageDocumento() {
         method: "GET"
       })
       const result: SolicitudModel[] = await response.json()
-      setLista([...lista, ...result]);
+      setLista(result);
       setIsLoading(false)
     }
     fetchData().catch(console.error);
@@ -103,7 +103,7 @@ export default function AxPageDocumento() {
       }
     });
   function FnFiltrarLista() {
-    let filtrado = listaSol && listaSol.filter((item: any) =>
+    let filtrado = lista && lista.filter((item: any) =>
       (filtro.tipo_entidad == item.tipo_entidad) &&
       (filtro.id_persona != 0 ? item.id_persona == filtro.id_persona : true) &&
       (filtro.id_empresa != 0 ? item.id_empresa == filtro.id_empresa : true) &&
@@ -124,7 +124,10 @@ export default function AxPageDocumento() {
           throw error
         }
         if (signedURL) {
-          setUrlArchivo(signedURL)
+          //PARA ABRIR EN UNA NUEVA PESTAÑA
+          const wPrint = window.open(signedURL);
+          if (wPrint) wPrint.window.print();
+          // setUrlArchivo(signedURL)
         }
       }
     } catch (error: any) {
@@ -235,8 +238,8 @@ export default function AxPageDocumento() {
               </div>
             </div>
             <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none ">
-              <AxBtnEditarSolicitud setVerArchivo={setVerArchivo} setSubirNuevoArchivo={setSubirNuevoArchivo} estadoEdicion={ID > 0 ? EnumEstadoEdicion.SELECCIONADO : estadoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
-              <AxBtnAgregarArchivoSolicitud setVerArchivo={setVerArchivo} setSubirNuevoArchivo={setSubirNuevoArchivo} setEstadoEdicion={setEstadoEdicion} setID={setID} setTipoEdicion={setTipoEdicion}></AxBtnAgregarArchivoSolicitud>
+              <AxBtnEditarSolicitud setTipoModal={setTipoModal} estadoEdicion={ID > 0 ? EnumEstadoEdicion.SELECCIONADO : estadoEdicion} setTipoEdicion={setTipoEdicion} setEstadoEdicion={setEstadoEdicion} />
+              <AxBtnAgregarArchivoSolicitud setTipoModal={setTipoModal} setEstadoEdicion={setEstadoEdicion} setID={setID} setTipoEdicion={setTipoEdicion}></AxBtnAgregarArchivoSolicitud>
             </div>
           </div>
           <div className="hidden sm:block">
@@ -307,9 +310,13 @@ export default function AxPageDocumento() {
                             <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                               <button type="button"
                                 onClick={() => {
+                                  // setTipoEdicion(EnumTipoEdicion.EDITAR);
+                                  // setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
+                                  // setEsModalEstado(true)
+                                  // setID(item.id)
                                   setTipoEdicion(EnumTipoEdicion.EDITAR);
                                   setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
-                                  setEsModalEstado(true)
+                                  setTipoModal('ESTADO')
                                   setID(item.id)
                                 }}
                                 className={" inline-flex items-center px-3 py-2 border disabled:bg-indigo-300  border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 " + (item.estado == "Registrado" ?
@@ -320,7 +327,7 @@ export default function AxPageDocumento() {
                                 {item.estado}
                               </button>
                             </td>
-                            <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                            {/* <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                               {item.archivo &&
                                 <button type="button"
                                   onClick={() => {
@@ -328,16 +335,23 @@ export default function AxPageDocumento() {
                                     setTipoEdicion(EnumTipoEdicion.EDITAR);
                                     setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
                                     setID(item.id)
-                                    setEsModalEstado(false)
+                                    setTipoModal('ARCHIVO')
                                     setSubirNuevoArchivo(true);
                                     setVerArchivo(true);
+                                    // setArchivo(item.archivo)
+                                    // setTipoEdicion(EnumTipoEdicion.EDITAR);
+                                    // setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
+                                    // setID(item.id)
+                                    // setTipoModal('ESTADO')
+                                    // setSubirNuevoArchivo(true);
+                                    // setVerArchivo(true);
                                   }}
                                   className=" inline-flex items-center px-3 py-2 border     border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500     disabled:bg-indigo-300"
                                 >
                                   <LinkIcon className='h-4 w-4 text-white'></LinkIcon>
                                 </button>
                               }
-                            </td>
+                            </td> */}
                             <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
 
                               <button type="button"
@@ -347,6 +361,7 @@ export default function AxPageDocumento() {
                                   setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
                                   setSubirNuevoArchivo(true);
                                   setEsModalEstado(false)
+                                  setTipoModal('ARCHIVO')
                                   item.forma_entrega == "DIRECTO" ? setVerArchivo(true) : setVerArchivo(false);
                                   setArchivo(item.archivo)
                                 }}
@@ -441,7 +456,12 @@ export default function AxPageDocumento() {
                 <Dialog.Panel className="relative bg-white  rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:p-6 ">
                   <div className="px-4 sm:px-6">
                     <div className="flex items-start justify-between">
-                      <Dialog.Title className="text-lg font-medium text-gray-900"> Registro de Solicitud [{tipoEdicion}]</Dialog.Title>
+                      <Dialog.Title className="text-lg font-medium text-gray-900">
+                        {
+                          tipoModal == "ESTADO" ? "Estado de la Solicitud" : "Registro de Solicitud [" + { tipoEdicion } + "]"
+                        }
+
+                      </Dialog.Title>
                       <div className="ml-3 flex h-7 items-center">
                         <button
                           type="button"
@@ -454,14 +474,9 @@ export default function AxPageDocumento() {
                       </div>
                     </div>
                   </div>
-                  {esModalEstado == true ?
-                    <AxSolicitudEstado ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSolicitudEstado>
-                    :
-                    subirNuevoArchivo == true ?
-                      <AxSubirArchivo verArchivo={verArchivo} archivo={archivo} ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSubirArchivo>
-                      :
-                      <AxSolicitud ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSolicitud>
-                  }
+                  {tipoModal == "EDICION" && <AxSolicitud ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSolicitud>}
+                  {tipoModal == "ESTADO" && <AxSolicitudEstado ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSolicitudEstado>}
+                  {tipoModal == "ARCHIVO" && <AxSubirArchivo verArchivo={verArchivo} archivo={archivo} ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} tipoEdicion={tipoEdicion}></AxSubirArchivo>}
                 </Dialog.Panel>
               </Transition.Child>
             </div>
