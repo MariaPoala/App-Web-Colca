@@ -1,21 +1,41 @@
-import { navigation, secondaryNavigation } from '../layout/ax_menu_item'
+import { navigation, secondaryNavigation } from '../layout/ax_menu_item_admin'
+import { navigation_usuario} from '../layout/ax_menu_item_usuario'
+import { useEffect, useReducer, useState } from "react";
 import Link from 'next/link'
+import useSWR from "swr"
 import useSWRImmutable from "swr/immutable"
 import { useRouter } from 'next/router'
 import { NombreTramite } from 'lib/edicion';
 import { Dialog, Disclosure, Transition } from '@headlessui/react'
+import { useUser } from '@auth0/nextjs-auth0';
+
 const fetcherGrupo = (url: string): Promise<any> =>
+    fetch(url, { method: "GET" }).then(r => r.json());
+const fetcherEmpleado = (url: string): Promise<any> =>
     fetch(url, { method: "GET" }).then(r => r.json());
 function classNames(...classes: Array<string>) {
     return classes.filter(Boolean).join(' ')
 }
 
 export default function AxBodyNavegacion({ clase }: any) {
+    const { user, error, isLoading } = useUser();
     const { data: listaGrupo } = useSWRImmutable('/api/administracion/grupo', fetcherGrupo);
+    const { data: listaEmpleado } = useSWRImmutable<any[]>('/api/entidad/empleado', fetcherEmpleado);
+    const [id_rol, setId_rol] = useState(0);
     const router = useRouter();
+    useEffect(() => {
+        const empleado = listaEmpleado?.filter(x => x.email == user?.email);
+        if (empleado && empleado[0]) {
+            setId_rol(empleado[0].id_rol)
+            console.log(empleado[0].id_rol);
+            
+        }
+    }, [listaEmpleado])
+
     return <nav className="mt-5 flex-1 flex flex-col divide-y divide-indigo-500 overflow-y-auto" aria-label="Sidebar">
         <div className="px-2 space-y-1">
-            {navigation.map((item) => (
+
+            {(id_rol==5 ? navigation : navigation_usuario).map((item) => (
                 !item.children ? (
                     <Link key={item.name} href={item.href}>
                         <a
@@ -65,7 +85,7 @@ export default function AxBodyNavegacion({ clase }: any) {
                                         // item.name == "Tramites" ?
                                         //     (listaGrupo && listaGrupo.map((grupoItem:any) => (
                                         //         <Link key={grupoItem.nombre} href='/tramite'>
-                                                    
+
                                         //             <Disclosure.Button
                                         //                 key={grupoItem.nombre}
                                         //                 as="a"
@@ -78,18 +98,18 @@ export default function AxBodyNavegacion({ clase }: any) {
                                         //         </Link>
                                         //     )))
                                         //     :
-                                            <Link key={subItem.name} href={subItem.href}>
-                                                <Disclosure.Button
-                                                    key={subItem.name}
-                                                    as="a"
-                                                    href={subItem.href}
-                                                    className="group w-full flex items-center pl-11 pr-2 py-2 text-sm font-medium text-white rounded-md hover:bg-indigo-500"
-                                                >
-                                                    <subItem.icon className="mr-4 flex-shrink-0 h-5 w-5 text-indigo-200" aria-hidden="true"></subItem.icon>
-                                                    {subItem.name}
-                                                </Disclosure.Button>
+                                        <Link key={subItem.name} href={subItem.href}>
+                                            <Disclosure.Button
+                                                key={subItem.name}
+                                                as="a"
+                                                href={subItem.href}
+                                                className="group w-full flex items-center pl-11 pr-2 py-2 text-sm font-medium text-white rounded-md hover:bg-indigo-500"
+                                            >
+                                                <subItem.icon className="mr-4 flex-shrink-0 h-5 w-5 text-indigo-200" aria-hidden="true"></subItem.icon>
+                                                {subItem.name}
+                                            </Disclosure.Button>
 
-                                            </Link>
+                                        </Link>
                                     ))}
                                 </Disclosure.Panel>
                             </>
