@@ -1,5 +1,5 @@
 import { EnumTipoEdicion, EnumEstadoEdicion } from 'lib/edicion'
-export default function AxBtnEditarSolicitud({ estadoEdicion, setTipoEdicion, setEstadoEdicion, setVerArchivo, setSubirNuevoArchivo, setTipoModal }: any) {
+export default function AxBtnEditarSolicitud({ estadoEdicion, setTipoEdicion, setEstadoEdicion,setTipoModal }: any) {
     return <button type="button"
         onClick={() => {
             setTipoEdicion(EnumTipoEdicion.EDITAR);
@@ -7,7 +7,7 @@ export default function AxBtnEditarSolicitud({ estadoEdicion, setTipoEdicion, se
             setTipoModal('EDICION');
         }}
         disabled={estadoEdicion != EnumEstadoEdicion.SELECCIONADO}
-        className="ml-3 inline-flex items-center px-3 py-2 border 
+        className="ml-3 inline-flex items-center px-3 py-2 border  
                                             border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
                                             disabled:bg-indigo-300"
     >

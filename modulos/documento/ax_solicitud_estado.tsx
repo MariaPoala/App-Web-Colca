@@ -75,19 +75,19 @@ export default function AxSolicitudEstado({ ID, setID, setEstadoEdicion, tipoEdi
                                                 REGISTRADO
                                             </button>
                                             <button
-                                                type="button"
-                                                onClick={() => { handleChange("estado", "RECHAZADO") }}
-                                                className={(formData.estado == "RECHAZADO" ? "ring-4 ring-offset-4 ring-blue-500 " : "") + "inline-flex items-center px-3.5 py-2 border border-transparent text-sm leading-4 font-medium rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none"}
-                                            >
-                                                RECHAZADO
-                                            </button>
-                                            <button
                                                 onClick={() => { handleChange("estado", "VALIDADO") }}
                                                 type="button"
                                                 className={(formData.estado == "VALIDADO" ? "ring-4 ring-offset-4 ring-blue-500 " : "") + "inline-flex items-center px-3.5 py-2 border border-transparent text-sm leading-4 font-medium rounded-full shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"}
                                             >
                                                 VALIDADO
                                             </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => { handleChange("estado", "RECHAZADO") }}
+                                                className={(formData.estado == "RECHAZADO" ? "ring-4 ring-offset-4 ring-blue-500 " : "") + "inline-flex items-center px-3.5 py-2 border border-transparent text-sm leading-4 font-medium rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none"}
+                                            >
+                                                RECHAZADO
+                                            </button>                                            
                                             <button
                                                 type="button"
                                                 onClick={() => { handleChange("estado", "FINALIZADO") }}

@@ -1,7 +1,8 @@
 
 import { Fragment, useEffect, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
-import { CheckCircleIcon, LinkIcon, RefreshIcon, XIcon, EyeOffIcon, EyeIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
+import useSWR from "swr"
+import { CheckCircleIcon, LinkIcon, RefreshIcon, XIcon, UploadIcon, ExclamationIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
 import { AxSelectFiltro, AxBtnAgregarArchivoSolicitud, AxBtnEditarSolicitud, AxSelect, AxInput } from 'components/form';
 import { EnumEstadoEdicion, EnumTipoEdicion } from 'lib/edicion';
@@ -26,36 +27,45 @@ const fetcherTipoDocumento = (url: string): Promise<any> =>
 const campos = [
   { name: 'N° Documento' },
   { name: 'Entidad' },
-  { name: 'I Total' },
+  { name: 'Total' },
   { name: 'Empleado' },
   { name: 'Fecha Inicio' },
   { name: 'Fecha Plazo' },
-  { name: 'Estado' },
-  { name: 'Subir' }
+  { name: 'Dias' },
+  { name: 'Estado' }
 ]
 
+const estados = [
+  { name: 'REGISTRADO' },
+  { name: 'VALIDADO' },
+  { name: 'RECHAZADO' },
+  { name: 'FINALIZADO' },
+  { name: 'ENTREGADO' }
+]
 type TypeFiltro = {
   tipo_entidad: string
   id_persona: number,
   id_empresa: number,
   year_mes: string,
   id_tipo_documento: number[],
+  estado: string[],
 }
 
 export default function AxPageDocumento() {
-  const { data: listaTipoDocumento } = useSWRImmutable<any[]>('/api/documento/tipo_documento', fetcherTipoDocumento);
-  const { data: listaPersona } = useSWRImmutable('/api/entidad/persona/v_persona', fetcherPersona);
-  const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
+  const { data: listaTipoDocumento } = useSWR<any[]>('/api/documento/tipo_documento', fetcherTipoDocumento);
+  const { data: listaPersona } = useSWR('/api/entidad/persona/v_persona', fetcherPersona);
+  const { data: listaEmpresa } = useSWR('/api/entidad/empresa', fetcherEmpresa);
   const [ID, setID] = useState(-1)
   const [lista, setLista] = useState<SolicitudModel[]>([]);
   const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
   const [isLoading, setIsLoading] = useState(true);
-  const [filtro, setFiltro] = useState<TypeFiltro>({ tipo_entidad: "NATURAL", id_persona: 0, id_empresa: 0, year_mes: '2022-08', id_tipo_documento: [] });
+  const [filtro, setFiltro] = useState<TypeFiltro>({ tipo_entidad: "NATURAL", id_persona: 0, id_empresa: 0, year_mes: '2022-08', id_tipo_documento: [], estado: ["REGISTRADO", "VALIDADO"] });
   const [listaFiltro, setListaFiltro] = useState<SolicitudModel[]>([]);
   const [tipoEdicion, setTipoEdicion] = useState(EnumTipoEdicion.VISUALIZAR)
   const [esModalOpen, setEsModalOpen] = useState(false)
   const [urlArchivo, setUrlArchivo] = useState("")
   const [archivo, setArchivo] = useState("")
+  const [nombreAlmacenamiento, setNombreAlmacenamiento] = useState("")
   const [clic, setclic] = useState(false)
   const [tipoModal, setTipoModal] = useState<string>('EDICION')
   const [paginacion, setPaginacion] = useState({ inicio: 0, cantidad: 10 })
@@ -79,11 +89,20 @@ export default function AxPageDocumento() {
     FnFiltrarLista();
   }, [lista])
 
+
+
+
   const handleChange = (event: any) => {
     if (event.target.name == "FiltroGrupo") {
       const indexAnterior = filtro.id_tipo_documento.indexOf(event.target.value);
       if (indexAnterior != -1) filtro.id_tipo_documento.splice(indexAnterior, 1);
       else filtro.id_tipo_documento.push(event.target.value);
+      setFiltro({ ...filtro });
+    }
+    if (event.target.name == "FiltroEstado") {
+      const indexAnterior = filtro.estado.indexOf(event.target.value);
+      if (indexAnterior != -1) filtro.estado.splice(indexAnterior, 1);
+      else filtro.estado.push(event.target.value);
       setFiltro({ ...filtro });
     }
     else {
@@ -96,12 +115,14 @@ export default function AxPageDocumento() {
         id: id
       }
     });
+
   function FnFiltrarLista() {
     let filtrado = lista && lista.filter((item: any) =>
       (filtro.tipo_entidad == item.tipo_entidad) &&
       (filtro.id_persona != 0 ? item.id_persona == filtro.id_persona : true) &&
       (filtro.id_empresa != 0 ? item.id_empresa == filtro.id_empresa : true) &&
       (filtro.id_tipo_documento.indexOf(item.id_tipo_documento) != -1) &&
+      (filtro.estado.indexOf(item.estado) != -1) &&
       (filtro.year_mes ? (item.fecha_inicio.substring(6, 10) + '-' + item.fecha_inicio.substring(3, 5)) == filtro.year_mes : true)
     )
     setListaFiltro(filtrado);
@@ -113,7 +134,9 @@ export default function AxPageDocumento() {
   async function FndescargarImg() {
     try {
       if (archivo) {
-        const { signedURL, error } = await supabase.storage.from('archivo-documento').createSignedUrl(archivo, 60)
+        console.log(archivo);
+
+        const { signedURL, error } = await supabase.storage.from('archivo-' + nombreAlmacenamiento).createSignedUrl(archivo, 60)
         if (error) {
           throw error
         }
@@ -128,12 +151,15 @@ export default function AxPageDocumento() {
       console.log('Error downloading image: ', error.message)
     }
   }
-
+  useEffect(() => {
+    FndescargarImg();
+  }, [archivo])
 
   useEffect(() => {
     if (filtro.id_persona > 0) { filtro.id_persona = 0 }
     else if (filtro.id_empresa > 0) { filtro.id_empresa = 0 }
   }, [filtro.tipo_entidad])
+
   return (
     <>
       <main className="flex-1 pb-8">
@@ -200,6 +226,30 @@ export default function AxPageDocumento() {
           </div>
         </div>
         <div className="mt-4">
+          <div className="sm:flex sm:items-center px-16 ">
+            <div className="sm:flex-auto">
+              <div className="grid  gap-1 grid-cols-1 sm:grid-cols-2  md:grid-cols-3  lg:grid-cols-10">
+                {/* Card */}
+                {(estados.map((item: any) =>
+                  <ul key={item.name} className={(item.name == "REGISTRADO" ? " bg-indigo-600 hover:bg-indigo-700  ring-indigo-500"
+                    : item.name == "RECHAZADO" ? "bg-red-600 hover:bg-red-700 ring-red-500"
+                      : item.name == "VALIDADO" ? "bg-blue-600 hover:bg-blue-700 ring-blue-500"
+                        : item.name == "FINALIZADO" ? "bg-black hover:bg-black ring-black"
+                          : "bg-green-600 hover:bg-green-700 ring-green-500") + (filtro.estado.indexOf(item.name) != -1 && " ring-2 ring-offset-2 ") + " cursor-pointer font-Times h-5 w-28 inline-flex items-center px-3.5 py-2 border border-transparent text-sm leading-4 font-medium rounded-full shadow-sm text-white  focus:outline-none"}
+                    onClick={() => {
+                      handleChange({ target: { name: "FiltroEstado", value: item.name } });
+                      FnFiltrarLista();
+                    }}>
+                    {item.name}
+                  </ul>
+                )
+                )
+                }
+              </div>
+            </div>
+
+
+          </div>
           <div className="sm:flex sm:items-center px-16 mt-4">
             <div className="sm:flex-auto">
               <h1 className="text-xl font-semibold text-gray-900">Lista De Solicitudes</h1>
@@ -248,13 +298,13 @@ export default function AxPageDocumento() {
                       />
                       ¡Seleccionar un Documento!
                     </dd> :
-                    <table className="flex flex-col w-full h-[calc(100vh-23rem)] divide-gray-300">
+                    <table className="flex flex-col w-full h-[calc(100vh-21rem)] divide-gray-300">
                       <thead className='bg-indigo-200'>
                         <tr className='table table-fixed w-full divide-x divide-y divide-gray-200'>
                           <th scope="col" className="relative w-16 px-3">
                             ✔
                           </th>
-                          <th scope="col" key='doc' className="py-3 text-center text-sm text-gray-900 relative w-40 px-3">
+                          <th scope="col" key='doc' className="py-3 text-center text-sm text-gray-900 relative w-44 px-3">
                             Tipo Documento
                           </th>
                           {campos.map((item) => (
@@ -262,6 +312,9 @@ export default function AxPageDocumento() {
                               {item.name}
                             </th>
                           ))}
+                          <th scope="col" key='archivo' className="py-3 text-center text-sm text-gray-900 relative w-16 px-1">
+                            Archivo
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="divide-x divide-y overflow-x-auto overflow-y-auto divide-gray-200 bg-white">
@@ -278,13 +331,15 @@ export default function AxPageDocumento() {
                                 className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                               />
                             </td>
-                            <td className="px-1 w-40 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                              <div className="text-gray-900">{item.tipo_documento_nombre}</div>
+                            <td className="px-1 w-44 whitespace-nowrap text-sm text-gray-500 truncate">
+                              <div className="text-gray-900 ">{item.tipo_documento_nombre}</div>
                               <div className="text-gray-500">
+
                                 <span onClick={() => {
                                   setArchivo(item.archivo);
-                                  FndescargarImg();
-                                }} className={item.archivo ? "cursor-pointer  whitespace-nowrap flex-shrink-0 inline-block px-2 py-0.5 text-blue-800 text-xs font-medium bg-blue-100 rounded-full hover:bg-blue-300" : "text-xs"}>{item.nombre_documento}</span>
+                                  setNombreAlmacenamiento("documento")
+                                }} className={(item.archivo && "cursor-pointer text-blue-800  font-medium bg-blue-300 rounded-full hover:bg-blue-500 hover:text-white") + " text-[11px] whitespace-nowrap flex-shrink-0 inline-block px-2 italic  "} >
+                                  {item.nombre_documento}</span>
                               </div>
                             </td>
                             <td className="px-1 py-3 text-center whitespace-nowrap text-sm text-gray-500 truncate">
@@ -309,6 +364,12 @@ export default function AxPageDocumento() {
                             <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                               {item.fecha_plazo}
                             </td>
+                            <td className="px-1  text-center whitespace-nowrap text-sm text-gray-500 truncate flex">
+                              <p className="mt-2 lg:ml-10 lg:md-10 flex items-center text-sm text-gray-500 font-sans italic">
+                                {item.direfencia}
+                                <ExclamationIcon className={(item.direfencia>=3 ? "text-blue-500": item.direfencia>=0 ? " text-amber-500":  "text-red-500")+" flex-shrink-0 ml-2 h-4 w-4 text-blue-500"} aria-hidden="true" />
+                              </p>
+                            </td>
                             <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                               <button type="button"
                                 onClick={() => {
@@ -332,21 +393,34 @@ export default function AxPageDocumento() {
                                 {item.estado}
                               </button>
                             </td>
-                            <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">
-                              {item.url_archivo_solicitud &&
+                            <td className="px-1 w-16 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                              {item.estado == "VALIDADO" &&
                                 <button type="button"
                                   onClick={() => {
                                     setTipoModal('ARCHIVO');
                                     setID(item.id)
                                     setTipoEdicion(EnumTipoEdicion.EDITAR);
                                     setEstadoEdicion(EnumEstadoEdicion.EDITANDO);
-                                    setArchivo(item.url_archivo_solicitud);
                                   }}
                                   className=" inline-flex items-center px-3 py-2 border  h-6 font-mono italic border-gray-300 shadow-sm text-xs leading-4 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
                                 >
-                                  Subir archivo
+                                  <UploadIcon className='h-4 w-4'></UploadIcon>
                                 </button>
                               }
+                              {(item.estado == "FINALIZADO" || item.estado == "ENTREGADO") && item.url_archivo_solicitud != null &&
+                                <button type="button"
+                                  onClick={() => {
+                                    setTipoModal('ARCHIVO');
+                                    setID(item.id)
+                                    setArchivo(item.url_archivo_solicitud);
+                                    setNombreAlmacenamiento("solicitud")
+                                  }}
+                                  className=" inline-flex items-center px-3 py-2 border  h-6 font-mono italic border-gray-300 shadow-sm text-xs leading-4 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500     disabled:bg-indigo-300"
+                                >
+                                  <LinkIcon className='h-4 w-4'></LinkIcon>
+                                </button>
+                              }
+
                             </td>
                           </tr>
                         )))}
@@ -410,7 +484,7 @@ export default function AxPageDocumento() {
                       <div className="flex items-start justify-between">
                         <Dialog.Title className="text-lg font-medium text-gray-900">
                           {
-                            tipoModal == "ESTADO" ? "Estado de la Solicitud" : "Registro de Solicitud [" + { tipoEdicion } + "]"
+                            tipoModal == "ESTADO" ? "Estado de la Solicitud" : "Registro de Solicitud [" + tipoEdicion + "]"
                           }
 
                         </Dialog.Title>

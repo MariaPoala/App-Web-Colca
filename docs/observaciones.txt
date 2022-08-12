@@ -1,42 +1,17 @@
-Empleado
-	- Quitar Anexo (TERMINADO)
-Persona
-	- Seleccionar Anexo  (TERMINADO)
-Empresa
-	- Seleccionar Anexo (TERMINADO)
-Requisito
-	- Color del boton visualizar (TERMINADO)
-	- Tamaño del boton (TERMINADO)"
-Tipo de documento
-	- Forma Entrega en mayuscula (TERMINADO)
-Documentos
-	- Tipo de Entidad en mayuscula (TERMINADO)
-	- Agregar Filtro Tipo de Entidad (TERMINADO)
-	- Agregar Filtro Persona, Entidad  (TERMINADO)
-	- Filtro por año  (TERMINADO)
-	- Los combos tienen que ser las vistas (TERMINADO)
-Solicitud
-	- Ordenar Grid
-	- Tipo de Entidad en mayuscula (TERMINADO)
-	- Filtro - los combos tienen que ser las vistas (TERMINADO)
-	
 RESPONSIVO
 -TIPO DOCUMENTO
 
-en la solicitud el numero seria este (SOL-ACTNAC-2022-00001)
-
-soli i-total total
-
-cuando se haga click en el numero, se puede imprimir
-
-adjuntar
-ver archivo
-
-entregado verde
-validado amarillo
-
-mostrar requisitos y concideracion
-
-validado
-finalizado
-entregado
+Arregalar el titulo de la edicion (TERMINADO)
+quitar el boton de ver archivo (TERMINADO)
+agregar filtro estado (TERMINADO)
+cambiar el link cuando este seleccionado (TERMINADO)
+tamaño del Grid (TERMINADO)
+agregar todos los estados en la edicion de solicitud (combo) (TERMINADO)
+poner columna archivo solo un icono y bajar el Tamaño (TERMINADO)
+EL item subir archivo solo se debe mostrar en validado (TERMINADO)
+cuando el estado este finalizado se deberia poder solo ver el archivo (TERMINADO)
+en estado rechazado no debe aparecer el archivo (TERMINADO)
+agregar consideraciones y requisitos en la solicitud (TERMINADO)
+agregar columna dias a vencer (TERMINADO)
+en la solicitud el numero seria este (SOL-ACTNAC-2022-00001) (TERMINADO)
+cambiar al swr

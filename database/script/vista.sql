@@ -43,7 +43,7 @@ sol.id_documento,doc.numero_documento as nombre_documento, doc.url_archivo as ar
 sol.id_empleado, empleado.nombre as empleado_nombre,
 area.nombre as nombre_area,
 -- sol.id_empresa, empresa.razon_social as razon_social
-sol.id_persona,persona.nombre as persona_nombre
+sol.id_persona,persona.nombre as persona_nombre, extract(DAY FROM (fecha_plazo)-(fecha_inicio)) as direfencia
 
 from solicitud as sol
 inner join tipo_documento as tipo on sol.id_tipo_documento=tipo.id
@@ -76,3 +76,23 @@ inner join anexo as an on dis.id=an.id_distrito
 create view v_persona
 as
 SELECT CONCAT(nombre, ' ' , apellido) as nombre_apellido FROM persona;
+
+create view v_documento_requisito
+as
+select 
+doc_req.id,
+doc_req.id_tipo_documento, tipo.nombre as tipo_nombre,
+doc_req.id_requisito,req.nombre as nombre_requisito, req.url_imagen as imagen
+from tipo_documento_requisito as doc_req
+inner join tipo_documento as tipo on doc_req.id_tipo_documento=tipo.id
+inner join requisito as req on doc_req.id_requisito=req.id
+
+create view v_documento_consideracion
+as
+select 
+doc_req.id,
+doc_req.id_tipo_documento, tipo.nombre as tipo_nombre,
+doc_req.id_consideracion ,con.nombre as nombre_consideracion
+from tipo_documento_consideracion as doc_req
+inner join tipo_documento as tipo on doc_req.id_tipo_documento=tipo.id
+inner join consideracion as con on doc_req.id_consideracion=con.id

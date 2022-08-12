@@ -35,9 +35,9 @@ const formReducer = (state: DocumentoModel, event: any): DocumentoModel => {
 
 export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, setOpen }: any) {
     const { user, error, isLoading: isLoadingUser } = useUser();
-    const { data: listaEmpleado } = useSWRImmutable<any[]>('/api/entidad/empleado/v_empleado', fetcherEmpleado);
-    const { data: listaPersona } = useSWRImmutable('/api/entidad/persona/v_persona', fetcherPersona);
-    const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
+    const { data: listaEmpleado } = useSWR<any[]>('/api/entidad/empleado/v_empleado', fetcherEmpleado);
+    const { data: listaPersona } = useSWR('/api/entidad/persona/v_persona', fetcherPersona);
+    const { data: listaEmpresa } = useSWR('/api/entidad/empresa', fetcherEmpresa);
     const { data: listaTipoDocumento } = useSWR<TipoDocumentoModel[]>('/api/documento/tipo_documento', fetcherDocumento);
     const [formData, setFormData] = useReducer(formReducer, new DocumentoModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -96,7 +96,6 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
 
     const handleChange = (event: any) => {
         const isCheckbox = event.target.type === 'checkbox';
-
         setFormData({
             name: event.target.name,
             value: isCheckbox ? event.target.checked : event.target.value,
@@ -106,10 +105,11 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
         }
     }
 
-    useEffect(() => {
+    useEffect(() => {    
         if (formData.fecha_documento != "" && formData.fecha_documento.length == 10) {
             const tipoDocumento = listaTipoDocumento?.find(item => item.id == formData.id_tipo_documento);
             if (tipoDocumento) {
+                console.log(tipoDocumento.codigo+ " " + formData.fecha_documento);
                 const fetchData = async () => {
                     const response = await fetch(`/api/documento/documento/fn_documento_numero?codigo=${tipoDocumento.codigo}&year=${formData.fecha_documento.substring(0, 4)}`);
                     const numero: string = await response.json();
@@ -330,12 +330,12 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                             </div>
                                             <div className="md:col-span-1" />
                                             <div className="md:col-span-1">
-                                                <AxCheck id="es_anulado" name="EsAnulado" value={formData.es_anulado} label="¿Es Anulado?" handleChange={handleChange} />
+                                                <AxCheck id="es_anulado" name="es_anulado" value={formData.es_anulado} label="¿Es Anulado?" handleChange={handleChange} />
                                             </div>
-                                            <div className="md:col-span-1">
+                                            {/* <div className="md:col-span-1">
                                                 <AxInput name="fecha_anulacion" label="Fecha Anulación" value={formData.fecha_anulacion} handleChange={handleChange} type="date" />
-                                            </div>
-                                            <div className="md:col-span-3">
+                                            </div> */}
+                                            <div className="md:col-span-4">
                                                 <AxInput name="motivo_anulacion" label="Motivo" value={formData.motivo_anulacion} handleChange={handleChange} type="text" />
                                             </div>
                                         </div>

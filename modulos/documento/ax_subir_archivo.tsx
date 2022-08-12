@@ -1,30 +1,12 @@
 import { useEffect, useReducer, useState } from "react";
-import useSWRImmutable from "swr/immutable"
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { default as dayjs } from 'dayjs';
-import * as uuid from 'uuid'
 import { AxInput, AxSelect, AxSubmit, AxCheck, AxBtnModalCancelar, AxRadio } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
 import SolicitudModel from 'models/solicitud_model'
 import DocumentoModel from "models/documento_model";
 import supabase from "lib/supabase_config";
 import { EyeIcon, EyeOffIcon, DownloadIcon } from "@heroicons/react/outline";
-// import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'
-// import db from "lib/firebase-config";
-// db.app
-export const getServerSideProps = withPageAuthRequired();
-const fetcherEmpleado = (url: string): Promise<any> =>
-    fetch(url, { method: "GET" }).then(r => r.json());
-const fetcherPersona = (url: string): Promise<any> =>
-    fetch(url, { method: "GET" }).then(r => r.json());
-const fetcherEmpresa = (url: string): Promise<any> =>
-    fetch(url, { method: "GET" }).then(r => r.json());
-const fetcherTipoDocumento = (url: string): Promise<any> =>
-    fetch(url, { method: "GET" }).then(r => r.json());
-const fetcherArea = (url: string): Promise<any> =>
-    fetch(url, { method: "GET" }).then(r => r.json());
-const fetcherDocumento = (url: string): Promise<any> =>
-    fetch(url, { method: "GET" }).then(r => r.json());
+export const getServerSideProps = withPageAuthRequired()
 
 const formReducer = (state: SolicitudModel, event: any): SolicitudModel => {
     if (event.FORM_DATA) {
@@ -36,31 +18,31 @@ const formReducer = (state: SolicitudModel, event: any): SolicitudModel => {
     return { ...state, [event.name]: event.value }
 }
 
-export default function AxSolicitudEstado({ ID, setID, setEstadoEdicion, tipoEdicion, archivo }: any) {
+export default function AxSolicitudArchivo({ ID, setID, setEstadoEdicion, tipoEdicion }: any) {
     const [formData, setFormData] = useReducer(formReducer, new SolicitudModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isDownload, setIsDownload] = useState(true);
     const [clic, setclic] = useState(false)
     const [uploading, setUploading] = useState(false)
     const [urlArchivo, setUrlArchivo] = useState("")
 
-
     useEffect(() => {
         setIsLoading(true)
         setclic(true)
-        FndescargarImg()
         const fetchData = async () => {
             const response = await fetch(`/api/documento/solicitud/${ID}`);
             const data: SolicitudModel = await response.json();
-            data.fecha_creacion = dayjs(data.fecha_creacion).format("YYYY-MM-DD")
-            data.fecha_inicio = dayjs(data.fecha_inicio).format("YYYY-MM-DD")
-            data.fecha_plazo = dayjs(data.fecha_plazo).format("YYYY-MM-DD")
-            data.fecha_edicion = dayjs().format("YYYY-MM-DD")
             setFormData({ FORM_DATA: data });
         }
         fetchData().catch(console.error);
         setIsLoading(false)
     }, [ID])
+
+    useEffect(() => {
+        FndescargarImg()
+    }, [formData.url_archivo_solicitud])
+
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
@@ -77,10 +59,12 @@ export default function AxSolicitudEstado({ ID, setID, setEstadoEdicion, tipoEdi
         if (tipoEdicion == EnumTipoEdicion.ELIMINAR) setID(-1);
         setEstadoEdicion(EnumEstadoEdicion.GUARDADO);
     }
+
     async function FndescargarImg() {
+        setIsDownload(true);
         try {
-            if (archivo) {
-                const { signedURL, error } = await supabase.storage.from('archivo-solicitud').createSignedUrl(archivo, 60)
+            if (formData.url_archivo_solicitud) {
+                const { signedURL, error } = await supabase.storage.from('archivo-solicitud').createSignedUrl(formData.url_archivo_solicitud, 60)
                 if (error) {
                     throw error
                 }
@@ -88,30 +72,24 @@ export default function AxSolicitudEstado({ ID, setID, setEstadoEdicion, tipoEdi
                     setUrlArchivo(signedURL)
                 }
             }
-
         } catch (error: any) {
             console.log('Error downloading image: ', error.message)
         }
+        setIsDownload(false);
     }
+
     async function FnguardarImg() {
-        try {
-          if (archivo) {
-            const { signedURL, error } = await supabase.storage.from('archivo-solicitud').createSignedUrl(archivo, 60)
-            if (error) {
-              throw error
-            }
-            if (signedURL) {
-              //PARA ABRIR EN UNA NUEVA PESTAÑA
-              const wPrint = window.open(signedURL);
-              if (wPrint) wPrint.window.print();
-              // setUrlArchivo(signedURL)
-            }
-          }
-        } catch (error: any) {
-          console.log('Error downloading image: ', error.message)
+        setIsDownload(true);
+        if (urlArchivo) {
+            //PARA ABRIR EN UNA NUEVA PESTAÑA
+            const wPrint = window.open(urlArchivo);
+            if (wPrint) wPrint.window.print();
         }
-      }
+        setIsDownload(false);
+    }
+
     async function subirArchivo(event: any) {
+        setIsDownload(true);
         try {
             setUploading(true)
             if (!event.target.files || event.target.files.length === 0) {
@@ -121,7 +99,6 @@ export default function AxSolicitudEstado({ ID, setID, setEstadoEdicion, tipoEdi
             const fileExt = file.name.split('.').pop()
             const fileName = `${Math.random()}.${fileExt}`
             const filePath = `${fileName}`
-
             let { error: uploadError } = await supabase.storage.from('archivo-solicitud').upload(filePath, file)
             if (uploadError) {
                 throw uploadError
@@ -132,7 +109,9 @@ export default function AxSolicitudEstado({ ID, setID, setEstadoEdicion, tipoEdi
         } finally {
             setUploading(false)
         }
+        setIsDownload(false);
     }
+
     return (
         <>
             <div className={isLoading ? "animate-pulse" : "" + " flex h-full flex-col  bg-white shadow-xl "}>
@@ -184,7 +163,7 @@ export default function AxSolicitudEstado({ ID, setID, setEstadoEdicion, tipoEdi
 
                                         </div>
                                     </div>
-                                    <div className="md:col-span-2">
+                                    {/* <div className="md:col-span-2">
 
                                         {formData.url_archivo_solicitud ?
                                             clic == false ?
@@ -212,7 +191,7 @@ export default function AxSolicitudEstado({ ID, setID, setEstadoEdicion, tipoEdi
                                             :
                                             <p className="ml-3 h-2 text-md w-32 inline-flex items-center text-center px-3 py-2 border border-red-300 shadow-sm  leading-4 font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500     disabled:bg-red-300">Sin Archivo</p>
                                         }
-                                    </div>
+                                    </div> */}
                                 </div>
 
 
@@ -221,8 +200,17 @@ export default function AxSolicitudEstado({ ID, setID, setEstadoEdicion, tipoEdi
                                     onClick={() => {
                                         FnguardarImg()
                                     }}
-                                >
+                                    disabled={isDownload}>
+                                    {
+                                        isDownload &&
+                                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                    }
+
                                     <DownloadIcon className="h-5 w-5 mr-1 text-white "> </DownloadIcon>
+
                                     Descargar Archivo
                                 </button>}
                                 <div className="md:col-span-6 mt-6">

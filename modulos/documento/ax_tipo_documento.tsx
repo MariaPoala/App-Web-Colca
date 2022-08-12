@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useReducer, useState } from "react";
 import useSWRImmutable from "swr/immutable"
+import useSWR from "swr"
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { Dialog, Transition } from "@headlessui/react";
 import { AxBtnCancelar, AxBtnEditar, AxInput, AxBtnEliminar, AxSelect, AxSubmit, AxModalEliminar, AxSelectMultiple } from 'components/form'
@@ -32,10 +33,10 @@ const formReducer = (state: TipoDocumentoModel, event: any): TipoDocumentoModel 
 }
 
 export default function AxTipoDocumento({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
-    const { data: listaGrupo } = useSWRImmutable('/api/administracion/grupo', fetcherGrupo);
-    const { data: listaTipoDocumento } = useSWRImmutable('/api/documento/tipo_documento', fetcherTipoDocumento);
-    const { data: listaRequisito } = useSWRImmutable('/api/documento/requisito', fetcherRequisito);
-    const { data: listaConsideracion } = useSWRImmutable('/api/documento/consideracion', fetcherConsideracion);
+    const { data: listaGrupo } = useSWR('/api/administracion/grupo', fetcherGrupo);
+    const { data: listaTipoDocumento } = useSWR('/api/documento/tipo_documento', fetcherTipoDocumento);
+    const { data: listaRequisito } = useSWR('/api/documento/requisito', fetcherRequisito);
+    const { data: listaConsideracion } = useSWR('/api/documento/consideracion', fetcherConsideracion);
     const [formData, setFormData] = useReducer(formReducer, new TipoDocumentoModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);

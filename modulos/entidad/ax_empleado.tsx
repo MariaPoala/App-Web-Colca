@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useState } from "react";
 import useSWRImmutable from "swr/immutable"
+import useSWR from "swr"
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { AxBtnCancelar, AxBtnEditar, AxCheck, AxInput, AxRadio, AxSelect, AxSubmit } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
@@ -30,10 +31,10 @@ const formReducer = (state: EmpleadoModel, event: any): EmpleadoModel => {
 }
 
 export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormularioProps) {
-    const { data: listaDistrito } = useSWRImmutable('/api/entidad/distrito', fetcherDistrito);
-    const { data: listaRol } = useSWRImmutable('/api/administracion/rol', fetcherRol);
-    const { data: listaArea } = useSWRImmutable('/api/administracion/area', fetcherArea);
-    const { data: listaAnexo } = useSWRImmutable('/api/entidad/anexo', fetcherAnexo);    
+    const { data: listaDistrito } = useSWR('/api/entidad/distrito', fetcherDistrito);
+    const { data: listaRol } = useSWR('/api/administracion/rol', fetcherRol);
+    const { data: listaArea } = useSWR('/api/administracion/area', fetcherArea);
+    const { data: listaAnexo } = useSWR('/api/entidad/anexo', fetcherAnexo);    
     const [formData, setFormData] = useReducer(formReducer, new EmpleadoModel());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);

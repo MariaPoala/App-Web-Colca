@@ -1,6 +1,7 @@
 
 import { Fragment, useEffect, useState } from 'react'
 import useSWRImmutable from "swr/immutable"
+import useSWR from "swr"
 import { CheckCircleIcon, BadgeCheckIcon, RefreshIcon, BanIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
 import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar, AxBtnEditarLista, AxSelect } from 'components/form';
@@ -42,9 +43,9 @@ type TypeFiltro = {
 }
 
 export default function AxPageDocumento() {
-  const { data: listaTipoDocumento } = useSWRImmutable<any[]>('/api/documento/tipo_documento', fetcherTipoDocumento);
-  const { data: listaPersona } = useSWRImmutable('/api/entidad/persona/v_persona', fetcherPersona);
-  const { data: listaEmpresa } = useSWRImmutable('/api/entidad/empresa', fetcherEmpresa);
+  const { data: listaTipoDocumento } = useSWR<any[]>('/api/documento/tipo_documento', fetcherTipoDocumento);
+  const { data: listaPersona } = useSWR('/api/entidad/persona/v_persona', fetcherPersona);
+  const { data: listaEmpresa } = useSWR('/api/entidad/empresa', fetcherEmpresa);
   const [ID, setID] = useState(-1)
   const [lista, setLista] = useState<DocumentoModel[]>([]);
   const [estadoEdicion, setEstadoEdicion] = useState(EnumEstadoEdicion.LISTAR)
@@ -292,7 +293,7 @@ export default function AxPageDocumento() {
                             </td>
                             <td className="px-1 w-24 text-center whitespace-nowrap text-sm text-gray-500 truncate">
                               {item.es_anulado == true ?
-                                <BanIcon className='pl-5 h-6 w-6  text-center  text-red-400'></BanIcon> :
+                                <BanIcon className=' h-6 w-6  text-center  text-red-400'></BanIcon> :
                                 <BadgeCheckIcon className='h-6 w-6  text-center text-green-400 '></BadgeCheckIcon>
                               }
                             </td>
