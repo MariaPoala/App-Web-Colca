@@ -1,19 +1,12 @@
-
-import { Fragment, useEffect, useState } from 'react'
-import useSWRImmutable from "swr/immutable"
-import useSWR from "swr"
+import { Fragment, useEffect, useState } from 'react';
+import useSWR from "swr";
 import { CheckCircleIcon, BadgeCheckIcon, RefreshIcon, BanIcon, XIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
-import { AxInput, AxSelectFiltro, AxBtnEditar, AxPagination, AxBtnAgregar, AxBtnEditarLista, AxSelect } from 'components/form';
+import { AxInput, AxSelectFiltro, AxBtnAgregar, AxBtnEditarLista, AxSelect } from 'components/form';
 import { EnumEstadoEdicion, EnumTipoEdicion } from 'lib/edicion';
-import TipoDocumentoModel from 'models/tipo_documento_model'
-import EmpleadoModel from 'models/empleado_model'
-import PersonaModel from 'models/persona_model'
-import EmpresaModel from 'models/empresa_model'
-import DocumentoModel from 'models/documento_model'
+import DocumentoModel from 'models/documento_model';
 import AxDocumento from 'modulos/documento/ax_documento';
-import ConsideracionModel from 'models/consideracion_model';
-import { Head } from 'next/document';
+import Head from 'next/head'
 
 const fetcherVDocumento = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());

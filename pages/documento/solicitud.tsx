@@ -1,19 +1,15 @@
-
-import { Fragment, useEffect, useState } from 'react'
-import useSWRImmutable from "swr/immutable"
-import useSWR from "swr"
+import { Fragment, useEffect, useState } from 'react';
+import useSWR from "swr";
 import { CheckCircleIcon, LinkIcon, RefreshIcon, XIcon, UploadIcon, ExclamationIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { Dialog, Transition } from '@headlessui/react';
-import { AxSelectFiltro, AxBtnAgregarArchivoSolicitud, AxBtnEditarSolicitud, AxSelect, AxInput } from 'components/form';
+import { AxSelectFiltro, AxBtnAgregarArchivoSolicitud, AxBtnEditarSolicitud, AxInput } from 'components/form';
 import { EnumEstadoEdicion, EnumTipoEdicion } from 'lib/edicion';
 import SolicitudModel from 'models/solicitud_model'
 import AxSolicitud from 'modulos/documento/ax_solicitud';
 import AxSolicitudEstado from 'modulos/documento/ax_solicitud_estado';
 import AxSubirArchivo from 'modulos/documento/ax_subir_archivo';
 import supabase from "lib/supabase_config";
-import { setUncaughtExceptionCaptureCallback } from 'process';
-import { ChevronDoubleRightIcon } from '@heroicons/react/solid';
-import { Head } from 'next/document';
+import Head from 'next/head'
 
 
 const fetcherVSolicitud = (url: string): Promise<any> =>
