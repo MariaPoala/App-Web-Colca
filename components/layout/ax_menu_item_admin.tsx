@@ -15,7 +15,7 @@ const navigation = [
         name: 'Seguridad', href: '', icon: FingerPrintIcon, current: false,
         children: [
             { name: 'Roles', href: '/administracion/rol', icon: IdentificationIcon, current: false },
-            { name: 'Area', href: '/administracion/area', icon: LibraryIcon, current: false },
+            { name: 'Areas', href: '/administracion/area', icon: LibraryIcon, current: false },
         ],
     },
     {

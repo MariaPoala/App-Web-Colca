@@ -17,8 +17,8 @@ const navigation_usuario = [
         children: [
             { name: 'Distrito', href: '/entidad/distrito', icon: OfficeBuildingIcon, current: false },
             { name: 'Anexo', href: '/entidad/anexo', icon: OfficeBuildingIcon, current: false },
-            { name: 'Persona', href: '/entidad/persona', icon: UserIcon, current: false },
-            { name: 'Empresa', href: '/entidad/empresa', icon: UsersIcon, current: false }
+            { name: 'Personas', href: '/entidad/persona', icon: UserIcon, current: false },
+            { name: 'Empresas', href: '/entidad/empresa', icon: UsersIcon, current: false }
         ],
     },
     {
