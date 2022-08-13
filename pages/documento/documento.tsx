@@ -13,6 +13,7 @@ import EmpresaModel from 'models/empresa_model'
 import DocumentoModel from 'models/documento_model'
 import AxDocumento from 'modulos/documento/ax_documento';
 import ConsideracionModel from 'models/consideracion_model';
+import { Head } from 'next/document';
 
 const fetcherVDocumento = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
@@ -113,6 +114,7 @@ export default function AxPageDocumento() {
   }, [filtro.tipo_entidad])
   return (
     <>
+    <Head><title>Documento</title></Head>
       <main className="flex-1 pb-8">
         <div className={(isLoading ? "animate-pulse" : "") + " bg-white shadow"}>
           <div className=" sm:px-4 lg:max-w-6xl ">

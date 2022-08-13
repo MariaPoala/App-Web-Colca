@@ -13,6 +13,7 @@ import AxSubirArchivo from 'modulos/documento/ax_subir_archivo';
 import supabase from "lib/supabase_config";
 import { setUncaughtExceptionCaptureCallback } from 'process';
 import { ChevronDoubleRightIcon } from '@heroicons/react/solid';
+import { Head } from 'next/document';
 
 
 const fetcherVSolicitud = (url: string): Promise<any> =>
@@ -162,6 +163,7 @@ export default function AxPageDocumento() {
 
   return (
     <>
+    <Head><title>Solicitud</title></Head>
       <main className="flex-1 pb-8">
         <div className={(isLoading ? "animate-pulse" : "") + " bg-white shadow"}>
           <div className=" sm:px-4 lg:max-w-6xl ">

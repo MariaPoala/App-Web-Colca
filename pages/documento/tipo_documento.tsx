@@ -36,7 +36,7 @@ export default function AxPageDocumento() {
 
     return (
         <>
-            <Head><title>Documento</title></Head>
+            <Head><title>Tipo Documento</title></Head>
             <div className={isLoading ? "animate-pulse" : "" + " h-full flex flex-col"}>
                 <div className="min-h-0 flex-1 flex overflow-hidden ">
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
