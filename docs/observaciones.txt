@@ -14,4 +14,6 @@ en estado rechazado no debe aparecer el archivo (TERMINADO)
 agregar consideraciones y requisitos en la solicitud (TERMINADO)
 agregar columna dias a vencer (TERMINADO)
 en la solicitud el numero seria este (SOL-ACTNAC-2022-00001) (TERMINADO)
-cambiar al swr
+cambiar al swr (TERMINADO)
+cambiar y poner los nombres de las paginas
+

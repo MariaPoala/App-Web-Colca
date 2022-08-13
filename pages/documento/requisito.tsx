@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
+
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PlusIcon } from '@heroicons/react/solid'
 import AxInicio from 'components/layout/ax_inicio'
