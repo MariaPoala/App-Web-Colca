@@ -298,7 +298,7 @@ export default function AxPageDocumento() {
                       />
                       ¡Seleccionar un Documento!
                     </dd> :
-                    <table className="flex flex-col w-full h-[calc(100vh-21rem)] divide-gray-300">
+                    <table className="flex flex-col w-full h-[calc(100vh-24rem)] divide-gray-300">
                       <thead className='bg-indigo-200'>
                         <tr className='table table-fixed w-full divide-x divide-y divide-gray-200'>
                           <th scope="col" className="relative w-16 px-3">
@@ -366,8 +366,8 @@ export default function AxPageDocumento() {
                             </td>
                             <td className="px-1  text-center whitespace-nowrap text-sm text-gray-500 truncate flex">
                               <p className="mt-2 lg:ml-10 lg:md-10 flex items-center text-sm text-gray-500 font-sans italic">
-                                {item.estado=="ENTREGADO"? "": item.direfencia}
-                                {item.estado=="ENTREGADO"? "":<ExclamationIcon className={(item.direfencia>=3 ? "text-blue-500": item.direfencia>=0 ? " text-amber-500":  "text-red-500")+" flex-shrink-0 ml-2 h-4 w-4 text-blue-500"} aria-hidden="true" />}
+                                {(item.estado=="ENTREGADO" && item.estado=="RECHAZADO") ? "": item.direfencia}
+                                {(item.estado=="ENTREGADO" && item.estado=="RECHAZADO") ? "":<ExclamationIcon className={(item.direfencia>=3 ? "text-blue-500": item.direfencia>=0 ? " text-amber-500":  "text-red-500")+" flex-shrink-0 ml-2 h-4 w-4 text-blue-500"} aria-hidden="true" />}
                               </p>
                             </td>
                             <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">

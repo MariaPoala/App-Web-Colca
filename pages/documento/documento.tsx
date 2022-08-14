@@ -228,7 +228,7 @@ export default function AxPageDocumento() {
                       />
                       ¡Seleccionar un Documento!
                     </dd> :
-                    <table className="flex flex-col w-full h-[calc(100vh-23rem)] divide-gray-300">
+                    <table className="flex flex-col w-full h-[calc(100vh-26rem)] divide-gray-300">
                       <thead className='bg-indigo-200'>
                         <tr className='table table-fixed w-full divide-x divide-y divide-gray-200'>
                           <th scope="col" className="relative w-16 px-3">
@@ -245,7 +245,7 @@ export default function AxPageDocumento() {
                         </tr>
                       </thead>
 
-                      <tbody className="divide-y divide-gray-200 bg-white">
+                      <tbody className="divide-x divide-y overflow-x-auto overflow-y-auto divide-gray-200 bg-white">
                         {(listaFiltro && listaFiltro.map((item: any) => (
                           <tr key={item.id} className={item.id == ID ? "bg-indigo-100 table table-fixed w-full" : "bg-white table table-fixed w-full"}>
                             <td className="w-16 text-center whitespace-nowrap px-3 text-sm text-gray-500">
