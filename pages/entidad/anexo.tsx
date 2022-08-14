@@ -1,12 +1,12 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+
 import { SearchIcon, ChevronRightIcon, UsersIcon, PlusIcon, MailIcon, PaperClipIcon } from '@heroicons/react/solid'
 import AxInicio from 'components/layout/ax_inicio'
 import AxAnexo from 'modulos/entidad/ax_anexo'
 import { EnumEstadoEdicion } from 'lib/edicion'
 import AnexoModel from 'models/anexo_model'
-
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 export const getServerSideProps = withPageAuthRequired();
 
 export default function AxPageDistrito() {
@@ -36,14 +36,14 @@ export default function AxPageDistrito() {
 
     return (
         <>
-            <Head><title>Distrito</title></Head>
+            <Head><title>Anexo</title></Head>
             <div className={isLoading ? "animate-pulse" : "" + " h-full flex flex-col"}>
                 <div className="min-h-0 flex-1 flex overflow-hidden ">
                     <main className="min-w-0 flex-1 border-t border-gray-200 xl:flex">
                         {/*DETALLE DEL Distrito*/}
                         <div className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "block" : "hidden sm:block") + " flex-1 inset-y-0 pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
                             {ID == -1
-                                ? <AxInicio nombre={"Distrito"}></AxInicio>
+                                ? <AxInicio nombre={"Anexo"}></AxInicio>
                                 : <AxAnexo ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion}></AxAnexo>
                             }
                         </div>

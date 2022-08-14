@@ -115,20 +115,20 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
             if (filtrado) setListaDocumentoFiltrado(filtrado);
         }
         else if (event.target.name == "id_tipo_documento" || event.target.name == "fecha_documento") {
-    
+
         }
         setFormData({
             name: event.target.name,
             value: isCheckbox ? event.target.checked : event.target.value,
         })
     }
-   
+
 
     useEffect(() => {
         if (formData.fecha_creacion != "" && formData.fecha_creacion && formData.fecha_creacion.length == 10) {
             const tipoDocumento = listaTipoDocumento?.find(item => item.id == formData.id_tipo_documento);
             if (tipoDocumento) {
-        
+
                 console.log(tipoDocumento.codigo);
                 const fetchData = async () => {
                     const response = await fetch(`/api/documento/solicitud/fn_solicitud_numero?codigo=${tipoDocumento.codigo}&year=${formData.fecha_creacion && formData.fecha_creacion.substring(0, 4)}`);
@@ -273,7 +273,6 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                             <h2 className=" font-extralight">Consideraciones</h2>
                                             <ul key={"consideracion"} role="list" className="divide-y divide-gray-200">
                                                 {listaTipoDocConsideracion && listaTipoDocConsideracion.filter(item => item.id_tipo_documento == formData.id_tipo_documento).map((item: any) =>
-                                                    item.id_tipo_documento == 1 &&
                                                     <li
                                                         key={item.nombre_consideracion}
                                                         className="relative bg-white  hover:bg-gray-50 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600"

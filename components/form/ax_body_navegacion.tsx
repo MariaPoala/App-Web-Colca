@@ -1,4 +1,4 @@
-import { navigation, secondaryNavigation } from '../layout/ax_menu_item_admin'
+import { navigation } from '../layout/ax_menu_item_admin'
 import { navigation_usuario} from '../layout/ax_menu_item_usuario'
 import { useEffect, useReducer, useState } from "react";
 import Link from 'next/link'
@@ -117,26 +117,7 @@ export default function AxBodyNavegacion({ clase }: any) {
                     </Disclosure>
                 )
             ))}
-        </div>
-        <div className="mt-6 pt-6">
-            <div className="px-2 space-y-1">
-                {secondaryNavigation.map((item) => (
-                    <Link key={item.name} href={item.href}>
-                        <a
-                            href={item.href}
-                            className={classNames(
-                                router.pathname == item.href
-                                    ? 'bg-indigo-800 text-white'
-                                    : 'text-indigo-100',
-                                "group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-indigo-100  hover:text-white hover:bg-indigo-500")}
-                        >
-                            <item.icon className="mr-4 h-6 w-6 text-indigo-200" aria-hidden="true" />
-                            {item.name}
-                        </a>
-                    </Link>
-                ))}
-            </div>
-        </div>
+        </div>        
     </nav>;
 }
 

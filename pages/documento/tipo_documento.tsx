@@ -1,12 +1,12 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+
 import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PhoneIcon, PlusIcon } from '@heroicons/react/solid'
 import AxInicio from 'components/layout/ax_inicio'
 import AxTipoDocumento from 'modulos/documento/ax_tipo_documento'
 import { EnumEstadoEdicion } from 'lib/edicion'
 import TipoDocumentoModel from 'models/tipo_documento_model'
-
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 export const getServerSideProps = withPageAuthRequired();
 
 export default function AxPageDocumento() {
@@ -43,7 +43,7 @@ export default function AxPageDocumento() {
                         {/*DETALLE DEL Documento*/}
                         <div className={((estadoEdicion == EnumEstadoEdicion.SELECCIONADO || estadoEdicion == EnumEstadoEdicion.EDITANDO) ? "block" : "hidden sm:block") + " flex-1 inset-y-0 pl-0 m-1 sm:pl-72 md:pl-80 lg:pl-80 bg-white"}>
                             {ID == -1
-                                ? <AxInicio nombre={"Documento"}></AxInicio>
+                                ? <AxInicio nombre={"Tipo Documento"}></AxInicio>
                                 : <AxTipoDocumento ID={ID} setID={setID} setEstadoEdicion={setEstadoEdicion} />
                             }
                         </div>
@@ -129,7 +129,7 @@ export default function AxPageDocumento() {
                                             textoFiltro !== '' && listaFiltro.length === 0 &&
                                             <div className="py-14 px-4 text-center sm:px-14">
                                                 <UsersIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
-                                                <p className="mt-4 text-sm text-gray-900">No se encontraron Documentos usando ese término de búsqueda.</p>
+                                                <p className="mt-4 text-sm text-gray-900">No se encontraron Tipos de Documentos usando ese término de búsqueda.</p>
                                             </div>
                                         }
                                     </div>

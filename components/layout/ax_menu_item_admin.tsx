@@ -56,9 +56,7 @@ const navigation = [
     },
 ]
 
-const secondaryNavigation = [
-    { name: 'Tu Perfil', href: '/miperfil', icon: CogIcon },
-]
 
-export { navigation, secondaryNavigation }
+
+export { navigation }
 

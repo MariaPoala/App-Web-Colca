@@ -10,6 +10,8 @@ import AxSolicitudEstado from 'modulos/documento/ax_solicitud_estado';
 import AxSubirArchivo from 'modulos/documento/ax_subir_archivo';
 import supabase from "lib/supabase_config";
 import Head from 'next/head'
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+export const getServerSideProps = withPageAuthRequired();
 
 
 const fetcherVSolicitud = (url: string): Promise<any> =>
@@ -364,8 +366,8 @@ export default function AxPageDocumento() {
                             </td>
                             <td className="px-1  text-center whitespace-nowrap text-sm text-gray-500 truncate flex">
                               <p className="mt-2 lg:ml-10 lg:md-10 flex items-center text-sm text-gray-500 font-sans italic">
-                                {item.direfencia}
-                                <ExclamationIcon className={(item.direfencia>=3 ? "text-blue-500": item.direfencia>=0 ? " text-amber-500":  "text-red-500")+" flex-shrink-0 ml-2 h-4 w-4 text-blue-500"} aria-hidden="true" />
+                                {item.estado=="ENTREGADO"? "": item.direfencia}
+                                {item.estado=="ENTREGADO"? "":<ExclamationIcon className={(item.direfencia>=3 ? "text-blue-500": item.direfencia>=0 ? " text-amber-500":  "text-red-500")+" flex-shrink-0 ml-2 h-4 w-4 text-blue-500"} aria-hidden="true" />}
                               </p>
                             </td>
                             <td className="px-1 text-center whitespace-nowrap text-sm text-gray-500 truncate">

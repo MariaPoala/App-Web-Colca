@@ -1,13 +1,13 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
 
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+
 import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PlusIcon } from '@heroicons/react/solid'
 import AxInicio from 'components/layout/ax_inicio'
 import AxRequisito from 'modulos/documento/ax_requisito'
 import { EnumEstadoEdicion } from 'lib/edicion'
 import RequisitoModel from 'models/requisito_model'
-
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 export const getServerSideProps = withPageAuthRequired();
 
 export default function AxPageRequisito() {

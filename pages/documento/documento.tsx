@@ -7,6 +7,8 @@ import { EnumEstadoEdicion, EnumTipoEdicion } from 'lib/edicion';
 import DocumentoModel from 'models/documento_model';
 import AxDocumento from 'modulos/documento/ax_documento';
 import Head from 'next/head'
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+export const getServerSideProps = withPageAuthRequired();
 
 const fetcherVDocumento = (url: string): Promise<any> =>
   fetch(url, { method: "GET" }).then(r => r.json());
@@ -107,7 +109,7 @@ export default function AxPageDocumento() {
   }, [filtro.tipo_entidad])
   return (
     <>
-    <Head><title>Documento</title></Head>
+      <Head><title>Documento</title></Head>
       <main className="flex-1 pb-8">
         <div className={(isLoading ? "animate-pulse" : "") + " bg-white shadow"}>
           <div className=" sm:px-4 lg:max-w-6xl ">
@@ -127,19 +129,20 @@ export default function AxPageDocumento() {
                       <option key="JURIDICO" value="JURIDICO">JURIDICO</option>
                     </AxSelectFiltro>
                   </div>
-                  {filtro.tipo_entidad == "NATURAL" ? <div className="md:col-span-2">
-                    <AxSelectFiltro name={"id_persona"} value={filtro.id_persona} filtro={true} label="Persona" handleChange={handleChange}>
-                      {listaPersona && listaPersona.map((ciudadano: any) =>
-                        <option key={ciudadano.id} value={ciudadano.id}>{ciudadano.nombre_apellido}</option>)}
-                    </AxSelectFiltro>
-                  </div> :
-
-                    <div className="md:col-span-2">
-                      <AxSelectFiltro name={"id_empresa"} value={filtro.id_empresa} filtro={true} label="Empresa" handleChange={handleChange}>
-                        {listaEmpresa && listaEmpresa.map((empresa: any) =>
-                          <option key={empresa.id} value={empresa.id}>{empresa.razon_social}</option>)}
-                      </AxSelectFiltro>
-                    </div>
+                  {
+                    filtro.tipo_entidad == "NATURAL"
+                      ? <div className="md:col-span-2">
+                        <AxSelectFiltro name={"id_persona"} value={filtro.id_persona} filtro={true} label="Persona" handleChange={handleChange}>
+                          {listaPersona && listaPersona.map((ciudadano: any) =>
+                            <option key={ciudadano.id} value={ciudadano.id}>{ciudadano.nombre_apellido}</option>)}
+                        </AxSelectFiltro>
+                      </div>
+                      : <div className="md:col-span-2">
+                        <AxSelectFiltro name={"id_empresa"} value={filtro.id_empresa} filtro={true} label="Empresa" handleChange={handleChange}>
+                          {listaEmpresa && listaEmpresa.map((empresa: any) =>
+                            <option key={empresa.id} value={empresa.id}>{empresa.razon_social}</option>)}
+                        </AxSelectFiltro>
+                      </div>
                   }
                   <div className="md:col-span-1">
                     <AxInput name="year" label="Año" handleChange={handleChange} filtro={true} type="text" />
@@ -287,6 +290,7 @@ export default function AxPageDocumento() {
                               {item.fecha_creacion}
                             </td>
                             <td className="px-1 w-24 text-center whitespace-nowrap text-sm text-gray-500 truncate">
+                              {item.es_anulado == true ? "anulado" : "no anulado"}
                               {item.es_anulado == true ?
                                 <BanIcon className=' h-6 w-6  text-center  text-red-400'></BanIcon> :
                                 <BadgeCheckIcon className='h-6 w-6  text-center text-green-400 '></BadgeCheckIcon>
