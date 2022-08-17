@@ -10,8 +10,8 @@ import AxSolicitudEstado from 'modulos/documento/ax_solicitud_estado';
 import AxSubirArchivo from 'modulos/documento/ax_subir_archivo';
 import supabase from "lib/supabase_config";
 import Head from 'next/head'
-// import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-// export const getServerSideProps = withPageAuthRequired();
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+export const getServerSideProps = withPageAuthRequired();
 
 
 const fetcherVSolicitud = (url: string): Promise<any> =>
