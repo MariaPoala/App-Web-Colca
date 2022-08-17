@@ -96,3 +96,19 @@ doc_req.id_consideracion ,con.nombre as nombre_consideracion
 from tipo_documento_consideracion as doc_req
 inner join tipo_documento as tipo on doc_req.id_tipo_documento=tipo.id
 inner join consideracion as con on doc_req.id_consideracion=con.id
+
+
+-- reportes
+create view v_reportepersona
+as
+select 
+per.id,
+per.nombre || ' ' || per.apellido as nombreapellido,
+per.celular,
+per.email,
+per.estado,
+per.id_distrito, distrito.nombre as nombre_distrito,
+per.id_anexo,anexo.nombre as nombre_anexo
+from persona as per
+inner join distrito as distrito on per.id_distrito=distrito.id
+inner join anexo as anexo on per.id_anexo=anexo.id
