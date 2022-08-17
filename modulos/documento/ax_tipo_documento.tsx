@@ -154,7 +154,7 @@ export default function AxTipoDocumento({ ID, setID, setEstadoEdicion }: TypeFor
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
                                             <div className="md:col-span-3">
-                                                <AxInput required={true} name="codigo" label="Código" value={formData.codigo} handleChange={handleChange} />
+                                                <AxInput required={true} name="codigo" placeholder="codigo de 6 digitos" label="Código" value={formData.codigo} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
                                                 <AxInput required={true} name="nombre" label="Nombre" value={formData.nombre} handleChange={handleChange} />
