@@ -194,18 +194,18 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-8">
                                             <div className="md:col-span-2">
-                                                <AxSelect name="id_tipo_documento" value={formData.id_tipo_documento} label="Tipo Documento" handleChange={handleChange}>
+                                                <AxSelect required={true} name="id_tipo_documento" value={formData.id_tipo_documento} label="Tipo Documento" handleChange={handleChange}>
                                                     {listaTipoDocumento && listaTipoDocumento.map((tipoDoc: any) => <option key={tipoDoc.id} value={tipoDoc.id}>{tipoDoc.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="numero_documento" label="NroDocumento" value={formData.numero_documento} handleChange={handleChange} />
+                                                <AxInput required={true} name="numero_documento" label="NroDocumento" value={formData.numero_documento} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="fecha_inicio" label="Fecha Inicio" value={formData.fecha_inicio} handleChange={handleChange} disabled={true} type="date" />
+                                                <AxInput required={true} name="fecha_inicio" label="Fecha Inicio" value={formData.fecha_inicio} handleChange={handleChange} disabled={true} type="date" />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="fecha_plazo" label="Fecha Plazo" value={formData.fecha_plazo} handleChange={handleChange} disabled={true} type="date" />
+                                                <AxInput required={true} name="fecha_plazo" label="Fecha Plazo" value={formData.fecha_plazo} handleChange={handleChange} disabled={true} type="date" />
                                             </div>
                                             <div className="md:col-span-2">
                                                 <AxSelect name="tipo_entidad" value={formData.tipo_entidad} label="Tipo Entidad" handleChange={handleChange}>
@@ -228,29 +228,29 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                             }
 
                                             <div className="md:col-span-3">
-                                                <AxSelect name="id_documento" value={formData.id_documento} label="Documento" handleChange={handleChange}>
+                                                <AxSelect required={true} name="id_documento" value={formData.id_documento} label="Documento" handleChange={handleChange}>
                                                     {listaDocumentoFiltrado && listaDocumentoFiltrado.map((item: any) => <option key={item.id} value={item.id}>{item.numero_documento}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-6">
-                                                <AxInput name="motivo" label="Motivo" value={formData.motivo} handleChange={handleChange} />
+                                                <AxInput required={true} name="motivo" label="Motivo" value={formData.motivo} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="i_total" label="Total a Pagar" value={formData.i_total} handleChange={handleChange} disabled={true} />
+                                                <AxInput required={true} name="i_total" label="Total a Pagar" value={formData.i_total} handleChange={handleChange} disabled={true} />
                                             </div>
 
                                             <div className="md:col-span-2">
-                                                <AxSelect name="id_empleado" value={formData.id_empleado} label="Empleado" handleChange={handleChange} disabled={true}>
+                                                <AxSelect required={true} name="id_empleado" value={formData.id_empleado} label="Empleado" handleChange={handleChange} disabled={true}>
                                                     {listaEmpleado && listaEmpleado.map((item: any) => <option key={item.id} value={item.id}>{item.nombre_apellido}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxSelect name="id_area" value={formData.id_area} label="Area" handleChange={handleChange} disabled={true}>
+                                                <AxSelect required={true} name="id_area" value={formData.id_area} label="Area" handleChange={handleChange} disabled={true}>
                                                     {listaArea && listaArea.map((area: any) => <option key={area.id} value={area.id}>{area.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="fecha_creacion" label="Fecha Registro" value={formData.fecha_creacion} handleChange={handleChange} disabled type="date" />
+                                                <AxInput required={true} name="fecha_creacion" label="Fecha Registro" value={formData.fecha_creacion} handleChange={handleChange} disabled type="date" />
                                             </div>
                                             <div className="md:col-span-2">
                                                 <AxSelect name="estado" value={formData.estado} label="Estado" handleChange={handleChange}>

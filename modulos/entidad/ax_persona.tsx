@@ -157,32 +157,32 @@ export default function AxCiudadano({ ID, setID, setEstadoEdicion }: TypeFormula
                                                 <AxInput name="numero_documento" label="DNI" value={formData.numero_documento} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxSelect name="id_anexo" value={formData.id_anexo} label="Anexo" handleChange={handleChange}>
+                                                <AxSelect name="id_anexo" required={true} value={formData.id_anexo} label="Anexo" handleChange={handleChange}>
                                                     {listaAnexo && listaAnexo.map((anexo: any) => <option key={anexo.id} value={anexo.id}>{anexo.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxSelect name="id_distrito" value={formData.id_distrito} label="Distrito" handleChange={handleChange} disabled={true}>
+                                                <AxSelect name="id_distrito"  value={formData.id_distrito} label="Distrito" handleChange={handleChange} disabled={true}>
                                                     {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.id} value={distrito.id}>{distrito.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="nombre" label="Nombres" value={formData.nombre} handleChange={handleChange} />
+                                                <AxInput name="nombre" required={true} label="Nombres" value={formData.nombre} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="apellido" label="Apellidos" value={formData.apellido} handleChange={handleChange} />
+                                                <AxInput name="apellido" required={true} label="Apellidos" value={formData.apellido} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="fecha_nacimiento" label="Fecha Nacimiento" value={formData.fecha_nacimiento} handleChange={handleChange} type="date" />
+                                                <AxInput name="fecha_nacimiento" required={true} label="Fecha Nacimiento" value={formData.fecha_nacimiento} handleChange={handleChange} type="date" />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="direccion" label="Dirección" value={formData.direccion} handleChange={handleChange} />
+                                                <AxInput name="direccion" required={true} label="Dirección" value={formData.direccion} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-4">
                                                 <AxInput name="email" label="Correo Electronico" value={formData.email} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="celular" label="Nro Celular" value={formData.celular} handleChange={handleChange} />
+                                                <AxInput name="celular" required={true} label="Nro Celular" value={formData.celular} handleChange={handleChange} />
                                             </div>
                                             <div className="pt-8">
                                                 <div>

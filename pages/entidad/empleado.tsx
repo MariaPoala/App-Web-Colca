@@ -1,13 +1,13 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Head from 'next/head'
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+
 import { SearchIcon, FilterIcon, ChevronRightIcon, MailIcon, UserAddIcon, UsersIcon, PlusIcon } from '@heroicons/react/solid'
 import { Menu, Transition, Dialog } from '@headlessui/react'
 import AxInicio from 'components/layout/ax_inicio'
 import AxEmpleado from 'modulos/entidad/ax_empleado'
 import { EnumEstadoEdicion } from 'lib/edicion'
 import EmpleadoModel from 'models/empleado_model'
-
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 export const getServerSideProps = withPageAuthRequired();
 
 export default function AxPageEmpleado() {

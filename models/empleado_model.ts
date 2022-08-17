@@ -8,7 +8,7 @@ class EmpleadoModel {
     fecha_nacimiento: string;
     sexo: string;
     direccion: string;
-    celular?: string;
+    celular: string|null;
     email?: string;
     tipo_contrato: string;
     estado: boolean;
@@ -27,6 +27,7 @@ class EmpleadoModel {
         this.direccion = "";
         this.tipo_contrato = "Contrato3Meses";
         this.estado = true;
+        this.celular=null;
         this.id_area = 0;
         this.id_rol = 0;
         this.id_distrito = 0;

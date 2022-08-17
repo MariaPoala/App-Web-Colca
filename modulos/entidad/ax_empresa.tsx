@@ -154,29 +154,29 @@ export default function AxEmpresa({ ID, setID, setEstadoEdicion }: TypeFormulari
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
                                             <div className="md:col-span-4">
-                                                <AxInput name="razon_social" label="Razón Social" value={formData.razon_social} handleChange={handleChange} />
+                                                <AxInput name="razon_social" required={true} label="Razón Social" value={formData.razon_social} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="numero_ruc" label="Numero RUC" value={formData.numero_ruc} handleChange={handleChange} />
+                                                <AxInput name="numero_ruc" required={true} label="Numero RUC" value={formData.numero_ruc} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxSelect name="id_anexo" value={formData.id_anexo} label="Anexo" handleChange={handleChange}>
+                                                <AxSelect name="id_anexo" required={true} value={formData.id_anexo} label="Anexo" handleChange={handleChange}>
                                                     {listaAnexo && listaAnexo.map((anexo: any) => <option key={anexo.id} value={anexo.id}>{anexo.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxSelect name="id_distrito" value={formData.id_distrito} label="Distrito" handleChange={handleChange}>
+                                                <AxSelect name="id_distrito" required={true} value={formData.id_distrito} label="Distrito" handleChange={handleChange}>
                                                     {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.id} value={distrito.id}>{distrito.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-4">
-                                                <AxInput name="email" label="Correo Electronico" value={formData.email} handleChange={handleChange} />
+                                                <AxInput name="email" required={true} label="Correo Electronico" value={formData.email} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="celular" label="Celular" value={formData.celular} handleChange={handleChange} />
+                                                <AxInput name="celular" required={true} label="Celular" value={formData.celular} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-6">
-                                                <AxInput name="direccion" label="Direccion" value={formData.direccion} handleChange={handleChange} />
+                                                <AxInput name="direccion" required={true} label="Direccion" value={formData.direccion} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-6">
                                                 <div className="pt-8">

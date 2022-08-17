@@ -194,18 +194,18 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
                                             <div className="md:col-span-2">
-                                                <AxSelect name="id_tipo_documento" value={formData.id_tipo_documento} label="Tipo Documento" handleChange={handleChange}>
+                                                <AxSelect required={true} name="id_tipo_documento" value={formData.id_tipo_documento} label="Tipo Documento" handleChange={handleChange}>
                                                     {listaTipoDocumento && listaTipoDocumento.map((documento: any) => <option key={documento.id} value={documento.id}>{documento.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="fecha_documento" label="Fecha Documento" value={formData.fecha_documento} handleChange={handleChange} type="date" />
+                                                <AxInput required={true} name="fecha_documento" label="Fecha Documento" value={formData.fecha_documento} handleChange={handleChange} type="date" />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="numero_documento" label="Nro Documento" value={formData.numero_documento} handleChange={handleChange} disabled={true} />
+                                                <AxInput required={true} name="numero_documento" label="Nro Documento" value={formData.numero_documento} handleChange={handleChange} disabled={true} />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxSelect name="tipo_entidad" value={formData.tipo_entidad} label="Tipo Entidad" handleChange={handleChange}>
+                                                <AxSelect required={true} name="tipo_entidad" value={formData.tipo_entidad} label="Tipo Entidad" handleChange={handleChange}>
                                                     <option key="NATURAL" value="NATURAL">NATURAL</option>
                                                     <option key="JURIDICO" value="JURIDICO">JURIDICO</option>
                                                 </AxSelect>
@@ -213,26 +213,26 @@ export default function AxDocumento({ ID, setID, setEstadoEdicion, tipoEdicion, 
                                             {
                                                 formData.tipo_entidad == "NATURAL"
                                                     ? <div className="md:col-span-3">
-                                                        <AxSelect name="id_persona" value={formData.id_persona} label="Persona" handleChange={handleChange}>
+                                                        <AxSelect required={true} name="id_persona" value={formData.id_persona} label="Persona" handleChange={handleChange}>
                                                             {listaPersona && listaPersona.map((persona: any) => <option key={persona.id} value={persona.id}>{persona.nombre_apellido}</option>)}
                                                         </AxSelect>
                                                     </div>
                                                     : <div className="md:col-span-3">
-                                                        <AxSelect name="id_empresa" value={formData.id_empresa} label="Empresa" handleChange={handleChange}>
+                                                        <AxSelect required={true} name="id_empresa" value={formData.id_empresa} label="Empresa" handleChange={handleChange}>
                                                             {listaEmpresa && listaEmpresa.map((empresa: any) => <option key={empresa.id} value={empresa.id}>{empresa.razon_social}</option>)}
                                                         </AxSelect>
                                                     </div>
                                             }
                                             <div className="md:col-span-1">
-                                                <AxInput name="fecha_creacion" label="Fecha Registro" value={formData.fecha_creacion} handleChange={handleChange} disabled type="date" />
+                                                <AxInput required={true} name="fecha_creacion" label="Fecha Registro" value={formData.fecha_creacion} handleChange={handleChange} disabled type="date" />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxSelect name="id_empleado" value={formData.id_empleado} label="Empleado" handleChange={handleChange} disabled={true}>
+                                                <AxSelect required={true} name="id_empleado" value={formData.id_empleado} label="Empleado" handleChange={handleChange} disabled={true}>
                                                     {listaEmpleado && listaEmpleado.map((item: any) => <option key={item.id} value={item.id}>{item.nombre_apellido}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-4">
-                                                <AxInput name="observacion" label="Observacion" value={formData.observacion} handleChange={handleChange} type="text" />
+                                                <AxInput required={true} name="observacion" label="Observacion" value={formData.observacion} handleChange={handleChange} type="text" />
                                             </div>
                                             <div className="md:col-span-5">
                                                 <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">

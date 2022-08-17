@@ -1,13 +1,13 @@
 import { useEffect, useReducer, useState } from "react";
 import useSWRImmutable from "swr/immutable"
 import useSWR from "swr"
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+
 import { AxBtnCancelar, AxBtnEditar, AxCheck, AxInput, AxRadio, AxSelect, AxSubmit } from 'components/form'
 import { EnumTipoEdicion, EnumEstadoEdicion, TypeFormularioProps } from 'lib/edicion'
 import EmpleadoModel from 'models/empleado_model'
 import { ChevronLeftIcon } from "@heroicons/react/outline";
-
-export const getServerSideProps = withPageAuthRequired();
+// import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+// export const getServerSideProps = withPageAuthRequired();
 const fetcherDistrito = (url: string): Promise<any> =>
     fetch(url, { method: "GET" }).then(r => r.json());
 const fetcherAnexo = (url: string): Promise<any> =>
@@ -161,21 +161,21 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
                                         </div>
                                         <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 md:grid-cols-6">
                                             <div className="md:col-span-2">
-                                                <AxInput name="numero_documento" label="DNI" value={formData.numero_documento} handleChange={handleChange} />
+                                                <AxInput name="numero_documento" required={true} label="DNI" value={formData.numero_documento} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxSelect name="id_distrito" value={formData.id_distrito} label="Distrito" handleChange={handleChange}>
+                                                <AxSelect name="id_distrito" required={true} value={formData.id_distrito} label="Distrito" handleChange={handleChange}>
                                                     {listaDistrito && listaDistrito.map((distrito: any) => <option key={distrito.id} value={distrito.id}>{distrito.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="nombre" label="Nombres" value={formData.nombre} handleChange={handleChange} />
+                                                <AxInput name="nombre" label="Nombres" required={true} value={formData.nombre} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="apellido" label="Apellidos" value={formData.apellido} handleChange={handleChange} />
+                                                <AxInput name="apellido" required={true} label="Apellidos" value={formData.apellido} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="fecha_nacimiento" label="Fecha Nacimiento" value={formData.fecha_nacimiento} handleChange={handleChange} type="date" />
+                                                <AxInput name="fecha_nacimiento" required={true} label="Fecha Nacimiento" value={formData.fecha_nacimiento} handleChange={handleChange} type="date" />
                                             </div>
                                             <div className="md:col-span-3">
                                                 <AxSelect name="sexo" value={formData.sexo} label="Sexo" handleChange={handleChange}>
@@ -184,25 +184,25 @@ export default function AxEmpleado({ ID, setID, setEstadoEdicion }: TypeFormular
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-4">
-                                                <AxInput name="email" label="Correo Electronico" value={formData.email} handleChange={handleChange} />
+                                                <AxInput name="email" label="Correo Electronico" required={true} value={formData.email} handleChange={handleChange} />
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxInput name="celular" label="Nro Celular" value={formData.celular} handleChange={handleChange} />
+                                                <AxInput name="celular" label="Nro Celular" required={true} value={formData.celular} handleChange={handleChange} />
                                             </div>
 
                                             
                                             <div className="md:col-span-1">
-                                                <AxSelect name="id_rol" value={formData.id_rol} label="Rol" handleChange={handleChange}>
+                                                <AxSelect name="id_rol" required={true} value={formData.id_rol} label="Rol" handleChange={handleChange}>
                                                     {listaRol && listaRol.map((rol: any) => <option key={rol.id} value={rol.id}>{rol.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-2">
-                                                <AxSelect name="id_area" value={formData.id_area} label="Area" handleChange={handleChange}>
+                                                <AxSelect name="id_area" required={true} value={formData.id_area} label="Area" handleChange={handleChange}>
                                                     {listaArea && listaArea.map((area: any) => <option key={area.id} value={area.id}>{area.nombre}</option>)}
                                                 </AxSelect>
                                             </div>
                                             <div className="md:col-span-3">
-                                                <AxInput name="direccion" label="Dirección" value={formData.direccion} handleChange={handleChange} />
+                                                <AxInput name="direccion" required={true} label="Dirección" value={formData.direccion} handleChange={handleChange} />
                                             </div>
                                         </div>
                                     </div>
